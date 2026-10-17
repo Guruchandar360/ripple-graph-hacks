@@ -60,19 +60,23 @@ class OllamaAdapter:
         self.tool_mode = tool_mode
         self.aio = SimpleNamespace(models=self)
 
-    async def generate_content(self, *, model, contents, config):
+    async def generate_content(self, *, model, contents, config, tool_catalog=None):
         functions = [function for tool in config.tools for function in tool.function_declarations]
-        tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": f.name,
-                    "description": f.description,
-                    "parameters": json_schema(f.parameters.model_dump(mode="json", exclude_none=True)),
-                },
-            }
-            for f in functions
-        ]
+
+        def describe(items):
+            return [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": f.name,
+                        "description": f.description,
+                        "parameters": json_schema(f.parameters.model_dump(mode="json", exclude_none=True)),
+                    },
+                }
+                for f in items
+            ]
+
+        tools = describe(functions)
         messages = ollama_messages(config.system_instruction, contents)
         payload = {
             "model": model,
@@ -114,7 +118,7 @@ class OllamaAdapter:
             }
             messages[0]["content"] += (
                 "\nReturn only a JSON object with tool_calls: an array of {name, arguments}. Available tool definitions:\n"
-                + json.dumps(tools)
+                + json.dumps(describe(tool_catalog or functions))
             )
             for item in messages[1:]:
                 if item.get("tool_calls"):
@@ -129,6 +133,23 @@ class OllamaAdapter:
                 if item["role"] == "tool":
                     item["role"] = "user"
                     item["content"] = f"Tool result from {item.pop('tool_name')}: {item['content']}"
+            # Keep the catalog prefix stable. Current authorization stays in constrained
+            # decoding plus a small final reminder, rather than rewriting the system text.
+            available = {
+                f.name: {
+                    name: list(schema.enum)
+                    for name, schema in (f.parameters.properties or {}).items()
+                    if schema.enum
+                }
+                for f in functions
+            }
+            messages.append(
+                {
+                    "role": "user",
+                    "content": "Available tools and allowed parameter values for this call: "
+                    + json.dumps(available),
+                }
+            )
         try:
             async with httpx.AsyncClient(timeout=280) as client:
                 response = await client.post(

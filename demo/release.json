@@ -1,0 +1,8 @@
+{
+  "benchmark_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031191528",
+  "benchmark_source_commit": "fcc2cce3b07bc3eed0a4e21276aa42b53c686437",
+  "benchmark_configuration": {"max_model_turns": 8, "timeout_seconds": 300},
+  "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032070983",
+  "targeted_replay_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638",
+  "note": "The complete comparison retains all failures. Extra targeted replays are separate measurements and do not contribute to its score."
+}

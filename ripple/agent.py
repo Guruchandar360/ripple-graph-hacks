@@ -256,6 +256,11 @@ class Agent:
                                 response = await self.client.aio.models.generate_content(
                                     model=self.settings.active_model,
                                     contents=contents,
+                                    **(
+                                        {"tool_catalog": declarations(mode)}
+                                        if isinstance(self.client, OllamaAdapter)
+                                        else {}
+                                    ),
                                     config=types.GenerateContentConfig(
                                         system_instruction=SYSTEM,
                                         temperature=0.1,

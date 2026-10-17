@@ -36,7 +36,9 @@ async function results() {
 async function openCase(id, expected, phase) {
   await results();
   const sequence = repetition ? `[data-replay-repetition="${repetition}"][data-replay-phase="${phase}"]` : "";
-  const row = page.locator(`[data-replay-case="${id}"][data-replay-mode="graph"]${sequence}`).first();
+  const selectedId = process.env[`DEMO_${phase.toUpperCase()}_ID`];
+  const selection = selectedId ? `[data-replay-id="${selectedId}"]` : sequence;
+  const row = page.locator(`[data-replay-case="${id}"][data-replay-mode="graph"]${selection}`).first();
   if (!(await row.count())) throw new Error(`Required actual graph replay ${id} is absent; refusing to fake a demo.`);
   if (expected && await row.getAttribute("data-replay-status") !== expected) throw new Error(`Actual ${id} did not reach ${expected}; refusing to present it as successful.`);
   if (phase === "memory" && Number(await row.getAttribute("data-replay-memory-count")) < 1) throw new Error("This run did not retrieve memory; refusing to claim it did.");
@@ -64,7 +66,7 @@ if (!smoke) {
 await openCase("C08", "recovered", "memory");
 const memory = page.locator(".timeline-event").filter({ hasText: "Incident memory retrieved" }).first();
 await memory.scrollIntoViewIfNeeded();
-await caption("A fresh conversation remembers through the graph.", "The model retrieves a persisted, measured incident outcome and checks the current evidence. Earlier chat messages are not carried into the investigation.", 9);
+await caption("A fresh conversation remembers through the graph.", "FalkorDB supplies persisted, measured outcomes to a fresh model conversation. Current evidence and constraints still apply; earlier chat messages are not carried over.", 9);
 await openCase("C10", "needs_evidence", "insufficient");
 await page.locator(".timeline").scrollIntoViewIfNeeded();
 await caption("Insufficient evidence means no executed remediation.", "The agent can identify missing diagnostics and stop. Deterministic guards provide an independent boundary if the model proposes an unsafe action.", 9);

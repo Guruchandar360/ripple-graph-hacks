@@ -29,6 +29,11 @@ These failures are not hidden or reclassified as successful tests. Subsequent mo
 
 ## Delivery
 
+The complete 24-run CPU comparison is published in [MEASUREMENTS.md](MEASUREMENTS.md)
+with the raw report and all replay records. It does not establish graph superiority;
+the current sample contains timeouts and incomplete impact reporting. Source versions
+and separate development experiments are recorded in `demo/PROVENANCE.md`.
+
 [Public source](https://github.com/Guruchandar360/ripple-graph-hacks) and [read-only showcase](https://guruchandar360.github.io/ripple-graph-hacks/) are available. The showcase serves synthetic fixtures and actual recorded output when exported; it has no live backend, graph connection or model credentials.
 
 The full application is reproducible with the README's Docker/Cloud database and Gemini or explicitly selected Ollama configuration. CI performs clean package installation and uses real container services. A hosted live backend still needs the participant's Render/FalkorDB account configuration. This workstation has no Docker/working WSL; a fresh local live setup is not claimed here.

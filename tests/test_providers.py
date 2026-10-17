@@ -79,8 +79,14 @@ def test_explicit_json_protocol_preserves_model_selected_tool_and_arguments(monk
         OllamaAdapter("http://local", tool_mode="json").generate_content(
             model="test",
             contents=[],
+            tool_catalog=declarations("graph"),
             config=types.GenerateContentConfig(
-                system_instruction="test", tools=[types.Tool(function_declarations=declarations("graph"))]
+                system_instruction="test",
+                tools=[
+                    types.Tool(
+                        function_declarations=[f for f in declarations("graph") if f.name == "probe_service"]
+                    )
+                ],
             ),
         )
     )
@@ -88,3 +94,6 @@ def test_explicit_json_protocol_preserves_model_selected_tool_and_arguments(monk
     assert call.name == "probe_service" and call.args == {"service": "ledger"}
     assert "tools" not in captured
     assert captured["format"]["required"] == ["tool_calls"]
+    assert "retrieve_memory" in captured["messages"][0]["content"]
+    assert "retrieve_memory" not in captured["messages"][-1]["content"]
+    assert len(captured["format"]["properties"]["tool_calls"]["items"]["anyOf"]) == 1

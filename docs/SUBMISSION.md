@@ -39,9 +39,10 @@ All operational data is synthetic. No production systems are connected.
 - Participant technical guide: `docs/CONTRIBUTOR_GUIDE.md`.
 - AI assistance disclosure: README.
 - Actual model results/replays: `demo/evaluations.json` and `demo/replays/`.
-  The current development smoke test is two measured runs; full-suite results
-  replace it only when actually recorded. Earlier development failures remain
-  inspectable under `demo/development/`.
+  The complete 24-run comparison and every failure are published. See
+  `docs/MEASUREMENTS.md` and `demo/release.json` for measurements and source versions.
+  Additional targeted replays are separate samples and do not enter the score.
+  Earlier development failures remain inspectable under `demo/development/`.
 - Working video: `demo/ripple-demo.mp4`, identifying the provider, replay status,
   synthetic data and measured behavior, including incomplete impact reporting.
 - Technical blog: `docs/BLOG.md` (public repository article; no external post claimed).
