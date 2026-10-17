@@ -1,9 +1,8 @@
-from dataclasses import replace
 import asyncio
 import json
+from dataclasses import replace
 
 import httpx
-
 from google.genai import types
 
 from ripple.agent import declarations
