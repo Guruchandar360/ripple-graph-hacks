@@ -210,6 +210,7 @@ function App() {
   }, []);
   const [showSources, setShowSources] = useState(false);
   const [mode, setMode] = useState<"graph" | "baseline">("graph");
+  useEffect(() => { window.scrollTo({top:0,left:0,behavior:"instant"}); }, [view]);
   const [search, setSearch] = useState("");
   const generation = useRef(0);
   const runRef = useRef<Run | null>(null);
@@ -650,6 +651,7 @@ function App() {
         <div className="nav-label">WORKSPACE</div>
         <nav aria-label="Main navigation">
           <button
+            aria-label="Investigate"
             className={
               view === "investigate" ? "nav-item selected" : "nav-item"
             }
@@ -659,6 +661,7 @@ function App() {
             Investigate<span className="key-hint">01</span>
           </button>
           <button
+            aria-label="Incident memory"
             className={view === "memory" ? "nav-item selected" : "nav-item"}
             onClick={() => setView("memory")}
           >
@@ -667,6 +670,7 @@ function App() {
             <span className="nav-count">{workspace?.memory_count ?? 0}</span>
           </button>
           <button
+            aria-label="Evaluation results"
             className={view === "results" ? "nav-item selected" : "nav-item"}
             onClick={() => setView("results")}
           >
@@ -674,6 +678,7 @@ function App() {
             Evaluation results
           </button>
           <button
+            aria-label="Launch checklist"
             className={view === "readiness" ? "nav-item selected" : "nav-item"}
             onClick={() => setView("readiness")}
           >

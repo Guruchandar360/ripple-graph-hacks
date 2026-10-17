@@ -142,3 +142,17 @@ test("desktop workspace fits at normal zoom and every evidence panel remains rea
   await page.locator(".detail-column").evaluate(el => { el.scrollTop=0; });
   await page.screenshot({path:"../artifacts/ripple-laptop-100-percent.png"});
 });
+
+test("memory, measured results and checklist adapt to phone, tablet and laptop widths", async ({page}) => {
+  await page.goto("/");
+  for (const [width,height] of [[390,844],[768,900],[1024,768],[1366,768]]) {
+    await page.setViewportSize({width,height});
+    for (const [button,heading] of [["Incident memory","Remember what worked."],["Evaluation results","Show the evidence."],["Launch checklist","Ready for the spotlight."]]) {
+      await page.getByRole("button", {name:button,exact:true}).click();
+      await expect(page.getByRole("heading", {name:heading,exact:true})).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${button} has no page overflow at ${width}`).toBeTruthy();
+      await page.evaluate(() => scrollTo(0,document.documentElement.scrollHeight));
+      expect(await page.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 2)).toBeTruthy();
+    }
+  }
+});

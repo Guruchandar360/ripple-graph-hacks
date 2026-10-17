@@ -6,6 +6,11 @@ on:
         description: Number of real synthetic cases (1-12), each in graph and baseline modes
         default: "1"
         required: true
+      case_start:
+        description: First case for a targeted run (ignored for the full 12-case suite)
+        default: "1"
+        type: choice
+        options: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
       model:
         description: Explicit tool-capable free Ollama model
         default: "qwen3:4b"
@@ -20,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        start: ${{ fromJSON(inputs.cases == '12' && '[1,4,7,10]' || '[1]') }}
+        start: ${{ fromJSON(inputs.cases == '12' && '[1,4,7,10]' || format('[{0}]', inputs.case_start)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 55
     services:

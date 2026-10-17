@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "health": {
+    "database": "connected",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_provider": "ollama",
+    "model_configured": true,
+    "synthetic": true,
+    "limits": {
+      "workspace_daily": 20,
+      "global_daily": 100
+    }
+  },
+  "run_id": "164024be26a34568a224c529e060c47d",
+  "model_calls": 5,
+  "elapsed_ms": 94462,
+  "verified_result": {
+    "action_id": "67c18f9a7f214d8bbb44456e98dd8da3",
+    "verified": true,
+    "before": [
+      {
+        "service": "checkout",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      }
+    ],
+    "after": [
+      {
+        "service": "checkout",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      }
+    ],
+    "executed_at": "2026-10-17T10:23:13.348995+00:00",
+    "synthetic": true
+  },
+  "duplicate_result_identical": true,
+  "memory_survived_scenario_reload": true,
+  "foreign_visitor_status": 404,
+  "scenario": "memory",
+  "transport": "actual HTTP requests to Uvicorn"
+}

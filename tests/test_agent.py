@@ -45,6 +45,8 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
     final = service.get_run(workspace, run["id"])
     assert final["status"] == "awaiting_approval"
     assert final["model_calls"] == 3
+    assert sum(e.get("origin") == "application_preflight" for e in final["events"]) == 1
+    assert "automatic preload is not a previous model decision" in calls[0]["contents"][0].parts[-1].text
     assert service.repo.read(workspace)["simulator"]["executions"] == 0
     assert calls[-1]["config"].automatic_function_calling.disable
 
@@ -80,6 +82,23 @@ def test_baseline_provider_schema_does_not_expose_graph_or_memory():
     names = {f.name for f in declarations("baseline")}
     assert {"get_context", "probe_service", "propose_action"} <= names
     assert not names & {"get_impact", "retrieve_memory"}
+    for function in declarations("graph"):
+        key = (
+            "service"
+            if function.name in {"probe_service", "get_impact"}
+            else "target"
+            if function.name == "propose_action"
+            else None
+        )
+        if key:
+            assert set(function.parameters.properties[key].enum) == {
+                "storefront",
+                "checkout",
+                "payments",
+                "ledger",
+                "inventory",
+                "notifications",
+            }
 
 
 def test_current_retrieved_global_blocks_remove_proposal_but_unseen_policies_do_not():

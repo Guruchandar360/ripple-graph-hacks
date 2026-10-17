@@ -18,6 +18,9 @@ are separate checks. It is not connected to a real company's infrastructure.
    source records, action policies, and private simulator state.
 3. The investigator starts a fresh conversation. Its tools query native paths,
    active source context, applicable policy edges, and related incident outcomes.
+   Application preflight loads current evidence before the first model request
+   in both workflows. This event is labeled as application work, not a model
+   decision. Service parameters enumerate the actual six supported service IDs.
 4. A proposal must cite evidence retrieved during that run, and its target must
    have been probed. Evidence is not treated as an instruction to execute code.
 5. Current `Constraint` nodes link through `BLOCKS` or `PERMITS` to supported
@@ -28,6 +31,13 @@ are separate checks. It is not connected to a real company's infrastructure.
    requires a previously failing check and all required checks passing afterward.
 8. The measured outcome is saved as incident memory. A new conversation can
    retrieve it, but it must check current applicability again.
+
+Tool availability is also bounded by current retrieved policy. If source-backed
+policies block every supported action for every target, the agent can only submit
+a diagnosis. Otherwise the last two turns reserve structured conclusion tools.
+This is a deterministic guard derived from graph facts, not a scenario-specific
+instruction choosing a recovery action. The model still supplies the diagnosis,
+citations, missing evidence and any allowed proposal.
 
 ## Explain the signature scenario
 

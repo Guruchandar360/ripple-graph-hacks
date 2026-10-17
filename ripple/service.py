@@ -173,7 +173,7 @@ class RippleService:
                 "invalid_citation",
             )
 
-    def tool(self, workspace: str, run_id: str, name: str, args: dict) -> dict:
+    def tool(self, workspace: str, run_id: str, name: str, args: dict, *, origin="model") -> dict:
         with self.lock(workspace):
             state = self.repo.read(workspace)
             run = self._run(state, run_id)
@@ -206,9 +206,14 @@ class RippleService:
                 self.event(
                     run,
                     "observation",
-                    "Current evidence retrieved",
-                    "Read source records, ownership and deployment context.",
+                    "Investigation context loaded"
+                    if origin == "application_preflight"
+                    else "Current evidence retrieved",
+                    "Application preflight loaded current source records before the first model call."
+                    if origin == "application_preflight"
+                    else "Read source records, ownership and deployment context.",
                     result["evidence_ids"],
+                    origin=origin,
                 )
             elif name == "retrieve_memory":
                 if run["mode"] == "baseline":
