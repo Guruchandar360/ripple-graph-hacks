@@ -5,6 +5,7 @@ import path from "node:path";
 
 const destination = path.resolve("../demo");
 const smoke = process.argv.includes("--smoke");
+const repetition = process.env.DEMO_REPETITION;
 await mkdir(destination, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, recordVideo: { dir: path.resolve("../artifacts/video"), size: { width: 1440, height: 1000 } } });
@@ -32,9 +33,10 @@ async function results() {
   await page.getByRole("button", { name: "Evaluation results", exact: true }).click();
   await page.getByRole("heading", { name: "Show the evidence." }).waitFor();
 }
-async function openCase(id, expected) {
+async function openCase(id, expected, phase) {
   await results();
-  const row = page.locator(`[data-replay-case="${id}"][data-replay-mode="graph"]`).first();
+  const sequence = repetition ? `[data-replay-repetition="${repetition}"][data-replay-phase="${phase}"]` : "";
+  const row = page.locator(`[data-replay-case="${id}"][data-replay-mode="graph"]${sequence}`).first();
   if (!(await row.count())) throw new Error(`Required actual graph replay ${id} is absent; refusing to fake a demo.`);
   if (expected && await row.getAttribute("data-replay-status") !== expected) throw new Error(`Actual ${id} did not reach ${expected}; refusing to present it as successful.`);
   await row.click();
@@ -44,7 +46,7 @@ async function openCase(id, expected) {
 await caption("Yesterday’s fix can break today’s system.", "Ripple follows connected evidence, rechecks recommendations and verifies simulator recovery. All model output shown next was recorded from actual runs.", 8);
 await results();
 await caption("Measured behavior, including limitations.", smoke ? "This is the development smoke test. Both modes recovered; their reported impact sets were incomplete. It is not the full 12-case benchmark." : "Both workflows use the same model, source documents, probe capabilities and eight-turn budget. This small synthetic evaluation does not establish general superiority.", 9);
-await openCase(smoke ? "C01" : "C02", "recovered");
+await openCase(smoke ? "C01" : "C02", "recovered", "recovery");
 await caption("The graph changes what an action is allowed to do.", "A newer ledger advisory supersedes the old compatibility record. These service paths and action policies were retrieved from FalkorDB.", 8);
 const changed = page.locator(".timeline-event").filter({ hasText: "Evidence changed" }).first();
 if (!smoke) {
@@ -58,11 +60,11 @@ await caption("Evidence changed. Old approvals cannot execute.", "The timeline r
 await page.locator(".recommendation").scrollIntoViewIfNeeded();
 await caption("An action is not a recovery until the probes pass.", "Inspect the actual before → after request status codes. The simulator transition and its audit result are persisted together; actions are disabled in this replay.", 9);
 if (!smoke) {
-await openCase("C08", "recovered");
+await openCase("C08", "recovered", "memory");
 const memory = page.locator(".timeline-event").filter({ hasText: "Incident memory retrieved" }).first();
 await memory.scrollIntoViewIfNeeded();
 await caption("A fresh conversation remembers through the graph.", "The model retrieves a persisted, measured incident outcome and checks the current evidence. Earlier chat messages are not carried into the investigation.", 9);
-await openCase("C10", "needs_evidence");
+await openCase("C10", "needs_evidence", "insufficient");
 await page.locator(".timeline").scrollIntoViewIfNeeded();
 await caption("Insufficient evidence means no executed remediation.", "The agent can identify missing diagnostics and stop. Deterministic guards provide an independent boundary if the model proposes an unsafe action.", 9);
 }

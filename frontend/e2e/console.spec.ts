@@ -141,6 +141,18 @@ test("desktop workspace fits at normal zoom and every evidence panel remains rea
   await page.setViewportSize({width:1366,height:768});
   await page.locator(".detail-column").evaluate(el => { el.scrollTop=0; });
   await page.screenshot({path:"../artifacts/ripple-laptop-100-percent.png"});
+  for (const [width,height] of [[1280,600],[1024,600],[390,600]]) {
+    await page.setViewportSize({width,height});
+    await page.locator(".page-footer").scrollIntoViewIfNeeded();
+    await expect(page.locator(".page-footer")).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.getByRole("button", {name:"Explore evidence"}).click();
+    const dialog = page.getByRole("dialog");
+    const bounds = await dialog.boundingBox();
+    expect(bounds!.y).toBeGreaterThanOrEqual(0);
+    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(height + 1);
+    await page.keyboard.press("Escape");
+  }
 });
 
 test("memory, measured results and checklist adapt to phone, tablet and laptop widths", async ({page}) => {

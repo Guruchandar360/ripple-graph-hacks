@@ -66,7 +66,7 @@ def checklist(root: Path, *, graph_connected: bool, model_configured: bool) -> d
             False,
             "A provider is configured; actual authorization still needs a live run."
             if model_configured
-            else "Configure Gemini access. No successful live model run is claimed.",
+            else "This server has no live provider configured. Recorded Ollama runs are in Results; configure Gemini or Ollama for a new investigation.",
             None,
         ),
         (

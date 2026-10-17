@@ -30,9 +30,16 @@ test("showcase loads under its public subpath and cannot send live mutations", a
     await expect(page.getByText("RECORDED GRAPH", {exact:true})).toBeVisible();
     await expect(page.getByRole("button", {name:"Investigate again"})).toBeDisabled();
   }
-  for (const width of [390, 768, 1440]) {
-    await page.setViewportSize({width,height:1000});
+  for (const [width,height] of [[390,844],[768,900],[1280,720],[1366,768],[1440,900]]) {
+    await page.setViewportSize({width,height});
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    if (width >= 1200) {
+      for (const selector of [".graph-panel", ".timeline-panel", ".page-footer"]) {
+        await expect(page.locator(selector)).toBeInViewport();
+      }
+      await page.locator(".inspector").scrollIntoViewIfNeeded();
+      await expect(page.locator(".inspector")).toBeInViewport();
+    }
   }
   expect(mutations).toEqual([]);
   expect(errors).toEqual([]);

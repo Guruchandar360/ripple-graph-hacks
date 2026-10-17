@@ -86,6 +86,8 @@ export type Run = {
   replay: boolean;
 };
 export type Replay = Run & {
+  demonstration_phase?: string;
+  repetition?: number;
   evaluation_case?: string;
   evaluation_name?: string;
   label?: string;

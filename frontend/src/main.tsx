@@ -863,9 +863,14 @@ function App() {
                       ? "Explore the synthetic scenario. Connect your graph and model to investigate."
                       : "Synthetic infrastructure. Real graph queries, state changes, and probe results."}
                 </span>
-                <button onClick={() => setShowSetup(true)}>
-                  {preview ? "Connect workspace" : "Connection details"}
-                  <ArrowRight size={13} />
+                <button aria-label={evidenceChange ? "Jump to evidence change" : undefined} className={evidenceChange ? "amber-text" : ""} onClick={() => {
+                  if (evidenceChange) {
+                    inspectEvidence(["migration"]);
+                    timelineRef.current?.querySelector(`[data-event-id="${evidenceChange.id}"]`)?.scrollIntoView({block:"center",behavior:"smooth"});
+                  } else setShowSetup(true);
+                }}>
+                  {evidenceChange ? "View evidence change" : preview ? "Connect workspace" : "Connection details"}
+                  {evidenceChange ? <Zap size={13}/> : <ArrowRight size={13} />}
                 </button>
               </div>
               <ContextBar
@@ -1606,6 +1611,8 @@ function App() {
                       data-replay-status={r.status}
                       data-replay-mode={r.mode}
                       data-replay-case={r.evaluation_case}
+                      data-replay-phase={r.demonstration_phase}
+                      data-replay-repetition={r.repetition}
                       className="replay-row"
                       onClick={() => {
                         setRun({ ...r, replay: true });
@@ -1619,7 +1626,7 @@ function App() {
                     >
                       <Play size={15} />
                       <span>
-                        {r.incident} · {human(r.status)} · {r.mode} {r.evaluation_case ? `· ${r.evaluation_case}` : ""}
+                        {r.incident} · {human(r.status)} · {r.mode} {r.evaluation_case ? `· ${r.evaluation_case}` : ""}{r.demonstration_phase ? ` · Demo ${r.repetition}: ${r.demonstration_phase}` : ""}
                       </span>
                       <span className="mini-pill">REPLAY</span>
                       <ArrowRight size={14} />

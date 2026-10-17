@@ -11,11 +11,11 @@
       "global_daily": 100
     }
   },
-  "run_id": "164024be26a34568a224c529e060c47d",
-  "model_calls": 5,
-  "elapsed_ms": 94462,
+  "run_id": "6297dff068cf45e48698f1f941a27997",
+  "model_calls": 4,
+  "elapsed_ms": 103490,
   "verified_result": {
-    "action_id": "67c18f9a7f214d8bbb44456e98dd8da3",
+    "action_id": "e8fd54c1fde24a20b9c2cf13c31f9fda",
     "verified": true,
     "before": [
       {
@@ -63,12 +63,13 @@
         "synthetic": true
       }
     ],
-    "executed_at": "2026-10-17T10:23:13.348995+00:00",
+    "executed_at": "2026-10-17T10:54:16.991073+00:00",
     "synthetic": true
   },
   "duplicate_result_identical": true,
   "memory_survived_scenario_reload": true,
   "foreign_visitor_status": 404,
   "scenario": "memory",
-  "transport": "actual HTTP requests to Uvicorn"
+  "transport": "actual HTTP requests to Uvicorn",
+  "database_restart_verified": true
 }
