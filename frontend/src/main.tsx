@@ -590,6 +590,8 @@ function App() {
   const sources = graph.nodes.filter((n) => n.label === "Source");
   const latestProposal = run?.proposals.at(-1);
   const status = run?.status ?? (preview ? "fixture_preview" : "ready");
+  const relatedEntityIds = selected ? new Set([selected.id, ...graph.edges.filter(e => e.target === selected.id && e.kind === "CHANGES").map(e => e.source)]) : new Set<string>();
+  const linkedSources = sources.filter(s => graph.edges.some(e => relatedEntityIds.has(e.source) && e.target === s.id && e.kind === "SUPPORTED_BY"));
 
   return (
     <div className="app-shell">
@@ -1333,6 +1335,9 @@ function App() {
                             UTC
                           </div>
                         )}
+                        {selected.label === "Source" && <span className={`status-pill ${selected.data.active === false ? "amber" : "green"}`}>{selected.data.active === false ? "Historical · excluded from current decisions" : "Current evidence"}</span>}
+                        {Boolean(selected.data.superseded_by) && <p className="source-time">Superseded by {String(selected.data.superseded_by)}</p>}
+                        {selected.label === "Service" && linkedSources.length > 0 && <div className="citation-row">{linkedSources.map(s => <button key={s.id} onClick={() => inspectEvidence([s.id])}><FileText size={11}/>{String(s.data.title)}</button>)}</div>}
                         <span className="source-id">{selected.id}</span>
                       </div>
                     ) : (
@@ -1473,6 +1478,7 @@ function App() {
               {evaluations?.measured ? (
                 <>
                   <p className="evaluation-info">Measured with {evaluations.model} via {evaluations.model_provider}. {evaluations.limitations}</p>
+                  {evaluations.complete === false && <div className="inline-warning">Partial benchmark: {evaluations.cases.length} of {evaluations.expected_runs} expected runs were recorded. Missing runs are not counted as successes.</div>}
                   <div className="metrics-grid">
                     <Metric
                       label="Measured runs"

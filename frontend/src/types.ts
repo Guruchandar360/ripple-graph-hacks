@@ -137,6 +137,8 @@ export type Evaluations = {
   model?: string;
   model_provider?: string;
   limitations?: string;
+  complete?: boolean;
+  expected_runs?: number;
   cases: EvaluationRow[];
   message?: string;
   created_at?: string;
