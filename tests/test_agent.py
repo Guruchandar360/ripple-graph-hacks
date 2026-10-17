@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 from google.genai import types
 
-from ripple.agent import Agent, bounded_declarations, declarations
+from ripple.agent import Agent, bounded_declarations, declarations, pending_declarations
 
 
 def test_native_function_loop_produces_a_cited_action_without_executing_it(service, settings):
@@ -45,10 +45,29 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
     final = service.get_run(workspace, run["id"])
     assert final["status"] == "awaiting_approval"
     assert final["model_calls"] == 3
-    assert sum(e.get("origin") == "application_preflight" for e in final["events"]) == 1
+    assert sum(e.get("origin") == "application_preflight" for e in final["events"]) == 2
     assert "automatic preload is not a previous model decision" in calls[0]["contents"][0].parts[-1].text
     assert service.repo.read(workspace)["simulator"]["executions"] == 0
     assert calls[-1]["config"].automatic_function_calling.disable
+    # A fresh conversation receives persisted outcomes without replaying earlier chat.
+    service.execute(workspace, run["id"], final["proposals"][-1]["id"])
+    outcome_id = service.repo.read(workspace)["memory"][-1]["id"]
+    service.load(workspace, "memory")
+    run = service.start(workspace)
+    calls.clear()
+    asyncio.run(agent.run(workspace, run["id"]))
+    fresh = service.get_run(workspace, run["id"])
+    assert outcome_id in fresh["memory_ids"]
+    assert f"memory-{outcome_id}" in calls[0]["contents"][0].parts[-1].text
+    assert fresh["status"] == "awaiting_approval"
+
+    service.load(workspace, "memory")
+    run = service.start(workspace, "baseline")
+    calls.clear()
+    asyncio.run(agent.run(workspace, run["id"]))
+    baseline = service.get_run(workspace, run["id"])
+    assert not baseline["memory_ids"]
+    assert "incident_memory" not in calls[0]["contents"][0].parts[-1].text
 
 
 def test_no_terminal_tool_result_hits_turn_limit_and_keeps_evidence(service, settings):
@@ -119,3 +138,22 @@ def test_last_two_turns_reserve_structured_conclusion_without_selecting_an_actio
     available, blocked = bounded_declarations("baseline", 2, [], [])
     assert not blocked
     assert {f.name for f in available} == {"propose_action", "submit_diagnosis"}
+
+
+def test_completed_snapshot_reads_do_not_loop_and_proposals_require_a_probed_target():
+    receipts = [
+        {"name": "get_context", "arguments": {}},
+        {"name": "retrieve_memory", "arguments": {}},
+        {"name": "get_impact", "arguments": {"service": "payments"}},
+    ]
+    functions = pending_declarations(declarations("graph"), receipts)
+    names = {f.name for f in functions}
+    assert not names & {"get_context", "retrieve_memory", "inspect_source", "propose_action"}
+    impact = next(f for f in functions if f.name == "get_impact")
+    assert "payments" not in impact.parameters.properties["service"].enum
+    receipts.append({"name": "probe_service", "arguments": {"service": "payments"}})
+    functions = pending_declarations(declarations("graph"), receipts)
+    proposal = next(f for f in functions if f.name == "propose_action")
+    assert proposal.parameters.properties["target"].enum == ["payments"]
+    probe = next(f for f in functions if f.name == "probe_service")
+    assert "payments" not in probe.parameters.properties["service"].enum

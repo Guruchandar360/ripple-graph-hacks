@@ -19,8 +19,12 @@ are separate checks. It is not connected to a real company's infrastructure.
 3. The investigator starts a fresh conversation. Its tools query native paths,
    active source context, applicable policy edges, and related incident outcomes.
    Application preflight loads current evidence before the first model request
-   in both workflows. This event is labeled as application work, not a model
-   decision. Service parameters enumerate the actual six supported service IDs.
+   in both workflows; graph mode also preloads persisted incident outcomes using
+   the native memory query. These events are labeled as application work, not model
+   decisions. Historical outcomes require current applicability checks. Service
+   parameters enumerate the actual six supported service IDs. Completed snapshot
+   reads are removed from subsequent tool choices to prevent retrieval loops;
+   proposal targets are limited to services probed in that investigation.
 4. A proposal must cite evidence retrieved during that run, and its target must
    have been probed. Evidence is not treated as an instruction to execute code.
 5. Current `Constraint` nodes link through `BLOCKS` or `PERMITS` to supported

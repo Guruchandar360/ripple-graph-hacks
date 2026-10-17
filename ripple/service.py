@@ -244,8 +244,9 @@ class RippleService:
             elif name == "retrieve_memory":
                 if run["mode"] == "baseline":
                     raise DomainError("Graph incident-memory retrieval is disabled for this baseline.", 400)
-                target = args.get("service", "payments")
-                self._service(state, target)
+                target = args.get("service")
+                if target:
+                    self._service(state, target)
                 memories = self.repo.memories(workspace, target)
                 result = {"outcomes": memories, "evidence_ids": [m["id"] for m in memories]}
                 run["memory_ids"] = [m["id"].removeprefix("memory-") for m in memories]
@@ -253,8 +254,10 @@ class RippleService:
                     run,
                     "observation",
                     "Incident memory retrieved",
-                    f"Found {len(memories)} persisted outcomes. Recheck applicability before reuse.",
+                    f"{'Application preflight loaded' if origin == 'application_preflight' else 'Found'} "
+                    f"{len(memories)} persisted outcomes. Recheck applicability before reuse.",
                     result["evidence_ids"],
+                    origin=origin,
                 )
             elif name == "inspect_source":
                 sid = args.get("source_id")
@@ -324,6 +327,8 @@ class RippleService:
             else:
                 raise DomainError("Tool is not allowlisted.", 400, "invalid_tool")
             run["seen_evidence"] = sorted(set(run["seen_evidence"]) | set(result.get("evidence_ids", [])))
+            if name in {"get_context", "retrieve_memory", "inspect_source", "get_impact", "probe_service"}:
+                run.setdefault("completed_tools", []).append({"name": name, "arguments": args, "origin": origin})
             self.repo.save(workspace, state)
             self.archive_graph(workspace, state, run)
             return result

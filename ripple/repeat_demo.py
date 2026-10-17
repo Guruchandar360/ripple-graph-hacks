@@ -79,6 +79,12 @@ async def demonstrate():
         service.load(workspace, "memory")
         memory = await investigate(workspace)
         memory_used = bool(learned & set(memory["memory_ids"]))
+        cited = {
+            sid.removeprefix("memory-")
+            for proposal in memory["proposals"]
+            for sid in proposal["evidence_ids"]
+            if sid.startswith("memory-")
+        }
         save(workspace, memory, "memory", repetition)
         service.load(workspace, "insufficient")
         insufficient = await investigate(workspace, execute=False)
@@ -90,6 +96,8 @@ async def demonstrate():
             "recovery": recovery["status"],
             "memory": memory["status"],
             "actual_previous_model_outcome_retrieved": memory_used,
+            "actual_previous_model_outcome_cited": bool(learned & cited),
+            "memory_loading": "application_preflight",
             "insufficient_evidence": insufficient["status"],
             "no_unjustified_execution": no_execution,
             "stale_approval_rejected": stale_rejected,

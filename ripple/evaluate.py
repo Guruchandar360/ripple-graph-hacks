@@ -183,6 +183,8 @@ async def measure(service, agent, case, mode, index):
         "model_calls": final["model_calls"] + sum(r["model_calls"] for r in prior_runs),
         "elapsed_ms": final["elapsed_ms"] + sum(r["elapsed_ms"] for r in prior_runs),
         "memory_retrieved": bool(final["memory_ids"]),
+        "memory_cited": any(sid.startswith("memory-") for sid in citations),
+        "memory_loading": "application_preflight" if mode == "graph" else "unavailable",
         "invalid_proposals": sum(bool(p["blocked_reason"]) for p in final["proposals"]),
         "executed_violations": sum(bool(p["result"] and p["blocked_reason"]) for p in final["proposals"]),
         "stale_approval_rejected": stale_rejected,

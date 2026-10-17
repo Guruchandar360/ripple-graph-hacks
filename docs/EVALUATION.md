@@ -12,6 +12,15 @@ documents, including the textual dependency catalog, without graph traversal or
 incident-memory retrieval. This comparison measures the configured workflows,
 not an isolated causal estimate of the database's contribution.
 
+Current source documents are loaded before the first model call in both modes.
+Graph mode also preloads persisted outcomes through the native memory query.
+Preloading is explicitly attributed to application code, never to a model tool
+decision. Memory retrieval and memory citation are reported separately: an outcome
+being available does not prove that it caused the model's recommendation.
+Completed deterministic reads of the unchanged snapshot are removed from later
+tool choices; proposal targets must have a current-run probe. These generic
+workflow guards do not choose a recovery action or disclose evaluator answers.
+
 Cases cover known/late migration, ingestion order, changed topology, unrelated
 telemetry, failed historical recovery, verified memory, fresh conversation,
 inapplicable memory, missing diagnostics, misleading advice, and old ownership.
