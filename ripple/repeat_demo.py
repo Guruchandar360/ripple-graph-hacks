@@ -116,6 +116,7 @@ async def demonstrate():
             "provider": settings.provider,
             "tool_protocol": settings.ollama_tool_mode,
             "timeout_seconds": settings.timeout,
+            "max_model_turns": settings.max_turns,
             "sequential": True,
             "expected_repetitions": 3,
             "complete": len(rows) == 3,

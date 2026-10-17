@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+import os
 import time
 from pathlib import Path
 
@@ -83,6 +84,10 @@ async def verify(restart_database=False):
             assert isolated.status_code == 404
         report = {
             "passed": True,
+            "configuration": {
+                "max_model_turns": int(os.getenv("MAX_MODEL_TURNS", "8")),
+                "timeout_seconds": int(os.getenv("RUN_TIMEOUT_SECONDS", "120")),
+            },
             "health": health,
             "run_id": run_id,
             "model_calls": run["model_calls"],

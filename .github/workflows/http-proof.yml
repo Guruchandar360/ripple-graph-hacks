@@ -13,6 +13,7 @@ jobs:
       OLLAMA_MODEL: qwen3:4b-instruct-2507-q4_K_M
       OLLAMA_TOOL_MODE: json
       RUN_TIMEOUT_SECONDS: "300"
+      MAX_MODEL_TURNS: "5"
       GLOBAL_DAILY_RUNS: "100"
       WORKSPACE_DAILY_RUNS: "20"
     steps:
