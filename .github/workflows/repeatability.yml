@@ -1,0 +1,37 @@
+name: Three complete live demonstrations
+on: workflow_dispatch
+jobs:
+  demonstrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    services:
+      falkordb:
+        image: falkordb/falkordb:6.0.2
+        ports: ["6379:6379"]
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 12
+      ollama:
+        image: ollama/ollama:latest
+        ports: ["11434:11434"]
+    env:
+      MODEL_PROVIDER: ollama
+      OLLAMA_MODEL: qwen3:4b-instruct-2507-q4_K_M
+      OLLAMA_TOOL_MODE: json
+      RUN_TIMEOUT_SECONDS: "300"
+      GLOBAL_DAILY_RUNS: "100"
+      WORKSPACE_DAILY_RUNS: "20"
+      MAX_WORKSPACES: "100"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: |
+          python -c 'import json,os,urllib.request; r=urllib.request.Request("http://127.0.0.1:11434/api/pull",data=json.dumps({"model":os.environ["OLLAMA_MODEL"],"stream":False}).encode(),headers={"Content-Type":"application/json"}); print(urllib.request.urlopen(r,timeout=600).read().decode())'
+          curl --fail http://127.0.0.1:11434/api/tags
+      - run: python -m ripple.repeat_demo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: repeatability-proof
+          path: artifacts/repeatability/

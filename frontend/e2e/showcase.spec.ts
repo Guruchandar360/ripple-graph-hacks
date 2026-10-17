@@ -5,7 +5,12 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   const errors: string[] = [];
   page.on("request", r => { if (r.method() !== "GET") mutations.push(r.url()); });
   page.on("pageerror", e => errors.push(e.message));
+  const recordingResponse=page.waitForResponse(r => r.url().endsWith("/showcase/replays.json"));
   await page.goto("./");
+  const records=await (await recordingResponse).json();
+  if (records.some((r:{mode:string;status:string}) => r.mode==="graph" && r.status==="recovered")) {
+    await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
+  }
   await expect(page.getByText("Recorded showcase", {exact:true})).toBeVisible();
   await expect(page.getByText("6 services", {exact:true})).toBeVisible();
   const start = page.getByRole("button", {name:"Start investigation",exact:true});
