@@ -48,8 +48,11 @@ test("showcase loads under its public subpath and cannot send live mutations", a
       for (const selector of [".graph-panel", ".timeline-panel", ".page-footer"]) {
         await expect(page.locator(selector)).toBeInViewport();
       }
-      await page.locator(".inspector").scrollIntoViewIfNeeded();
+      await page.getByRole("button", {name:"Jump to sources",exact:true}).click();
       await expect(page.locator(".inspector")).toBeInViewport();
+      await expect(page.locator(".inspector")).toBeFocused();
+      await page.getByRole("button", {name:"Jump to recovery decision",exact:true}).click();
+      await expect(page.locator(".recommendation")).toBeInViewport();
     }
   }
   expect(mutations).toEqual([]);

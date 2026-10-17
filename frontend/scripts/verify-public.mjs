@@ -1,5 +1,6 @@
 import { chromium } from "@playwright/test";
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 
 const browser = await chromium.launch();
 const page = await browser.newPage({viewport:{width:1366,height:768}});
@@ -20,7 +21,10 @@ for (const [width,height] of [[1280,720],[1366,768],[1536,864],[1920,1080],[390,
   }
 }
 await page.setViewportSize({width:1366,height:768});
-await page.screenshot({path:"../artifacts/public-laptop-100-percent.png"});
+await page.getByRole("button", {name:"Jump to sources",exact:true}).click();
+assert(await page.locator(".inspector").evaluate(el => document.activeElement === el));
+await page.getByRole("button", {name:"Jump to recovery decision",exact:true}).click();
+await page.screenshot({path:fileURLToPath(new URL("../../artifacts/public-laptop-100-percent.png", import.meta.url))});
 const video = await page.request.get("https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4");
 assert.equal(video.status(), 200);
 assert(video.headers()["content-type"].includes("video/mp4"));

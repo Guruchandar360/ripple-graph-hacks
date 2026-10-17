@@ -223,6 +223,12 @@ function App() {
     null,
   );
   const inspectorRef = useRef<HTMLElement>(null);
+  const decisionRef = useRef<HTMLElement>(null);
+  const evidenceChangeRef = useRef<HTMLElement>(null);
+  const jumpToDetail = (element: HTMLElement | null) => {
+    element?.scrollIntoView({ block: "start", behavior: "instant" });
+    element?.focus({ preventScroll: true });
+  };
   const timelineRef = useRef<HTMLDivElement>(null);
   const followEvents = useRef(true);
   useEffect(() => {
@@ -1146,7 +1152,7 @@ function App() {
                         </div>
                       </div>
                     ) : (
-                      <div className="timeline" ref={timelineRef} onScroll={e => {
+                      <div className="timeline" ref={timelineRef} role="region" aria-label="Investigation timeline events" tabIndex={0} onScroll={e => {
                         const el=e.currentTarget;
                         followEvents.current=el.scrollHeight-el.scrollTop-el.clientHeight < 50;
                       }}>
@@ -1199,8 +1205,21 @@ function App() {
                     )}
                   </section>
                 </div>
-                <aside className="detail-column">
-                  <section className="panel recommendation">
+                <aside className="detail-column" aria-label="Recovery decision and evidence" tabIndex={0}>
+                  <nav className="detail-jumps" aria-label="Decision and evidence shortcuts">
+                    <button onClick={() => jumpToDetail(decisionRef.current)} aria-label="Jump to recovery decision">
+                      <ShieldCheck size={12}/>Decision
+                    </button>
+                    {scenario.id === "outdated-fix" && (
+                      <button onClick={() => jumpToDetail(evidenceChangeRef.current)} aria-label="Jump to evidence change">
+                        <Zap size={12}/>Change
+                      </button>
+                    )}
+                    <button onClick={() => jumpToDetail(inspectorRef.current)} aria-label="Jump to sources">
+                      <FileText size={12}/>Sources<ChevronDown size={11}/>
+                    </button>
+                  </nav>
+                  <section className="panel recommendation" ref={decisionRef} tabIndex={-1} aria-label="Recovery decision">
                     <div className="panel-heading">
                       <div>
                         <ShieldCheck size={15} />
@@ -1288,7 +1307,7 @@ function App() {
                     )}
                   </section>
                   {scenario.id === "outdated-fix" && (
-                    <section className="evidence-change-card">
+                    <section className="evidence-change-card" ref={evidenceChangeRef} tabIndex={-1} aria-label="Evidence change">
                       <div className="evidence-change-icon">
                         <Zap size={17} />
                       </div>
@@ -1336,7 +1355,7 @@ function App() {
                       </small>
                     </section>
                   )}
-                  <section className="panel inspector" ref={inspectorRef}>
+                  <section className="panel inspector" ref={inspectorRef} tabIndex={-1} aria-label="Sources and selected context">
                     <div className="panel-heading">
                       <div>
                         <FileText size={15} />

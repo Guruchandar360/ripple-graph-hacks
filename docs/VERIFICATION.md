@@ -1,8 +1,8 @@
-# Verification — October 17, 2026 IST
+# Verification — October 18, 2026 IST
 
 ## Automated implementation checks
 
-- **44 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031190485), including **two real FalkorDB integration tests** against version 6.0.2.
+- **44 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39039350264), including **two real FalkorDB integration tests** against version 6.0.2.
 - **Seven application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation, participant checklist and late startup responses preserving a selected replay.
 - **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
 - Strict TypeScript compilation, production build and Ruff checks passed.
@@ -17,6 +17,11 @@ Browser coverage includes the desktop workspace at 1280×720, 1366×768,
 high preserve scrolling and bounded evidence dialogs; phone/tablet navigation
 reaches every view. `frontend/scripts/verify-public.mjs` also checks the actual
 published site, panel bounds, browser errors and MP4 delivery.
+
+The decision sidebar has persistent Decision, Change and Sources shortcuts so
+lower evidence cards are discoverable without changing browser zoom. Each shortcut
+scrolls to and focuses its destination; the timeline and sidebar are keyboard
+scrollable. Desktop browser checks exercise the shortcuts at each tested size.
 
 ## Real model measurements
 

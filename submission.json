@@ -10,5 +10,7 @@
   "video_path": "demo/ripple-demo.mp4",
   "video_kind": "actual_agent_replay",
   "video_label": "Captioned actual passing development sequence across three scenarios; full repeatability result is 1/3, disclosed in demo/video.json and demo/repeatability.json",
-  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39035063258", "label": "44 backend tests, 7 browser checks and real model HTTP proof"}
+  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39039350264", "label": "44 backend tests including real FalkorDB integration, and 7 browser checks"},
+  "model_http_proof_url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898",
+  "repeatability": {"passed": 1, "attempted": 3, "release_gate_met": false, "report": "demo/repeatability.json"}
 }

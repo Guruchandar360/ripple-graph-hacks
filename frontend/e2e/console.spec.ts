@@ -132,8 +132,13 @@ test("desktop workspace fits at normal zoom and every evidence panel remains rea
       expect(box!.y + box!.height, `${selector} bottom at ${width}×${height}`).toBeLessThanOrEqual(height + 1);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight + 1)).toBeTruthy();
-    await page.locator(".inspector").scrollIntoViewIfNeeded();
+    await page.getByRole("button", {name:"Jump to sources",exact:true}).click();
+    await expect(page.locator(".inspector")).toBeFocused();
     await expect(page.getByRole("heading", {name:"Evidence library",exact:true})).toBeVisible();
+    await page.getByRole("button", {name:"Jump to evidence change",exact:true}).click();
+    await expect(page.locator(".evidence-change-card")).toBeInViewport();
+    await page.getByRole("button", {name:"Jump to recovery decision",exact:true}).click();
+    await expect(page.locator(".recommendation")).toBeInViewport();
     await page.locator(".policy-list > button").first().click();
     await expect(page.getByRole("heading", {name:"Selected context",exact:true})).toBeVisible();
     await page.getByRole("button", {name:"Clear selected context"}).click();
