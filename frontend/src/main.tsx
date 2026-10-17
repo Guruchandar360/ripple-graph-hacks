@@ -832,8 +832,8 @@ function App() {
               <ContextBar
                 services={services.length}
                 sources={sources.filter((s) => s.data.active !== false).length}
-                revision={workspace?.revision ?? run?.current_revision ?? 0}
-                memory={workspace?.memory_count ?? 0}
+                revision={run?.replay ? run.current_revision ?? 0 : workspace?.revision ?? 0}
+                memory={run?.replay ? graph.nodes.filter(n => n.label === "Incident" && n.id.startsWith("memory-")).length : workspace?.memory_count ?? 0}
                 preview={preview}
                 stage={
                   run?.status === "recovered"

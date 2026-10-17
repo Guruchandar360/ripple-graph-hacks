@@ -10,6 +10,11 @@ on:
         description: Explicit tool-capable free Ollama model
         default: "qwen3:4b"
         required: true
+      tool_mode:
+        description: Explicit local tool protocol (native or constrained json)
+        default: native
+        type: choice
+        options: [native, json]
 jobs:
   evaluate:
     strategy:
@@ -29,6 +34,7 @@ jobs:
     env:
       MODEL_PROVIDER: ollama
       OLLAMA_MODEL: ${{ inputs.model }}
+      OLLAMA_TOOL_MODE: ${{ inputs.tool_mode }}
       RUN_TIMEOUT_SECONDS: "300"
       GLOBAL_DAILY_RUNS: "100"
       WORKSPACE_DAILY_RUNS: "10"

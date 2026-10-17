@@ -1,0 +1,48 @@
+{
+  "measured": true,
+  "created_at": "2026-10-17T09:54:39.426104+00:00",
+  "model": "qwen3:4b",
+  "model_provider": "ollama",
+  "cases": [
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "graph",
+      "status": "interrupted",
+      "verified": false,
+      "expected_met": false,
+      "valid_citations": false,
+      "correct_impact": false,
+      "model_calls": 3,
+      "elapsed_ms": 300016,
+      "memory_retrieved": false,
+      "invalid_proposals": 0,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": "Investigation time limit reached. Evidence is saved; no action was executed."
+    },
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "baseline",
+      "status": "interrupted",
+      "verified": false,
+      "expected_met": false,
+      "valid_citations": false,
+      "correct_impact": false,
+      "model_calls": 3,
+      "elapsed_ms": 300109,
+      "memory_retrieved": false,
+      "invalid_proposals": 0,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": "Investigation time limit reached. Evidence is saved; no action was executed."
+    }
+  ],
+  "summary": {
+    "runs": 2,
+    "expected_met": 0,
+    "verified_recoveries": 0
+  },
+  "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, not model-generated history. Baseline has documents but no incident-memory retrieval."
+}

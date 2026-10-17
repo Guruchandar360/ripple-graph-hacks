@@ -29,3 +29,22 @@ Limitations: small synthetic sample, nondeterministic model output, provider
 quota/time effects, and graph mode's additional memory capability. Run multiple
 repetitions before making comparisons. UI scores remain absent until a real
 artifact is generated. Do not present unit-test doubles as live benchmark runs.
+
+The fixtures used during development are not held-out data. The initial Qwen3
+1.7B smoke result is preserved under `demo/development/`; it is not silently
+replaced by a later model's score. A newer model/prompt is a different measurement.
+Ollama CPU evaluation explicitly uses a 300-second window; the application's
+normal window is 120 seconds. Provider/model identity and these limits must
+accompany the results. No Gemini performance is inferred from Ollama output.
+
+The full GitHub Actions evaluation splits the 12 cases across four independent
+Linux runners, each with its own real FalkorDB and Ollama containers. Each runner
+executes graph and baseline modes sequentially with the same configuration.
+`ripple.merge_evaluations` retains every row, rejects duplicates and marks missing
+runs as an incomplete sample. Cases within a shard have their own isolated
+workspace graphs; memory bootstrap happens inside each case that needs history.
+
+For a late evidence case, a model may legitimately ask for updated diagnostics
+instead of proposing an action. `stale_approval_rejected=null` means there was no
+approval to exercise; it is not counted as a rejection. The real integration test
+separately verifies that an actual stale approval cannot execute.

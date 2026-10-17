@@ -108,7 +108,7 @@ class Agent:
         self.service, self.settings = service, settings
         self.semaphore = asyncio.Semaphore(1)
         self.client = (
-            OllamaAdapter(settings.ollama_host)
+            OllamaAdapter(settings.ollama_host, tool_mode=settings.ollama_tool_mode)
             if settings.provider == "ollama"
             else genai.Client(api_key=settings.api_key)
             if settings.api_key

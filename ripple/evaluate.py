@@ -246,6 +246,7 @@ def report(settings, rows):
         "created_at": now(),
         "model": settings.active_model,
         "model_provider": settings.provider,
+        "tool_protocol": settings.ollama_tool_mode if settings.provider == "ollama" else "native",
         "cases": rows,
         "summary": {
             "runs": len(rows),
@@ -253,7 +254,9 @@ def report(settings, rows):
             "verified_recoveries": sum(r["verified"] for r in rows),
         },
         "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, "
-        "not model-generated history. Baseline has documents but no incident-memory retrieval.",
+        "not model-generated history. Baseline has documents but no incident-memory retrieval. "
+        "Development fixtures are not a held-out test set. CPU evaluation uses a 300-second "
+        "window when configured by CI, versus the application's default 120 seconds.",
     }
 
 

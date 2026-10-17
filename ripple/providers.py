@@ -55,8 +55,9 @@ def ollama_messages(system: str, contents: list) -> list[dict]:
 
 
 class OllamaAdapter:
-    def __init__(self, host: str):
+    def __init__(self, host: str, tool_mode="native"):
         self.host = host.rstrip("/")
+        self.tool_mode = tool_mode
         self.aio = SimpleNamespace(models=self)
 
     async def generate_content(self, *, model, contents, config):
@@ -72,21 +73,78 @@ class OllamaAdapter:
             }
             for f in functions
         ]
+        messages = ollama_messages(config.system_instruction, contents)
+        payload = {
+            "model": model,
+            "messages": messages,
+            "tools": tools,
+            "stream": False,
+            "think": False,
+            "options": {"temperature": 0.1, "num_predict": 600, "num_ctx": 16384},
+        }
+        if self.tool_mode == "json":
+            # Explicit local-provider protocol, not a model fallback. The model still selects
+            # every tool and argument; constrained decoding replaces native tool parsing.
+            payload.pop("tools")
+            payload["format"] = {
+                "type": "object",
+                "properties": {
+                    "tool_calls": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 4,
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {"type": "string", "enum": [t["function"]["name"]]},
+                                        "arguments": t["function"]["parameters"],
+                                    },
+                                    "required": ["name", "arguments"],
+                                    "additionalProperties": False,
+                                }
+                                for t in tools
+                            ]
+                        },
+                    }
+                },
+                "required": ["tool_calls"],
+                "additionalProperties": False,
+            }
+            messages[0]["content"] += (
+                "\nReturn only a JSON object with tool_calls: an array of {name, arguments}. Available tool definitions:\n"
+                + json.dumps(tools)
+            )
+            for item in messages[1:]:
+                if item.get("tool_calls"):
+                    item["content"] = json.dumps(
+                        {
+                            "tool_calls": [
+                                {"name": c["function"]["name"], "arguments": c["function"]["arguments"]}
+                                for c in item.pop("tool_calls")
+                            ]
+                        }
+                    )
+                if item["role"] == "tool":
+                    item["role"] = "user"
+                    item["content"] = f"Tool result from {item.pop('tool_name')}: {item['content']}"
         try:
             async with httpx.AsyncClient(timeout=280) as client:
                 response = await client.post(
                     f"{self.host}/api/chat",
-                    json={
-                        "model": model,
-                        "messages": ollama_messages(config.system_instruction, contents),
-                        "tools": tools,
-                        "stream": False,
-                        "think": False,
-                        "options": {"temperature": 0.1, "num_predict": 600, "num_ctx": 16384},
-                    },
+                    json=payload,
                 )
                 response.raise_for_status()
                 message = response.json()["message"]
+                if self.tool_mode == "json":
+                    structured = json.loads(message["content"])
+                    message = {
+                        "tool_calls": [
+                            {"function": {"name": c["name"], "arguments": c["arguments"]}}
+                            for c in structured["tool_calls"]
+                        ]
+                    }
         except (httpx.HTTPError, KeyError, ValueError) as exc:
             raise DomainError(
                 "The selected Ollama model is unavailable. Start Ollama and pull the configured "

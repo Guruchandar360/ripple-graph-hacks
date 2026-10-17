@@ -1,36 +1,32 @@
-# Verification status — October 16, 2026
+# Verification — October 17, 2026 IST
 
-## Executed locally
+## Automated implementation checks
 
-- Backend: **30 passed, 1 skipped**. The skipped test requires a real FalkorDB server.
-- Browser: **3 passed** against the built application in disconnected fixture-preview mode.
-- TypeScript strict checks and Vite production build: passed.
-- Ruff lint checks and Python compilation: passed.
-- Python dependency consistency (`pip check`): passed.
-- Inspected desktop and mobile screenshots; checked responsive overflow, mobile
-  scenario selection, evidence search, dialogs, navigation, and browser errors.
-- Confirmed `.env`, virtual environment, dependencies, and generated build files
-  are ignored by Git.
+- **40 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39022855861), including **two real FalkorDB integration tests** against version 6.0.2.
+- **Four application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation and participant checklist.
+- **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
+- Strict TypeScript compilation, production build and Ruff checks passed.
+- Locally: 38 backend tests passed; two real-server integration tests are skipped because this Windows host has no running FalkorDB server.
 
-Behavioral tests use an explicit test-only repository double. Agent-loop tests
-use a scripted native-function-call provider. These validate orchestration and
-guards; they are not evidence that an actual Gemini model successfully investigated
-an incident or that real FalkorDB accepted every query.
+Behavioral tests use an explicit test-only repository double. Agent-loop unit tests use a scripted function-call provider. These are distinct from the two native-database tests and the real-model measurements below.
 
-## External verification still required
+The real database tests verify actual incoming dependency paths, persisted action results and memory, native policy supersession, and rejection of stale approval. The static showcase never substitutes for FalkorDB during live operations.
 
-- Real FalkorDB integration test with configured connection credentials.
-- Actual Gemini model availability, authorization, and free quota.
-- Actual 12-case graph/baseline evaluations and replay exports.
-- Three consecutive complete live demonstrations and video recording.
-- Render deployment and public repository URL.
+## Real model measurements
 
-No live model scores, public deployment, or working-agent recording are claimed.
-The evaluator exits before generating results when credentials are missing.
-The app's preview is explicitly synthetic fixture inspection, not a live run.
+Development smoke tests are preserved under `demo/development/`:
 
-## Artifacts
+- Qwen3 1.7B: both graph and baseline exhausted eight turns; 0/2 verified recoveries. The graph run's incompatible rollback proposal was blocked by the independent guard.
+- Qwen3 4B: both workflows exceeded the configured 300-second CPU window; 0/2 recoveries.
 
-Local screenshots are in `artifacts/ripple-desktop.png` and
-`artifacts/ripple-mobile.png`. The running local preview is at
-http://127.0.0.1:8000. See the README for reproducible setup and commands.
+These failures are not hidden or reclassified as successful tests. Subsequent model/prompt changes are separate measurements, not additional successes added to the same sample. Release evaluation and actual replay artifacts are published under `demo/` when complete. No Gemini performance is inferred from local-model runs, and development fixtures are not held-out test data.
+
+## Delivery
+
+[Public source](https://github.com/Guruchandar360/ripple-graph-hacks) and [read-only showcase](https://guruchandar360.github.io/ripple-graph-hacks/) are available. The showcase serves synthetic fixtures and actual recorded output when exported; it has no live backend, graph connection or model credentials.
+
+The full application is reproducible with the README's Docker/Cloud database and Gemini or explicitly selected Ollama configuration. CI performs clean package installation and uses real container services. A hosted live backend still needs the participant's Render/FalkorDB account configuration. This workstation has no Docker/working WSL; a fresh local live setup is not claimed here.
+
+## Participant-owned checks
+
+WeMakeDevs registration is not verified; the inspected browser session is signed out. Team eligibility, personal technical understanding/contribution, final track selection and submission must be completed by the participant. The repository's checklist deliberately leaves these steps pending.

@@ -11,7 +11,7 @@ def merge(source: Path, destination: Path, expected_runs: int):
     reports = [json.loads(p.read_text(encoding="utf-8")) for p in source.rglob("evaluations.json")]
     if not reports:
         raise SystemExit("No measured evaluation artifacts were produced.")
-    identities = {(r["model"], r["model_provider"]) for r in reports}
+    identities = {(r["model"], r["model_provider"], r.get("tool_protocol", "native")) for r in reports}
     if len(identities) != 1:
         raise SystemExit("Cannot merge different model/provider identities.")
     rows = sorted(

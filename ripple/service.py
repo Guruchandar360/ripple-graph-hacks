@@ -120,6 +120,9 @@ class RippleService:
                 "mode": mode,
                 "model_provider": self.settings.provider,
                 "model": self.settings.active_model,
+                "tool_protocol": self.settings.ollama_tool_mode
+                if self.settings.provider == "ollama"
+                else "native",
                 "status": "investigating",
                 "created_at": now(),
                 "events": [],
