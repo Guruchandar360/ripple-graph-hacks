@@ -2,15 +2,21 @@
 
 ## Automated implementation checks
 
-- **43 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025198861), including **two real FalkorDB integration tests** against version 6.0.2.
+- **44 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031190485), including **two real FalkorDB integration tests** against version 6.0.2.
 - **Six application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation and participant checklist.
 - **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
 - Strict TypeScript compilation, production build and Ruff checks passed.
-- Locally: 41 backend tests passed; two real-server integration tests are skipped because this Windows host has no running FalkorDB server.
+- Locally: 42 backend tests passed; two real-server integration tests are skipped because this Windows host has no running FalkorDB server.
 
 Behavioral tests use an explicit test-only repository double. Agent-loop unit tests use a scripted function-call provider. These are distinct from the two native-database tests and the real-model measurements below.
 
 The real database tests verify actual incoming dependency paths, persisted action results and memory, native policy supersession, and rejection of stale approval. The static showcase never substitutes for FalkorDB during live operations.
+
+Browser coverage includes the desktop workspace at 1280×720, 1366×768,
+1440×900, 1536×864 and 1920×1080 at normal zoom. Short windows down to 600 pixels
+high preserve scrolling and bounded evidence dialogs; phone/tablet navigation
+reaches every view. `frontend/scripts/verify-public.mjs` also checks the actual
+published site, panel bounds, browser errors and MP4 delivery.
 
 ## Real model measurements
 

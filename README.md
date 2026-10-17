@@ -27,6 +27,12 @@ Recorded graphs originate in FalkorDB; exported model output is visibly labeled
 Replay and cannot execute actions. See [verification](docs/VERIFICATION.md) for
 actual measurements and remaining account-dependent checks.
 
+The investigation workspace adapts to the available browser size at 100% zoom.
+Desktop panels use the window height; long evidence, timeline and decision
+content scroll inside their panels. Narrow or short windows retain normal page
+scrolling. Memory, results and checklist views also remain reachable on phones
+and tablets.
+
 ## Run locally
 
 Requirements: Python 3.12+, Node 22+, a FalkorDB server (Cloud or Docker), and a
