@@ -126,6 +126,9 @@ async def demonstrate():
         (destination / "repeatability.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(json.dumps(row), flush=True)
 
+    if not report["passed"]:
+        raise SystemExit("Three-consecutive-demonstration gate failed; actual results were preserved.")
+
 
 if __name__ == "__main__":
     asyncio.run(demonstrate())

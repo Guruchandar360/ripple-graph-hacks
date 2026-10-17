@@ -9,6 +9,6 @@
   "participant_review_verified": false,
   "video_path": "demo/ripple-demo.mp4",
   "video_kind": "actual_agent_replay",
-  "video_label": "Captioned development smoke test replay, not a live hosted backend",
-  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033500281", "label": "44 backend tests, plus 7 local browser checks and real model HTTP proof"}
+  "video_label": "Captioned actual passing development sequence across three scenarios; full repeatability result is 1/3, disclosed in demo/video.json and demo/repeatability.json",
+  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39035063258", "label": "44 backend tests, 7 browser checks and real model HTTP proof"}
 }

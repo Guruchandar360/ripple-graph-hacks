@@ -1,0 +1,3189 @@
+{
+  "id": "4d446ae3610942fc9b61d5f85a879a4e",
+  "incident": "INC-2042",
+  "generation": "1746b7dee9e6480eaca2d62a8dd1a21d",
+  "revision": 4,
+  "mode": "graph",
+  "model_provider": "ollama",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "tool_protocol": "json",
+  "status": "recovered",
+  "created_at": "2026-10-17T12:49:20.456630+00:00",
+  "events": [
+    {
+      "id": 1,
+      "kind": "observation",
+      "title": "Investigation opened",
+      "detail": "Checkout requests fail with currency validation errors after a new release.",
+      "evidence_ids": [
+        "alert"
+      ],
+      "at": "2026-10-17T12:49:20.456642+00:00"
+    },
+    {
+      "id": 2,
+      "kind": "observation",
+      "title": "Investigation context loaded",
+      "detail": "Application preflight loaded current source records before the first model call.",
+      "evidence_ids": [
+        "topology",
+        "alert",
+        "deployment",
+        "old-runbook",
+        "flag-config",
+        "migration"
+      ],
+      "at": "2026-10-17T12:49:20.464616+00:00",
+      "origin": "application_preflight"
+    },
+    {
+      "id": 3,
+      "kind": "observation",
+      "title": "Incident memory retrieved",
+      "detail": "Application preflight loaded 1 persisted outcomes. Recheck applicability before reuse.",
+      "evidence_ids": [
+        "memory-e0aed336acd641eba7b6dc607de82b80"
+      ],
+      "at": "2026-10-17T12:49:20.515427+00:00",
+      "origin": "application_preflight"
+    },
+    {
+      "id": 4,
+      "kind": "observation",
+      "title": "Checkout probe completed",
+      "detail": "Dependency payments: Legacy currency rejected by strict validation",
+      "evidence_ids": [
+        "probe-df7b8961c377"
+      ],
+      "at": "2026-10-17T12:50:41.096228+00:00"
+    },
+    {
+      "id": 5,
+      "kind": "observation",
+      "title": "Payments probe completed",
+      "detail": "Legacy currency rejected by strict validation",
+      "evidence_ids": [
+        "probe-0b44a3bfb94f"
+      ],
+      "at": "2026-10-17T12:50:41.103624+00:00"
+    },
+    {
+      "id": 6,
+      "kind": "observation",
+      "title": "Storefront probe completed",
+      "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+      "evidence_ids": [
+        "probe-c8ad469a6ac5"
+      ],
+      "at": "2026-10-17T12:50:41.110426+00:00"
+    },
+    {
+      "id": 7,
+      "kind": "observation",
+      "title": "Dependency paths retrieved",
+      "detail": "Followed incoming dependency paths for payments.",
+      "evidence_ids": [
+        "topology"
+      ],
+      "at": "2026-10-17T12:50:41.117488+00:00",
+      "paths": [
+        {
+          "nodes": [
+            "payments"
+          ],
+          "edges": []
+        },
+        {
+          "nodes": [
+            "checkout",
+            "payments"
+          ],
+          "edges": [
+            "DEPENDS_ON:checkout:payments"
+          ]
+        },
+        {
+          "nodes": [
+            "storefront",
+            "checkout",
+            "payments"
+          ],
+          "edges": [
+            "DEPENDS_ON:storefront:checkout",
+            "DEPENDS_ON:checkout:payments"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "kind": "observation",
+      "title": "Notifications probe completed",
+      "detail": "Synthetic request completed successfully",
+      "evidence_ids": [
+        "probe-2b2b393c84cf"
+      ],
+      "at": "2026-10-17T12:51:10.740323+00:00"
+    },
+    {
+      "id": 9,
+      "kind": "observation",
+      "title": "Inventory probe completed",
+      "detail": "Synthetic request completed successfully",
+      "evidence_ids": [
+        "probe-31723c2ed265"
+      ],
+      "at": "2026-10-17T12:51:10.749186+00:00"
+    },
+    {
+      "id": 10,
+      "kind": "observation",
+      "title": "Ledger probe completed",
+      "detail": "Synthetic request completed successfully",
+      "evidence_ids": [
+        "probe-02e2f5a01d4f"
+      ],
+      "at": "2026-10-17T12:51:27.927147+00:00"
+    },
+    {
+      "id": 11,
+      "kind": "hypothesis",
+      "title": "Recovery proposed",
+      "detail": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+      "evidence_ids": [
+        "topology",
+        "alert",
+        "deployment",
+        "flag-config",
+        "migration",
+        "probe-df7b8961c377",
+        "probe-0b44a3bfb94f",
+        "probe-c8ad469a6ac5",
+        "probe-2b2b393c84cf",
+        "probe-31723c2ed265",
+        "probe-02e2f5a01d4f"
+      ],
+      "at": "2026-10-17T12:52:36.185098+00:00",
+      "action_id": "8b19fc991fc34848b585fe405116a08b"
+    },
+    {
+      "id": 12,
+      "kind": "verified",
+      "title": "Recovery verified",
+      "detail": "All affected synthetic probes passed.",
+      "evidence_ids": [
+        "topology",
+        "alert",
+        "deployment",
+        "flag-config",
+        "migration",
+        "probe-df7b8961c377",
+        "probe-0b44a3bfb94f",
+        "probe-c8ad469a6ac5",
+        "probe-2b2b393c84cf",
+        "probe-31723c2ed265",
+        "probe-02e2f5a01d4f"
+      ],
+      "at": "2026-10-17T12:52:36.216628+00:00",
+      "action_id": "8b19fc991fc34848b585fe405116a08b"
+    }
+  ],
+  "proposals": [
+    {
+      "action": "disable_feature_flag",
+      "target": "payments",
+      "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+      "evidence_ids": [
+        "topology",
+        "alert",
+        "deployment",
+        "flag-config",
+        "migration",
+        "probe-df7b8961c377",
+        "probe-0b44a3bfb94f",
+        "probe-c8ad469a6ac5",
+        "probe-2b2b393c84cf",
+        "probe-31723c2ed265",
+        "probe-02e2f5a01d4f"
+      ],
+      "affected_services": [
+        "checkout",
+        "payments",
+        "storefront"
+      ],
+      "id": "8b19fc991fc34848b585fe405116a08b",
+      "revision": 4,
+      "generation": "1746b7dee9e6480eaca2d62a8dd1a21d",
+      "stale": false,
+      "result": {
+        "action_id": "8b19fc991fc34848b585fe405116a08b",
+        "verified": true,
+        "before": [
+          {
+            "service": "checkout",
+            "healthy": false,
+            "status_code": 503,
+            "detail": "Dependency payments: Legacy currency rejected by strict validation",
+            "synthetic": true
+          },
+          {
+            "service": "payments",
+            "healthy": false,
+            "status_code": 503,
+            "detail": "Legacy currency rejected by strict validation",
+            "synthetic": true
+          },
+          {
+            "service": "storefront",
+            "healthy": false,
+            "status_code": 503,
+            "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+            "synthetic": true
+          }
+        ],
+        "after": [
+          {
+            "service": "checkout",
+            "healthy": true,
+            "status_code": 200,
+            "detail": "Synthetic request completed successfully",
+            "synthetic": true
+          },
+          {
+            "service": "payments",
+            "healthy": true,
+            "status_code": 200,
+            "detail": "Synthetic request completed successfully",
+            "synthetic": true
+          },
+          {
+            "service": "storefront",
+            "healthy": true,
+            "status_code": 200,
+            "detail": "Synthetic request completed successfully",
+            "synthetic": true
+          }
+        ],
+        "executed_at": "2026-10-17T12:52:36.216599+00:00",
+        "synthetic": true
+      },
+      "created_at": "2026-10-17T12:52:36.184624+00:00",
+      "blocked_reason": null
+    }
+  ],
+  "seen_evidence": [
+    "alert",
+    "deployment",
+    "flag-config",
+    "memory-e0aed336acd641eba7b6dc607de82b80",
+    "migration",
+    "old-runbook",
+    "probe-02e2f5a01d4f",
+    "probe-0b44a3bfb94f",
+    "probe-2b2b393c84cf",
+    "probe-31723c2ed265",
+    "probe-c8ad469a6ac5",
+    "probe-df7b8961c377",
+    "topology"
+  ],
+  "memory_ids": [
+    "e0aed336acd641eba7b6dc607de82b80"
+  ],
+  "diagnosis": null,
+  "model_calls": 4,
+  "elapsed_ms": 195739,
+  "error": null,
+  "replay": true,
+  "completed_tools": [
+    {
+      "name": "get_context",
+      "arguments": {},
+      "origin": "application_preflight"
+    },
+    {
+      "name": "retrieve_memory",
+      "arguments": {},
+      "origin": "application_preflight"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "checkout"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "payments"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "storefront"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "get_impact",
+      "arguments": {
+        "service": "payments"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "notifications"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "inventory"
+      },
+      "origin": "model"
+    },
+    {
+      "name": "probe_service",
+      "arguments": {
+        "service": "ledger"
+      },
+      "origin": "model"
+    }
+  ],
+  "graph_snapshot": {
+    "nodes": [
+      {
+        "id": "team-experience",
+        "label": "Team",
+        "data": {
+          "name": "Experience",
+          "id": "team-experience"
+        }
+      },
+      {
+        "id": "team-commerce",
+        "label": "Team",
+        "data": {
+          "name": "Commerce",
+          "id": "team-commerce"
+        }
+      },
+      {
+        "id": "team-platform",
+        "label": "Team",
+        "data": {
+          "name": "Platform",
+          "id": "team-platform"
+        }
+      },
+      {
+        "id": "storefront",
+        "label": "Service",
+        "data": {
+          "id": "storefront",
+          "name": "Storefront",
+          "kind": "edge",
+          "owner": "experience",
+          "x": 20,
+          "y": 145
+        }
+      },
+      {
+        "id": "checkout",
+        "label": "Service",
+        "data": {
+          "id": "checkout",
+          "name": "Checkout",
+          "kind": "api",
+          "owner": "commerce",
+          "x": 245,
+          "y": 145
+        }
+      },
+      {
+        "id": "payments",
+        "label": "Service",
+        "data": {
+          "id": "payments",
+          "name": "Payments",
+          "kind": "worker",
+          "owner": "commerce",
+          "x": 480,
+          "y": 35
+        }
+      },
+      {
+        "id": "inventory",
+        "label": "Service",
+        "data": {
+          "id": "inventory",
+          "name": "Inventory",
+          "kind": "api",
+          "owner": "platform",
+          "x": 480,
+          "y": 260
+        }
+      },
+      {
+        "id": "ledger",
+        "label": "Service",
+        "data": {
+          "id": "ledger",
+          "name": "Ledger",
+          "kind": "database",
+          "owner": "platform",
+          "x": 715,
+          "y": 35
+        }
+      },
+      {
+        "id": "notifications",
+        "label": "Service",
+        "data": {
+          "id": "notifications",
+          "name": "Notifications",
+          "kind": "worker",
+          "owner": "experience",
+          "x": 715,
+          "y": 260
+        }
+      },
+      {
+        "id": "topology",
+        "label": "Source",
+        "data": {
+          "id": "topology",
+          "title": "Service catalog \u00b7 dependencies",
+          "text": "Storefront depends on checkout. Checkout depends on payments and inventory. Payments depends on ledger. Inventory depends on notifications. Commerce owns checkout and payments; Platform owns inventory and ledger; Experience owns storefront and notifications.",
+          "effective_at": "2026-10-15T08:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448827+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "alert",
+        "label": "Source",
+        "data": {
+          "id": "alert",
+          "title": "Checkout synthetic monitor",
+          "text": "Checkout requests fail with currency validation errors after a new release.",
+          "effective_at": "2026-10-16T09:02:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448842+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "deployment",
+        "label": "Source",
+        "data": {
+          "id": "deployment",
+          "title": "Payments v2.4 release record",
+          "text": "Payments v2.4 enabled strict_currency_validation. Checkout still sends legacy currency strings. The previous v2.3 release predates ledger schema 2. Both rollback and a runtime flag change require the current compatibility advisory.",
+          "effective_at": "2026-10-16T09:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448846+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "old-runbook",
+        "label": "Source",
+        "data": {
+          "id": "old-runbook",
+          "title": "INC-1988 \u00b7 historical recovery",
+          "text": "Last month payments validation errors were resolved by rolling back to v2.3. That incident used ledger schema 1. This is historical evidence, not proof of current compatibility. Verify the ledger schema before rollback.",
+          "effective_at": "2026-09-20T11:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448848+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "flag-config",
+        "label": "Source",
+        "data": {
+          "id": "flag-config",
+          "title": "Payments runtime configuration",
+          "text": "strict_currency_validation=true. Toggle is scoped to payments. Disabling it restores acceptance of legacy currency strings, but requires a current safety advisory. Verify downstream checkout and storefront probes after any change.",
+          "effective_at": "2026-10-16T09:01:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448851+00:00",
+          "active": false,
+          "record_type": "flag_config",
+          "flag_enabled": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "compatibility",
+        "label": "Source",
+        "data": {
+          "id": "compatibility",
+          "title": "Last received ledger compatibility advisory",
+          "text": "The last received signed advisory reports ledger schema 1 as of 08:00 UTC. It permits rollback to payments v2.3. A flag-only mitigation has not been approved in this advisory. A later schema migration may supersede this record; runtime preconditions are checked again before any action executes.",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448854+00:00",
+          "active": false,
+          "fact_key": "payments-ledger-compatibility",
+          "policies": [
+            {
+              "action": "rollback_deployment",
+              "target": "payments",
+              "allowed": true,
+              "reason": "The last received schema 1 advisory permits payments v2.3 rollback."
+            },
+            {
+              "action": "disable_feature_flag",
+              "target": "payments",
+              "allowed": false,
+              "reason": "A flag-only mitigation requires an updated ledger safety advisory."
+            }
+          ],
+          "superseded_by": "migration"
+        }
+      },
+      {
+        "id": "migration",
+        "label": "Source",
+        "data": {
+          "id": "migration",
+          "title": "Ledger migration \u00b7 schema 2 is active",
+          "text": "Ledger schema 2 became active at 08:55 UTC. Payments v2.3 is incompatible with schema 2. Rollback to v2.3 is blocked. Payments v2.4 supports schema 2; its currency flag can be disabled without rolling back. This supersedes assumptions made in INC-1988.",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448858+00:00",
+          "active": true,
+          "fact_key": "payments-ledger-compatibility",
+          "policies": [
+            {
+              "action": "rollback_deployment",
+              "target": "payments",
+              "allowed": false,
+              "reason": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible."
+            },
+            {
+              "action": "disable_feature_flag",
+              "target": "payments",
+              "allowed": true,
+              "reason": "The schema 2 advisory permits disabling validation while retaining payments v2.4."
+            }
+          ]
+        }
+      },
+      {
+        "id": "probe-df7b8961c377",
+        "label": "Source",
+        "data": {
+          "id": "probe-df7b8961c377",
+          "title": "Synthetic probe \u00b7 checkout",
+          "text": "Dependency payments: Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.096206+00:00",
+          "ingested_at": "2026-10-17T12:50:41.096221+00:00",
+          "active": false,
+          "service": "checkout",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Dependency payments: Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-0b44a3bfb94f",
+        "label": "Source",
+        "data": {
+          "id": "probe-0b44a3bfb94f",
+          "title": "Synthetic probe \u00b7 payments",
+          "text": "Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.103608+00:00",
+          "ingested_at": "2026-10-17T12:50:41.103618+00:00",
+          "active": false,
+          "service": "payments",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-c8ad469a6ac5",
+        "label": "Source",
+        "data": {
+          "id": "probe-c8ad469a6ac5",
+          "title": "Synthetic probe \u00b7 storefront",
+          "text": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.110407+00:00",
+          "ingested_at": "2026-10-17T12:50:41.110419+00:00",
+          "active": false,
+          "service": "storefront",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-2b2b393c84cf",
+        "label": "Source",
+        "data": {
+          "id": "probe-2b2b393c84cf",
+          "title": "Synthetic probe \u00b7 notifications",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:10.740298+00:00",
+          "ingested_at": "2026-10-17T12:51:10.740315+00:00",
+          "active": false,
+          "service": "notifications",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-31723c2ed265",
+        "label": "Source",
+        "data": {
+          "id": "probe-31723c2ed265",
+          "title": "Synthetic probe \u00b7 inventory",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:10.749169+00:00",
+          "ingested_at": "2026-10-17T12:51:10.749179+00:00",
+          "active": false,
+          "service": "inventory",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-02e2f5a01d4f",
+        "label": "Source",
+        "data": {
+          "id": "probe-02e2f5a01d4f",
+          "title": "Synthetic probe \u00b7 ledger",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:27.927127+00:00",
+          "ingested_at": "2026-10-17T12:51:27.927141+00:00",
+          "active": false,
+          "service": "ledger",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "after-8b19fc991fc34848b585fe405116a08b",
+        "label": "Source",
+        "data": {
+          "id": "after-8b19fc991fc34848b585fe405116a08b",
+          "title": "Simulator action receipt",
+          "text": "Executed disable_feature_flag on payments. Current payments deployment: v2.4. strict_currency_validation=false. Recovery verified by request probes: True.",
+          "effective_at": "2026-10-17T12:52:36.216618+00:00",
+          "ingested_at": "2026-10-17T12:52:36.216621+00:00",
+          "active": true,
+          "record_type": "runtime_config",
+          "flag_enabled": false
+        }
+      },
+      {
+        "id": "template:rollback_deployment:payments",
+        "label": "Action",
+        "data": {
+          "name": "rollback deployment",
+          "template": true,
+          "action": "rollback_deployment",
+          "target": "payments",
+          "id": "template:rollback_deployment:payments"
+        }
+      },
+      {
+        "id": "policy:compatibility:0",
+        "label": "Constraint",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "allowed": true,
+          "reason": "The last received schema 1 advisory permits payments v2.3 rollback.",
+          "active": false,
+          "name": "The last received schema 1 advisory permits payments v2.3 rollback.",
+          "source_id": "compatibility",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "id": "policy:compatibility:0"
+        }
+      },
+      {
+        "id": "template:disable_feature_flag:payments",
+        "label": "Action",
+        "data": {
+          "name": "disable feature flag",
+          "template": true,
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "id": "template:disable_feature_flag:payments"
+        }
+      },
+      {
+        "id": "policy:compatibility:1",
+        "label": "Constraint",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "allowed": false,
+          "reason": "A flag-only mitigation requires an updated ledger safety advisory.",
+          "active": false,
+          "name": "A flag-only mitigation requires an updated ledger safety advisory.",
+          "source_id": "compatibility",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "id": "policy:compatibility:1"
+        }
+      },
+      {
+        "id": "policy:migration:0",
+        "label": "Constraint",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "allowed": false,
+          "reason": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible.",
+          "active": true,
+          "name": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible.",
+          "source_id": "migration",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "id": "policy:migration:0"
+        }
+      },
+      {
+        "id": "policy:migration:1",
+        "label": "Constraint",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "allowed": true,
+          "reason": "The schema 2 advisory permits disabling validation while retaining payments v2.4.",
+          "active": true,
+          "name": "The schema 2 advisory permits disabling validation while retaining payments v2.4.",
+          "source_id": "migration",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "id": "policy:migration:1"
+        }
+      },
+      {
+        "id": "INC-2042",
+        "label": "Incident",
+        "data": {
+          "name": "INC-2042",
+          "summary": "Checkout requests fail with currency validation errors after a new release.",
+          "id": "INC-2042"
+        }
+      },
+      {
+        "id": "deploy-v24",
+        "label": "Deployment",
+        "data": {
+          "name": "Payments v2.4",
+          "id": "deploy-v24"
+        }
+      },
+      {
+        "id": "schema-constraint",
+        "label": "Constraint",
+        "data": {
+          "name": "v2.3 incompatible with schema 2",
+          "id": "schema-constraint"
+        }
+      },
+      {
+        "id": "4361eafc6ba84523963e40d7d5585ce3",
+        "label": "Run",
+        "data": {
+          "name": "4361eafc6ba84523963e40d7d5585ce3",
+          "status": "evidence_changed",
+          "created_at": "2026-10-17T12:42:49.233429+00:00",
+          "id": "4361eafc6ba84523963e40d7d5585ce3"
+        }
+      },
+      {
+        "id": "6082dec715ff4e5591136022567066b8",
+        "label": "Action",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "summary": "Checkout failures are caused by payments v2.4's strict_currency_validation rejecting legacy currency strings. The impact graph shows checkout, payments, and storefront are affected. The last received ledger schema 1 advisory permits rollback to payments v2.3. No flag-only mitigation is allowed due to lack of updated safety advisory. Proposing rollback_deployment to payments as the only permitted action.",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "compatibility"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "6082dec715ff4e5591136022567066b8",
+          "revision": 1,
+          "generation": "9b789162155846449194853194e914a9",
+          "stale": true,
+          "result": null,
+          "created_at": "2026-10-17T12:45:58.283371+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "fc5d2e1ad2a343d6904afa7e2443dd56",
+        "label": "Run",
+        "data": {
+          "name": "fc5d2e1ad2a343d6904afa7e2443dd56",
+          "status": "recovered",
+          "created_at": "2026-10-17T12:45:58.317161+00:00",
+          "id": "fc5d2e1ad2a343d6904afa7e2443dd56"
+        }
+      },
+      {
+        "id": "e0aed336acd641eba7b6dc607de82b80",
+        "label": "Action",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. This action resolves the validation error at payments, restoring checkout and storefront functionality via dependency chain. Affected services include checkout, payments, and storefront due to dependency paths.",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "flag-config",
+            "migration"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "e0aed336acd641eba7b6dc607de82b80",
+          "revision": 2,
+          "generation": "9b789162155846449194853194e914a9",
+          "stale": false,
+          "result": {
+            "action_id": "e0aed336acd641eba7b6dc607de82b80",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:49:20.425470+00:00",
+            "synthetic": true
+          },
+          "created_at": "2026-10-17T12:49:20.400637+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "label": "ProbeResult",
+        "data": {
+          "service": "checkout",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-0"
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "label": "ProbeResult",
+        "data": {
+          "service": "payments",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-1"
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "label": "ProbeResult",
+        "data": {
+          "service": "storefront",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-2"
+        }
+      },
+      {
+        "id": "4d446ae3610942fc9b61d5f85a879a4e",
+        "label": "Run",
+        "data": {
+          "name": "4d446ae3610942fc9b61d5f85a879a4e",
+          "status": "recovered",
+          "created_at": "2026-10-17T12:49:20.456630+00:00",
+          "id": "4d446ae3610942fc9b61d5f85a879a4e"
+        }
+      },
+      {
+        "id": "8b19fc991fc34848b585fe405116a08b",
+        "label": "Action",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "flag-config",
+            "migration",
+            "probe-df7b8961c377",
+            "probe-0b44a3bfb94f",
+            "probe-c8ad469a6ac5",
+            "probe-2b2b393c84cf",
+            "probe-31723c2ed265",
+            "probe-02e2f5a01d4f"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "8b19fc991fc34848b585fe405116a08b",
+          "revision": 4,
+          "generation": "1746b7dee9e6480eaca2d62a8dd1a21d",
+          "stale": false,
+          "result": {
+            "action_id": "8b19fc991fc34848b585fe405116a08b",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:52:36.216599+00:00",
+            "synthetic": true
+          },
+          "created_at": "2026-10-17T12:52:36.184624+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-0",
+        "label": "ProbeResult",
+        "data": {
+          "service": "checkout",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-0"
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-1",
+        "label": "ProbeResult",
+        "data": {
+          "service": "payments",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-1"
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-2",
+        "label": "ProbeResult",
+        "data": {
+          "service": "storefront",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-2"
+        }
+      },
+      {
+        "id": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "label": "Incident",
+        "data": {
+          "id": "memory-e0aed336acd641eba7b6dc607de82b80",
+          "incident": "INC-2041",
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "verified": true,
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. This action resolves the validation error at payments, restoring checkout and storefront functionality via dependency chain. Affected services include checkout, payments, and storefront due to dependency paths.",
+          "result": {
+            "action_id": "e0aed336acd641eba7b6dc607de82b80",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:49:20.425470+00:00",
+            "synthetic": true
+          },
+          "applicability": "Recheck current deployment, ledger schema, flag and target probes.",
+          "created_at": "2026-10-17T12:49:20.425508+00:00"
+        }
+      },
+      {
+        "id": "memory-8b19fc991fc34848b585fe405116a08b",
+        "label": "Incident",
+        "data": {
+          "id": "memory-8b19fc991fc34848b585fe405116a08b",
+          "incident": "INC-2042",
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "verified": true,
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+          "result": {
+            "action_id": "8b19fc991fc34848b585fe405116a08b",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:52:36.216599+00:00",
+            "synthetic": true
+          },
+          "applicability": "Recheck current deployment, ledger schema, flag and target probes.",
+          "created_at": "2026-10-17T12:52:36.216624+00:00"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "OWNED_BY:storefront:team-experience",
+        "source": "storefront",
+        "target": "team-experience",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:storefront:checkout",
+        "source": "storefront",
+        "target": "checkout",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:storefront:topology",
+        "source": "storefront",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:checkout:team-commerce",
+        "source": "checkout",
+        "target": "team-commerce",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:checkout:payments",
+        "source": "checkout",
+        "target": "payments",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:checkout:inventory",
+        "source": "checkout",
+        "target": "inventory",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:checkout:topology",
+        "source": "checkout",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:payments:team-commerce",
+        "source": "payments",
+        "target": "team-commerce",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:payments:ledger",
+        "source": "payments",
+        "target": "ledger",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:payments:topology",
+        "source": "payments",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:inventory:team-platform",
+        "source": "inventory",
+        "target": "team-platform",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:inventory:notifications",
+        "source": "inventory",
+        "target": "notifications",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:inventory:topology",
+        "source": "inventory",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:ledger:team-platform",
+        "source": "ledger",
+        "target": "team-platform",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:ledger:topology",
+        "source": "ledger",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:notifications:team-experience",
+        "source": "notifications",
+        "target": "team-experience",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:notifications:topology",
+        "source": "notifications",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:compatibility:0:compatibility",
+        "source": "policy:compatibility:0",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "PERMITS:policy:compatibility:0:template:rollback_deployment:payments",
+        "source": "policy:compatibility:0",
+        "target": "template:rollback_deployment:payments",
+        "kind": "PERMITS",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:compatibility:1:compatibility",
+        "source": "policy:compatibility:1",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "BLOCKS:policy:compatibility:1:template:disable_feature_flag:payments",
+        "source": "policy:compatibility:1",
+        "target": "template:disable_feature_flag:payments",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:migration:0:migration",
+        "source": "policy:migration:0",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "BLOCKS:policy:migration:0:template:rollback_deployment:payments",
+        "source": "policy:migration:0",
+        "target": "template:rollback_deployment:payments",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:migration:1:migration",
+        "source": "policy:migration:1",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "PERMITS:policy:migration:1:template:disable_feature_flag:payments",
+        "source": "policy:migration:1",
+        "target": "template:disable_feature_flag:payments",
+        "kind": "PERMITS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "AFFECTS:INC-2042:checkout",
+        "source": "INC-2042",
+        "target": "checkout",
+        "kind": "AFFECTS",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "CHANGES:deploy-v24:payments",
+        "source": "deploy-v24",
+        "target": "payments",
+        "kind": "CHANGES",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:deploy-v24:deployment",
+        "source": "deploy-v24",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:schema-constraint:migration",
+        "source": "schema-constraint",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "BLOCKS:schema-constraint:6082dec715ff4e5591136022567066b8",
+        "source": "schema-constraint",
+        "target": "6082dec715ff4e5591136022567066b8",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "PROPOSED:4361eafc6ba84523963e40d7d5585ce3:6082dec715ff4e5591136022567066b8",
+        "source": "4361eafc6ba84523963e40d7d5585ce3",
+        "target": "6082dec715ff4e5591136022567066b8",
+        "kind": "PROPOSED",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:topology",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:alert",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:deployment",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:compatibility",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "EXECUTED:fc5d2e1ad2a343d6904afa7e2443dd56:e0aed336acd641eba7b6dc607de82b80",
+        "source": "fc5d2e1ad2a343d6904afa7e2443dd56",
+        "target": "e0aed336acd641eba7b6dc607de82b80",
+        "kind": "EXECUTED",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:topology",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:alert",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:deployment",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:flag-config",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "flag-config",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "flag-config"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:migration",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "EXECUTED:4d446ae3610942fc9b61d5f85a879a4e:8b19fc991fc34848b585fe405116a08b",
+        "source": "4d446ae3610942fc9b61d5f85a879a4e",
+        "target": "8b19fc991fc34848b585fe405116a08b",
+        "kind": "EXECUTED",
+        "evidence_ids": []
+      },
+      {
+        "id": "LEARNED_FROM:4d446ae3610942fc9b61d5f85a879a4e:memory-e0aed336acd641eba7b6dc607de82b80",
+        "source": "4d446ae3610942fc9b61d5f85a879a4e",
+        "target": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "kind": "LEARNED_FROM",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:topology",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:alert",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:deployment",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:flag-config",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "flag-config",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "flag-config"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:migration",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-df7b8961c377",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-df7b8961c377",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-df7b8961c377"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-0b44a3bfb94f",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-0b44a3bfb94f",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-0b44a3bfb94f"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-c8ad469a6ac5",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-c8ad469a6ac5",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-c8ad469a6ac5"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-2b2b393c84cf",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-2b2b393c84cf",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-2b2b393c84cf"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-31723c2ed265",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-31723c2ed265",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-31723c2ed265"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-02e2f5a01d4f",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-02e2f5a01d4f",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-02e2f5a01d4f"
+        ]
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-0",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-0",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-1",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-1",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-2",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-2",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "AFFECTS:memory-e0aed336acd641eba7b6dc607de82b80:payments",
+        "source": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "target": "payments",
+        "kind": "AFFECTS",
+        "evidence_ids": []
+      },
+      {
+        "id": "AFFECTS:memory-8b19fc991fc34848b585fe405116a08b:payments",
+        "source": "memory-8b19fc991fc34848b585fe405116a08b",
+        "target": "payments",
+        "kind": "AFFECTS",
+        "evidence_ids": []
+      }
+    ]
+  },
+  "cursor": 12,
+  "current_revision": 5,
+  "graph": {
+    "nodes": [
+      {
+        "id": "team-experience",
+        "label": "Team",
+        "data": {
+          "name": "Experience",
+          "id": "team-experience"
+        }
+      },
+      {
+        "id": "team-commerce",
+        "label": "Team",
+        "data": {
+          "name": "Commerce",
+          "id": "team-commerce"
+        }
+      },
+      {
+        "id": "team-platform",
+        "label": "Team",
+        "data": {
+          "name": "Platform",
+          "id": "team-platform"
+        }
+      },
+      {
+        "id": "storefront",
+        "label": "Service",
+        "data": {
+          "id": "storefront",
+          "name": "Storefront",
+          "kind": "edge",
+          "owner": "experience",
+          "x": 20,
+          "y": 145
+        }
+      },
+      {
+        "id": "checkout",
+        "label": "Service",
+        "data": {
+          "id": "checkout",
+          "name": "Checkout",
+          "kind": "api",
+          "owner": "commerce",
+          "x": 245,
+          "y": 145
+        }
+      },
+      {
+        "id": "payments",
+        "label": "Service",
+        "data": {
+          "id": "payments",
+          "name": "Payments",
+          "kind": "worker",
+          "owner": "commerce",
+          "x": 480,
+          "y": 35
+        }
+      },
+      {
+        "id": "inventory",
+        "label": "Service",
+        "data": {
+          "id": "inventory",
+          "name": "Inventory",
+          "kind": "api",
+          "owner": "platform",
+          "x": 480,
+          "y": 260
+        }
+      },
+      {
+        "id": "ledger",
+        "label": "Service",
+        "data": {
+          "id": "ledger",
+          "name": "Ledger",
+          "kind": "database",
+          "owner": "platform",
+          "x": 715,
+          "y": 35
+        }
+      },
+      {
+        "id": "notifications",
+        "label": "Service",
+        "data": {
+          "id": "notifications",
+          "name": "Notifications",
+          "kind": "worker",
+          "owner": "experience",
+          "x": 715,
+          "y": 260
+        }
+      },
+      {
+        "id": "topology",
+        "label": "Source",
+        "data": {
+          "id": "topology",
+          "title": "Service catalog \u00b7 dependencies",
+          "text": "Storefront depends on checkout. Checkout depends on payments and inventory. Payments depends on ledger. Inventory depends on notifications. Commerce owns checkout and payments; Platform owns inventory and ledger; Experience owns storefront and notifications.",
+          "effective_at": "2026-10-15T08:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448827+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "alert",
+        "label": "Source",
+        "data": {
+          "id": "alert",
+          "title": "Checkout synthetic monitor",
+          "text": "Checkout requests fail with currency validation errors after a new release.",
+          "effective_at": "2026-10-16T09:02:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448842+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "deployment",
+        "label": "Source",
+        "data": {
+          "id": "deployment",
+          "title": "Payments v2.4 release record",
+          "text": "Payments v2.4 enabled strict_currency_validation. Checkout still sends legacy currency strings. The previous v2.3 release predates ledger schema 2. Both rollback and a runtime flag change require the current compatibility advisory.",
+          "effective_at": "2026-10-16T09:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448846+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "old-runbook",
+        "label": "Source",
+        "data": {
+          "id": "old-runbook",
+          "title": "INC-1988 \u00b7 historical recovery",
+          "text": "Last month payments validation errors were resolved by rolling back to v2.3. That incident used ledger schema 1. This is historical evidence, not proof of current compatibility. Verify the ledger schema before rollback.",
+          "effective_at": "2026-09-20T11:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448848+00:00",
+          "active": true
+        }
+      },
+      {
+        "id": "flag-config",
+        "label": "Source",
+        "data": {
+          "id": "flag-config",
+          "title": "Payments runtime configuration",
+          "text": "strict_currency_validation=true. Toggle is scoped to payments. Disabling it restores acceptance of legacy currency strings, but requires a current safety advisory. Verify downstream checkout and storefront probes after any change.",
+          "effective_at": "2026-10-16T09:01:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448851+00:00",
+          "active": false,
+          "record_type": "flag_config",
+          "flag_enabled": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "compatibility",
+        "label": "Source",
+        "data": {
+          "id": "compatibility",
+          "title": "Last received ledger compatibility advisory",
+          "text": "The last received signed advisory reports ledger schema 1 as of 08:00 UTC. It permits rollback to payments v2.3. A flag-only mitigation has not been approved in this advisory. A later schema migration may supersede this record; runtime preconditions are checked again before any action executes.",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448854+00:00",
+          "active": false,
+          "fact_key": "payments-ledger-compatibility",
+          "policies": [
+            {
+              "action": "rollback_deployment",
+              "target": "payments",
+              "allowed": true,
+              "reason": "The last received schema 1 advisory permits payments v2.3 rollback."
+            },
+            {
+              "action": "disable_feature_flag",
+              "target": "payments",
+              "allowed": false,
+              "reason": "A flag-only mitigation requires an updated ledger safety advisory."
+            }
+          ],
+          "superseded_by": "migration"
+        }
+      },
+      {
+        "id": "migration",
+        "label": "Source",
+        "data": {
+          "id": "migration",
+          "title": "Ledger migration \u00b7 schema 2 is active",
+          "text": "Ledger schema 2 became active at 08:55 UTC. Payments v2.3 is incompatible with schema 2. Rollback to v2.3 is blocked. Payments v2.4 supports schema 2; its currency flag can be disabled without rolling back. This supersedes assumptions made in INC-1988.",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "ingested_at": "2026-10-17T12:49:20.448858+00:00",
+          "active": true,
+          "fact_key": "payments-ledger-compatibility",
+          "policies": [
+            {
+              "action": "rollback_deployment",
+              "target": "payments",
+              "allowed": false,
+              "reason": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible."
+            },
+            {
+              "action": "disable_feature_flag",
+              "target": "payments",
+              "allowed": true,
+              "reason": "The schema 2 advisory permits disabling validation while retaining payments v2.4."
+            }
+          ]
+        }
+      },
+      {
+        "id": "probe-df7b8961c377",
+        "label": "Source",
+        "data": {
+          "id": "probe-df7b8961c377",
+          "title": "Synthetic probe \u00b7 checkout",
+          "text": "Dependency payments: Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.096206+00:00",
+          "ingested_at": "2026-10-17T12:50:41.096221+00:00",
+          "active": false,
+          "service": "checkout",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Dependency payments: Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-0b44a3bfb94f",
+        "label": "Source",
+        "data": {
+          "id": "probe-0b44a3bfb94f",
+          "title": "Synthetic probe \u00b7 payments",
+          "text": "Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.103608+00:00",
+          "ingested_at": "2026-10-17T12:50:41.103618+00:00",
+          "active": false,
+          "service": "payments",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-c8ad469a6ac5",
+        "label": "Source",
+        "data": {
+          "id": "probe-c8ad469a6ac5",
+          "title": "Synthetic probe \u00b7 storefront",
+          "text": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+          "effective_at": "2026-10-17T12:50:41.110407+00:00",
+          "ingested_at": "2026-10-17T12:50:41.110419+00:00",
+          "active": false,
+          "service": "storefront",
+          "healthy": false,
+          "status_code": 503,
+          "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-2b2b393c84cf",
+        "label": "Source",
+        "data": {
+          "id": "probe-2b2b393c84cf",
+          "title": "Synthetic probe \u00b7 notifications",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:10.740298+00:00",
+          "ingested_at": "2026-10-17T12:51:10.740315+00:00",
+          "active": false,
+          "service": "notifications",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-31723c2ed265",
+        "label": "Source",
+        "data": {
+          "id": "probe-31723c2ed265",
+          "title": "Synthetic probe \u00b7 inventory",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:10.749169+00:00",
+          "ingested_at": "2026-10-17T12:51:10.749179+00:00",
+          "active": false,
+          "service": "inventory",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "probe-02e2f5a01d4f",
+        "label": "Source",
+        "data": {
+          "id": "probe-02e2f5a01d4f",
+          "title": "Synthetic probe \u00b7 ledger",
+          "text": "Synthetic request completed successfully",
+          "effective_at": "2026-10-17T12:51:27.927127+00:00",
+          "ingested_at": "2026-10-17T12:51:27.927141+00:00",
+          "active": false,
+          "service": "ledger",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "superseded_by": "after-8b19fc991fc34848b585fe405116a08b"
+        }
+      },
+      {
+        "id": "after-8b19fc991fc34848b585fe405116a08b",
+        "label": "Source",
+        "data": {
+          "id": "after-8b19fc991fc34848b585fe405116a08b",
+          "title": "Simulator action receipt",
+          "text": "Executed disable_feature_flag on payments. Current payments deployment: v2.4. strict_currency_validation=false. Recovery verified by request probes: True.",
+          "effective_at": "2026-10-17T12:52:36.216618+00:00",
+          "ingested_at": "2026-10-17T12:52:36.216621+00:00",
+          "active": true,
+          "record_type": "runtime_config",
+          "flag_enabled": false
+        }
+      },
+      {
+        "id": "template:rollback_deployment:payments",
+        "label": "Action",
+        "data": {
+          "name": "rollback deployment",
+          "template": true,
+          "action": "rollback_deployment",
+          "target": "payments",
+          "id": "template:rollback_deployment:payments"
+        }
+      },
+      {
+        "id": "policy:compatibility:0",
+        "label": "Constraint",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "allowed": true,
+          "reason": "The last received schema 1 advisory permits payments v2.3 rollback.",
+          "active": false,
+          "name": "The last received schema 1 advisory permits payments v2.3 rollback.",
+          "source_id": "compatibility",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "id": "policy:compatibility:0"
+        }
+      },
+      {
+        "id": "template:disable_feature_flag:payments",
+        "label": "Action",
+        "data": {
+          "name": "disable feature flag",
+          "template": true,
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "id": "template:disable_feature_flag:payments"
+        }
+      },
+      {
+        "id": "policy:compatibility:1",
+        "label": "Constraint",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "allowed": false,
+          "reason": "A flag-only mitigation requires an updated ledger safety advisory.",
+          "active": false,
+          "name": "A flag-only mitigation requires an updated ledger safety advisory.",
+          "source_id": "compatibility",
+          "effective_at": "2026-10-16T08:00:00Z",
+          "id": "policy:compatibility:1"
+        }
+      },
+      {
+        "id": "policy:migration:0",
+        "label": "Constraint",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "allowed": false,
+          "reason": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible.",
+          "active": true,
+          "name": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible.",
+          "source_id": "migration",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "id": "policy:migration:0"
+        }
+      },
+      {
+        "id": "policy:migration:1",
+        "label": "Constraint",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "allowed": true,
+          "reason": "The schema 2 advisory permits disabling validation while retaining payments v2.4.",
+          "active": true,
+          "name": "The schema 2 advisory permits disabling validation while retaining payments v2.4.",
+          "source_id": "migration",
+          "effective_at": "2026-10-16T08:55:00Z",
+          "id": "policy:migration:1"
+        }
+      },
+      {
+        "id": "INC-2042",
+        "label": "Incident",
+        "data": {
+          "name": "INC-2042",
+          "summary": "Checkout requests fail with currency validation errors after a new release.",
+          "id": "INC-2042"
+        }
+      },
+      {
+        "id": "deploy-v24",
+        "label": "Deployment",
+        "data": {
+          "name": "Payments v2.4",
+          "id": "deploy-v24"
+        }
+      },
+      {
+        "id": "schema-constraint",
+        "label": "Constraint",
+        "data": {
+          "name": "v2.3 incompatible with schema 2",
+          "id": "schema-constraint"
+        }
+      },
+      {
+        "id": "4361eafc6ba84523963e40d7d5585ce3",
+        "label": "Run",
+        "data": {
+          "name": "4361eafc6ba84523963e40d7d5585ce3",
+          "status": "evidence_changed",
+          "created_at": "2026-10-17T12:42:49.233429+00:00",
+          "id": "4361eafc6ba84523963e40d7d5585ce3"
+        }
+      },
+      {
+        "id": "6082dec715ff4e5591136022567066b8",
+        "label": "Action",
+        "data": {
+          "action": "rollback_deployment",
+          "target": "payments",
+          "summary": "Checkout failures are caused by payments v2.4's strict_currency_validation rejecting legacy currency strings. The impact graph shows checkout, payments, and storefront are affected. The last received ledger schema 1 advisory permits rollback to payments v2.3. No flag-only mitigation is allowed due to lack of updated safety advisory. Proposing rollback_deployment to payments as the only permitted action.",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "compatibility"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "6082dec715ff4e5591136022567066b8",
+          "revision": 1,
+          "generation": "9b789162155846449194853194e914a9",
+          "stale": true,
+          "result": null,
+          "created_at": "2026-10-17T12:45:58.283371+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "fc5d2e1ad2a343d6904afa7e2443dd56",
+        "label": "Run",
+        "data": {
+          "name": "fc5d2e1ad2a343d6904afa7e2443dd56",
+          "status": "recovered",
+          "created_at": "2026-10-17T12:45:58.317161+00:00",
+          "id": "fc5d2e1ad2a343d6904afa7e2443dd56"
+        }
+      },
+      {
+        "id": "e0aed336acd641eba7b6dc607de82b80",
+        "label": "Action",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. This action resolves the validation error at payments, restoring checkout and storefront functionality via dependency chain. Affected services include checkout, payments, and storefront due to dependency paths.",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "flag-config",
+            "migration"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "e0aed336acd641eba7b6dc607de82b80",
+          "revision": 2,
+          "generation": "9b789162155846449194853194e914a9",
+          "stale": false,
+          "result": {
+            "action_id": "e0aed336acd641eba7b6dc607de82b80",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:49:20.425470+00:00",
+            "synthetic": true
+          },
+          "created_at": "2026-10-17T12:49:20.400637+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "label": "ProbeResult",
+        "data": {
+          "service": "checkout",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-0"
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "label": "ProbeResult",
+        "data": {
+          "service": "payments",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-1"
+        }
+      },
+      {
+        "id": "probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "label": "ProbeResult",
+        "data": {
+          "service": "storefront",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-e0aed336acd641eba7b6dc607de82b80-2"
+        }
+      },
+      {
+        "id": "4d446ae3610942fc9b61d5f85a879a4e",
+        "label": "Run",
+        "data": {
+          "name": "4d446ae3610942fc9b61d5f85a879a4e",
+          "status": "recovered",
+          "created_at": "2026-10-17T12:49:20.456630+00:00",
+          "id": "4d446ae3610942fc9b61d5f85a879a4e"
+        }
+      },
+      {
+        "id": "8b19fc991fc34848b585fe405116a08b",
+        "label": "Action",
+        "data": {
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+          "evidence_ids": [
+            "topology",
+            "alert",
+            "deployment",
+            "flag-config",
+            "migration",
+            "probe-df7b8961c377",
+            "probe-0b44a3bfb94f",
+            "probe-c8ad469a6ac5",
+            "probe-2b2b393c84cf",
+            "probe-31723c2ed265",
+            "probe-02e2f5a01d4f"
+          ],
+          "affected_services": [
+            "checkout",
+            "payments",
+            "storefront"
+          ],
+          "id": "8b19fc991fc34848b585fe405116a08b",
+          "revision": 4,
+          "generation": "1746b7dee9e6480eaca2d62a8dd1a21d",
+          "stale": false,
+          "result": {
+            "action_id": "8b19fc991fc34848b585fe405116a08b",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:52:36.216599+00:00",
+            "synthetic": true
+          },
+          "created_at": "2026-10-17T12:52:36.184624+00:00",
+          "blocked_reason": null
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-0",
+        "label": "ProbeResult",
+        "data": {
+          "service": "checkout",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-0"
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-1",
+        "label": "ProbeResult",
+        "data": {
+          "service": "payments",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-1"
+        }
+      },
+      {
+        "id": "probe-8b19fc991fc34848b585fe405116a08b-2",
+        "label": "ProbeResult",
+        "data": {
+          "service": "storefront",
+          "healthy": true,
+          "status_code": 200,
+          "detail": "Synthetic request completed successfully",
+          "synthetic": true,
+          "id": "probe-8b19fc991fc34848b585fe405116a08b-2"
+        }
+      },
+      {
+        "id": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "label": "Incident",
+        "data": {
+          "id": "memory-e0aed336acd641eba7b6dc607de82b80",
+          "incident": "INC-2041",
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "verified": true,
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. This action resolves the validation error at payments, restoring checkout and storefront functionality via dependency chain. Affected services include checkout, payments, and storefront due to dependency paths.",
+          "result": {
+            "action_id": "e0aed336acd641eba7b6dc607de82b80",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:49:20.425470+00:00",
+            "synthetic": true
+          },
+          "applicability": "Recheck current deployment, ledger schema, flag and target probes.",
+          "created_at": "2026-10-17T12:49:20.425508+00:00"
+        }
+      },
+      {
+        "id": "memory-8b19fc991fc34848b585fe405116a08b",
+        "label": "Incident",
+        "data": {
+          "id": "memory-8b19fc991fc34848b585fe405116a08b",
+          "incident": "INC-2042",
+          "action": "disable_feature_flag",
+          "target": "payments",
+          "verified": true,
+          "summary": "Payments v2.4's strict_currency_validation flag is enabled and rejecting legacy currency strings. Ledger schema 2 is active and blocks rollback to v2.3. The current policy permits disabling the flag without rollback. Probing confirms checkout and storefront failures due to payments validation. All downstream services are impacted via dependency chains. Notifications and inventory are unaffected, confirming isolation. The proposed action is permitted by policy and has been verified in past incident (memory-e0aed336acd641eba7b6dc607de82b80).",
+          "result": {
+            "action_id": "8b19fc991fc34848b585fe405116a08b",
+            "verified": true,
+            "before": [
+              {
+                "service": "checkout",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Legacy currency rejected by strict validation",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": false,
+                "status_code": 503,
+                "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+                "synthetic": true
+              }
+            ],
+            "after": [
+              {
+                "service": "checkout",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "payments",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              },
+              {
+                "service": "storefront",
+                "healthy": true,
+                "status_code": 200,
+                "detail": "Synthetic request completed successfully",
+                "synthetic": true
+              }
+            ],
+            "executed_at": "2026-10-17T12:52:36.216599+00:00",
+            "synthetic": true
+          },
+          "applicability": "Recheck current deployment, ledger schema, flag and target probes.",
+          "created_at": "2026-10-17T12:52:36.216624+00:00"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "OWNED_BY:storefront:team-experience",
+        "source": "storefront",
+        "target": "team-experience",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:storefront:checkout",
+        "source": "storefront",
+        "target": "checkout",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:storefront:topology",
+        "source": "storefront",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:checkout:team-commerce",
+        "source": "checkout",
+        "target": "team-commerce",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:checkout:payments",
+        "source": "checkout",
+        "target": "payments",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:checkout:inventory",
+        "source": "checkout",
+        "target": "inventory",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:checkout:topology",
+        "source": "checkout",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:payments:team-commerce",
+        "source": "payments",
+        "target": "team-commerce",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:payments:ledger",
+        "source": "payments",
+        "target": "ledger",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:payments:topology",
+        "source": "payments",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:inventory:team-platform",
+        "source": "inventory",
+        "target": "team-platform",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "DEPENDS_ON:inventory:notifications",
+        "source": "inventory",
+        "target": "notifications",
+        "kind": "DEPENDS_ON",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:inventory:topology",
+        "source": "inventory",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:ledger:team-platform",
+        "source": "ledger",
+        "target": "team-platform",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:ledger:topology",
+        "source": "ledger",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "OWNED_BY:notifications:team-experience",
+        "source": "notifications",
+        "target": "team-experience",
+        "kind": "OWNED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:notifications:topology",
+        "source": "notifications",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:compatibility:0:compatibility",
+        "source": "policy:compatibility:0",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "PERMITS:policy:compatibility:0:template:rollback_deployment:payments",
+        "source": "policy:compatibility:0",
+        "target": "template:rollback_deployment:payments",
+        "kind": "PERMITS",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:compatibility:1:compatibility",
+        "source": "policy:compatibility:1",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "BLOCKS:policy:compatibility:1:template:disable_feature_flag:payments",
+        "source": "policy:compatibility:1",
+        "target": "template:disable_feature_flag:payments",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:migration:0:migration",
+        "source": "policy:migration:0",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "BLOCKS:policy:migration:0:template:rollback_deployment:payments",
+        "source": "policy:migration:0",
+        "target": "template:rollback_deployment:payments",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:policy:migration:1:migration",
+        "source": "policy:migration:1",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "PERMITS:policy:migration:1:template:disable_feature_flag:payments",
+        "source": "policy:migration:1",
+        "target": "template:disable_feature_flag:payments",
+        "kind": "PERMITS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "AFFECTS:INC-2042:checkout",
+        "source": "INC-2042",
+        "target": "checkout",
+        "kind": "AFFECTS",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "CHANGES:deploy-v24:payments",
+        "source": "deploy-v24",
+        "target": "payments",
+        "kind": "CHANGES",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:deploy-v24:deployment",
+        "source": "deploy-v24",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:schema-constraint:migration",
+        "source": "schema-constraint",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "BLOCKS:schema-constraint:6082dec715ff4e5591136022567066b8",
+        "source": "schema-constraint",
+        "target": "6082dec715ff4e5591136022567066b8",
+        "kind": "BLOCKS",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "PROPOSED:4361eafc6ba84523963e40d7d5585ce3:6082dec715ff4e5591136022567066b8",
+        "source": "4361eafc6ba84523963e40d7d5585ce3",
+        "target": "6082dec715ff4e5591136022567066b8",
+        "kind": "PROPOSED",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:topology",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:alert",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:deployment",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:6082dec715ff4e5591136022567066b8:compatibility",
+        "source": "6082dec715ff4e5591136022567066b8",
+        "target": "compatibility",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "compatibility"
+        ]
+      },
+      {
+        "id": "EXECUTED:fc5d2e1ad2a343d6904afa7e2443dd56:e0aed336acd641eba7b6dc607de82b80",
+        "source": "fc5d2e1ad2a343d6904afa7e2443dd56",
+        "target": "e0aed336acd641eba7b6dc607de82b80",
+        "kind": "EXECUTED",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:topology",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:alert",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:deployment",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:flag-config",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "flag-config",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "flag-config"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:e0aed336acd641eba7b6dc607de82b80:migration",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-0",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-1",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:e0aed336acd641eba7b6dc607de82b80:probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "source": "e0aed336acd641eba7b6dc607de82b80",
+        "target": "probe-e0aed336acd641eba7b6dc607de82b80-2",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "EXECUTED:4d446ae3610942fc9b61d5f85a879a4e:8b19fc991fc34848b585fe405116a08b",
+        "source": "4d446ae3610942fc9b61d5f85a879a4e",
+        "target": "8b19fc991fc34848b585fe405116a08b",
+        "kind": "EXECUTED",
+        "evidence_ids": []
+      },
+      {
+        "id": "LEARNED_FROM:4d446ae3610942fc9b61d5f85a879a4e:memory-e0aed336acd641eba7b6dc607de82b80",
+        "source": "4d446ae3610942fc9b61d5f85a879a4e",
+        "target": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "kind": "LEARNED_FROM",
+        "evidence_ids": []
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:topology",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "topology",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "topology"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:alert",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "alert",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "alert"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:deployment",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "deployment",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "deployment"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:flag-config",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "flag-config",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "flag-config"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:migration",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "migration",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "migration"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-df7b8961c377",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-df7b8961c377",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-df7b8961c377"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-0b44a3bfb94f",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-0b44a3bfb94f",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-0b44a3bfb94f"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-c8ad469a6ac5",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-c8ad469a6ac5",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-c8ad469a6ac5"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-2b2b393c84cf",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-2b2b393c84cf",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-2b2b393c84cf"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-31723c2ed265",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-31723c2ed265",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-31723c2ed265"
+        ]
+      },
+      {
+        "id": "SUPPORTED_BY:8b19fc991fc34848b585fe405116a08b:probe-02e2f5a01d4f",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-02e2f5a01d4f",
+        "kind": "SUPPORTED_BY",
+        "evidence_ids": [
+          "probe-02e2f5a01d4f"
+        ]
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-0",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-0",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-1",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-1",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "VERIFIED_BY:8b19fc991fc34848b585fe405116a08b:probe-8b19fc991fc34848b585fe405116a08b-2",
+        "source": "8b19fc991fc34848b585fe405116a08b",
+        "target": "probe-8b19fc991fc34848b585fe405116a08b-2",
+        "kind": "VERIFIED_BY",
+        "evidence_ids": []
+      },
+      {
+        "id": "AFFECTS:memory-e0aed336acd641eba7b6dc607de82b80:payments",
+        "source": "memory-e0aed336acd641eba7b6dc607de82b80",
+        "target": "payments",
+        "kind": "AFFECTS",
+        "evidence_ids": []
+      },
+      {
+        "id": "AFFECTS:memory-8b19fc991fc34848b585fe405116a08b:payments",
+        "source": "memory-8b19fc991fc34848b585fe405116a08b",
+        "target": "payments",
+        "kind": "AFFECTS",
+        "evidence_ids": []
+      }
+    ]
+  },
+  "scenario": {
+    "id": "memory",
+    "number": "02",
+    "name": "A familiar failure",
+    "tag": "PERSISTENT MEMORY",
+    "description": "A new incident. An empty conversation. Can a verified past outcome help?",
+    "incident": "INC-2042",
+    "symptom": "Checkout requests fail with currency validation errors after a new release."
+  },
+  "demonstration_phase": "memory",
+  "repetition": 1,
+  "evaluation_case": "C08",
+  "label": "Actual model demonstration 1: memory; memory comes from actual earlier model actions"
+}

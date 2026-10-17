@@ -23,6 +23,8 @@
 .path-citation:hover { text-decoration:underline; }
 .proposal-rationale { margin:10px 0; }
 .proposal-rationale p { margin:0; line-height:1.65; }
+.probe-results > .unhealthy { color:#f09898; }
+.red-text { color:#f09898; }
 @media(max-width:680px) { .view-results .page-intro { flex-wrap:wrap; } .results-actions { width:100%; } }
 
 @media (min-width:1200px) and (min-height:650px) {

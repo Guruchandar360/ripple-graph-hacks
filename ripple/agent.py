@@ -34,6 +34,7 @@ investigate the constraint and choose another evidence-supported action or reque
 Available actions: rollback_deployment, disable_feature_flag, restart_service. Only payments has a flag/rollback.
 Summaries should state observed evidence and uncertainty in plain English, never hidden chain-of-thought.
 Respond with native tool calls only; put concise explanations inside the structured summary fields.
+Completed snapshot reads are cached and removed from the available tools. Proposals require a freshly probed target.
 Finish within 8 model turns. No tool executes actions; a human approves separately.
 """
 
@@ -125,6 +126,33 @@ def bounded_declarations(mode: str, remaining: int, policies: list[dict], seen: 
     return functions, globally_blocked
 
 
+def pending_declarations(functions: list, receipts: list[dict]):
+    """Avoid repeating deterministic reads of an unchanged investigation snapshot."""
+    completed = {r["name"] for r in receipts}
+    probed = {r["arguments"].get("service", "checkout") for r in receipts if r["name"] == "probe_service"}
+    impact = {r["arguments"].get("service", "payments") for r in receipts if r["name"] == "get_impact"}
+    result = []
+    for function in functions:
+        name = function.name
+        if name in {"get_context", "retrieve_memory"} and name in completed:
+            continue
+        if name == "inspect_source" and "get_context" in completed:
+            continue  # get_context includes every full active source record.
+        parameter, excluded = ("service", probed) if name == "probe_service" else ("service", impact)
+        if name in {"probe_service", "get_impact"}:
+            schema = function.parameters.properties[parameter]
+            schema.enum = [service for service in schema.enum if service not in excluded]
+            if not schema.enum:
+                continue
+        if name == "propose_action":
+            if not probed:
+                continue
+            schema = function.parameters.properties["target"]
+            schema.enum = [service for service in schema.enum if service in probed]
+        result.append(function)
+    return result
+
+
 class Agent:
     def __init__(self, service: RippleService, settings: Settings):
         self.service, self.settings = service, settings
@@ -194,6 +222,7 @@ class Agent:
                     functions, globally_blocked = bounded_declarations(
                         mode, remaining, policies, current["seen_evidence"]
                     )
+                    functions = pending_declarations(functions, current.get("completed_tools", []))
                     if globally_blocked:
                         contents.append(
                             types.Content(

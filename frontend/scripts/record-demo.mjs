@@ -66,7 +66,7 @@ if (!smoke) {
 await openCase("C08", "recovered", "memory");
 const memory = page.locator(".timeline-event").filter({ hasText: "Incident memory retrieved" }).first();
 await memory.scrollIntoViewIfNeeded();
-await caption("A fresh conversation remembers through the graph.", "FalkorDB supplies persisted, measured outcomes to a fresh model conversation. Current evidence and constraints still apply; earlier chat messages are not carried over.", 9);
+await caption("A fresh conversation remembers through the graph.", "FalkorDB supplies persisted, measured outcomes to a fresh model conversation. Current constraints still apply; earlier chat messages are not carried over." + (process.env.DEMO_MEMORY_BOOTSTRAP ? " This benchmark uses a verified simulator-bootstrap outcome." : ""), 11);
 await openCase("C10", "needs_evidence", "insufficient");
 await page.locator(".timeline").scrollIntoViewIfNeeded();
 await caption("Insufficient evidence means no executed remediation.", "The agent can identify missing diagnostics and stop. Deterministic guards provide an independent boundary if the model proposes an unsafe action.", 9);

@@ -69,6 +69,7 @@ import type {
   Memory,
   Evaluations,
   Replay,
+  ActionResult,
 } from "./types";
 import { api, post, isShowcase } from "./api";
 import "@xyflow/react/dist/style.css";
@@ -650,7 +651,7 @@ function App() {
   const linkedSources = sources.filter(s => graph.edges.some(e => relatedEntityIds.has(e.source) && e.target === s.id && e.kind === "SUPPORTED_BY"));
 
   return (
-    <div className={`app-shell view-${view}`}>
+    <div className={`app-shell view-${view} ${isShowcase ? "is-showcase" : ""}`}>
       <aside className="sidebar">
         <a
           className="brand"
@@ -1029,7 +1030,7 @@ function App() {
                       </span>
                       {affected.size > 0 && (
                         <span className="amber-text">
-                          {affected.size} services in retrieved impact paths
+                          {affected.size} services in {run?.events.some(e => e.paths?.length) ? "retrieved impact paths" : "reported impact"}
                         </span>
                       )}
                       <span className="graph-hint">
@@ -1212,18 +1213,21 @@ function App() {
                     {latestProposal ? (
                       <div className="decision-body">
                         <span
-                          className={`eyebrow ${latestProposal.result?.verified ? "teal-text" : "amber-text"}`}
+                          className={`eyebrow ${latestProposal.result ? (latestProposal.result.verified ? "teal-text" : "red-text") : "amber-text"}`}
                         >
                           {latestProposal.stale
                             ? "APPROVAL INVALIDATED"
                             : latestProposal.result?.verified
                               ? "VERIFIED OUTCOME"
+                              : latestProposal.result
+                                ? "RECOVERY FAILED"
                               : latestProposal.blocked_reason
                                 ? "ACTION BLOCKED"
                                 : "AWAITING YOUR APPROVAL"}
                         </span>
                         <h3>{formatAction(latestProposal.action)}</h3>
                         <div className="code-chip">{latestProposal.target}</div>
+                        {latestProposal.result && <RecoveryProbes result={latestProposal.result} />}
                         <div key={latestProposal.id} className="proposal-rationale" role="region" aria-label="Recommendation rationale" tabIndex={0}><p>{latestProposal.summary}</p></div>
                         {latestProposal.blocked_reason && (
                           <div className="inline-warning">
@@ -1248,26 +1252,7 @@ function App() {
                             </button>
                           ))}
                         </div>
-                        {latestProposal.result ? (
-                          <div className="probe-results">
-                            <strong>
-                              {latestProposal.result.verified
-                                ? "Recovery confirmed by probes"
-                                : "Recovery failed verification"}
-                            </strong>
-                            {latestProposal.result.after.map((p) => (
-                              <div key={p.service}>
-                                {p.healthy ? (
-                                  <CircleCheck size={13} />
-                                ) : (
-                                  <XCircle size={13} />
-                                )}
-                                <span>{p.service}</span>
-                                <b><span className="before-probe">{latestProposal.result?.before.find(b => b.service === p.service)?.status_code ?? "—"}</span> → {p.status_code}</b>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
+                        {!latestProposal.result && (
                           <button
                             className="primary full"
                             disabled={
@@ -1832,6 +1817,10 @@ function App() {
       )}
     </div>
   );
+}
+
+function RecoveryProbes({result}:{result:ActionResult}) {
+  return <div className="probe-results"><strong>{result.verified ? "Recovery confirmed by probes" : "Recovery failed verification"}</strong>{result.after.map(p => <div key={p.service} className={p.healthy ? "healthy" : "unhealthy"}>{p.healthy ? <CircleCheck size={13}/> : <XCircle size={13}/>}<span>{p.service}</span><b><span className="before-probe">{result.before.find(b => b.service === p.service)?.status_code ?? "—"}</span> → {p.status_code}</b></div>)}</div>;
 }
 
 function UsersIcon() {

@@ -8,7 +8,8 @@
 
 **Captioned working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
 
-The current video is an explicitly labeled replay of actual model output. The
+The video is an explicitly labeled selection of actual development model output;
+`demo/video.json` identifies the passing sequence and its measured memory origin. The
 public site is read-only; use the README to run the full backend locally.
 
 **Primary track:** Agents That Act on Connected Data

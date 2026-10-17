@@ -9,7 +9,7 @@ report = json.loads((root / "demo/evaluations.json").read_text(encoding="utf-8")
 release = json.loads((root / "demo/release.json").read_text(encoding="utf-8"))
 rows = report["cases"]
 lines = [
-    "# Actual release measurements",
+    "# Recorded development measurements",
     "",
     f"Model: `{report['model']}`. Provider: `{report['model_provider']}`. "
     f"Tool protocol: `{report['tool_protocol']}`.",

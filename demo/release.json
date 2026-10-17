@@ -1,8 +1,16 @@
 {
-  "benchmark_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031191528",
-  "benchmark_source_commit": "fcc2cce3b07bc3eed0a4e21276aa42b53c686437",
-  "benchmark_configuration": {"max_model_turns": 8, "timeout_seconds": 300},
-  "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032070983",
+  "benchmark_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033505588",
+  "benchmark_source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
+  "benchmark_configuration": {
+    "max_model_turns": 8,
+    "timeout_seconds": 300
+  },
+  "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
+  "repeatability_source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
+  "repeatability_configuration": {
+    "max_model_turns": 5,
+    "timeout_seconds": 300
+  },
   "targeted_replay_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638",
-  "note": "The complete comparison retains all failures. Extra targeted replays are separate measurements and do not contribute to its score."
+  "note": "Recorded development measurements at the stated source versions. One of three sequential demonstrations passed; current cloud-model behavior remains unverified. Extra targeted/video replays do not contribute to the benchmark score."
 }

@@ -1,4 +1,13 @@
-# Three-minute demo outline
+# Demonstration
+
+The captioned recording uses the first complete passing development sequence:
+recovery, fresh-conversation memory and insufficient evidence in one workspace.
+It is a replay and does not represent the benchmark's success rate or a guarantee
+of repeatability. `demo/video.json` identifies each run, source commit and workflow.
+Memory is the actual earlier model-selected, probe-verified outcome. Retrieval
+and explicit citation are separate measures; the later model did not cite it. All failed
+measurements remain available separately. The outline below is also suitable for
+a three-minute live presentation once provider access is configured.
 
 1. **0:00–0:20 — The problem.** Checkout is failing. Explain that everything on
    screen is a synthetic environment and that the investigation is an actual model

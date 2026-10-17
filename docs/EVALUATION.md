@@ -17,10 +17,12 @@ Graph mode also preloads persisted outcomes through the native memory query.
 Preloading is explicitly attributed to application code, never to a model tool
 decision. Memory retrieval and memory citation are reported separately: an outcome
 being available does not prove that it caused the model's recommendation.
-Read tools remain available throughout evidence collection; an experimental
-restriction on completed reads was reverted after a measured regression.
-The server validates target probes before accepting proposals. These guards
-do not choose a recovery action or disclose evaluator answers.
+Completed deterministic snapshot reads are removed from later tool choices;
+proposals are limited to targets probed in the current investigation. The server
+independently validates target probes. These guards do not choose a recovery
+action or disclose evaluator answers. The release agent matches the measured
+combined configuration at `2c8aaaa`; the unrestricted variant's complete 20/24
+report is retained separately in `demo/development/open-reads-suite.json`.
 
 Cases cover known/late migration, ingestion order, changed topology, unrelated
 telemetry, failed historical recovery, verified memory, fresh conversation,
