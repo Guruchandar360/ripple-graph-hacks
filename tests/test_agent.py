@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 from google.genai import types
 
-from ripple.agent import Agent, declarations
+from ripple.agent import Agent, bounded_declarations, declarations
 
 
 def test_native_function_loop_produces_a_cited_action_without_executing_it(service, settings):
@@ -80,3 +80,23 @@ def test_baseline_provider_schema_does_not_expose_graph_or_memory():
     names = {f.name for f in declarations("baseline")}
     assert {"get_context", "probe_service", "propose_action"} <= names
     assert not names & {"get_impact", "retrieve_memory"}
+
+
+def test_current_retrieved_global_blocks_remove_proposal_but_unseen_policies_do_not():
+    policies = [
+        {"action": action, "allowed": False, "target": "*", "source_id": "constraint-source"}
+        for action in ("rollback_deployment", "disable_feature_flag", "restart_service")
+    ]
+    available, blocked = bounded_declarations("graph", 7, policies, [])
+    assert not blocked and "propose_action" in {f.name for f in available}
+    available, blocked = bounded_declarations("graph", 7, policies, ["constraint-source"])
+    assert blocked and [f.name for f in available] == ["submit_diagnosis"]
+    policies[0]["target"] = "payments"
+    available, blocked = bounded_declarations("graph", 7, policies, ["constraint-source"])
+    assert not blocked and "propose_action" in {f.name for f in available}
+
+
+def test_last_two_turns_reserve_structured_conclusion_without_selecting_an_action():
+    available, blocked = bounded_declarations("baseline", 2, [], [])
+    assert not blocked
+    assert {f.name for f in available} == {"propose_action", "submit_diagnosis"}

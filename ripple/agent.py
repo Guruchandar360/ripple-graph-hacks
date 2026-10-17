@@ -108,6 +108,20 @@ def declarations(mode: str):
     ]
 
 
+def bounded_declarations(mode: str, remaining: int, policies: list[dict], seen: list[str]):
+    """Tool authorization is derived only from current policies the model has retrieved."""
+    blocked = {
+        r["action"] for r in policies if not r["allowed"] and r["target"] == "*" and r["source_id"] in seen
+    }
+    globally_blocked = {"rollback_deployment", "disable_feature_flag", "restart_service"} <= blocked
+    functions = declarations(mode)
+    if globally_blocked:
+        functions = [f for f in functions if f.name == "submit_diagnosis"]
+    elif remaining <= 2:
+        functions = [f for f in functions if f.name in {"propose_action", "submit_diagnosis"}]
+    return functions, globally_blocked
+
+
 class Agent:
     def __init__(self, service: RippleService, settings: Settings):
         self.service, self.settings = service, settings
@@ -151,6 +165,22 @@ class Agent:
                     if self.client is None:
                         raise DomainError("Gemini API key is not configured.", 503, "model_unconfigured")
                     remaining = self.settings.max_turns - turn
+                    policies = await asyncio.to_thread(self.service.repo.policies, workspace)
+                    functions, globally_blocked = bounded_declarations(
+                        mode, remaining, policies, current["seen_evidence"]
+                    )
+                    if globally_blocked:
+                        contents.append(
+                            types.Content(
+                                role="user",
+                                parts=[
+                                    types.Part.from_text(
+                                        text="Current policies you retrieved block every supported recovery action. "
+                                        "No proposal is authorizable. Submit a cited diagnosis identifying missing diagnostic evidence."
+                                    )
+                                ],
+                            )
+                        )
                     if remaining <= 2:
                         contents.append(
                             types.Content(
@@ -176,7 +206,10 @@ class Agent:
                                         system_instruction=SYSTEM,
                                         temperature=0.1,
                                         max_output_tokens=1600,
-                                        tools=[types.Tool(function_declarations=declarations(mode))],
+                                        tools=[types.Tool(function_declarations=functions)],
+                                        tool_config=types.ToolConfig(
+                                            function_calling_config=types.FunctionCallingConfig(mode="ANY")
+                                        ),
                                         automatic_function_calling=types.AutomaticFunctionCallingConfig(
                                             disable=True
                                         ),
