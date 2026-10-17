@@ -50,8 +50,8 @@ All operational data is synthetic. No production systems are connected.
 
 ## Participant-owned checks
 
-The participant must sign in and register with WeMakeDevs, verify age/consent and
-team eligibility, choose the final track(s), review and understand the submission,
+The participant must sign in and register with WeMakeDevs, verify the organizer's
+eligibility/consent requirements and team membership, choose the final track(s), review and understand the submission,
 and complete the organizer's final submission form. These are not inferred from
 the existence of source files or a local checklist.
 

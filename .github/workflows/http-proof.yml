@@ -5,10 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
-      falkordb:
-        image: falkordb/falkordb:6.0.2
-        ports: ["6379:6379"]
-        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 12
       ollama:
         image: ollama/ollama:latest
         ports: ["11434:11434"]
@@ -24,12 +20,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: docker compose up -d --wait
       - run: pip install -r requirements.txt
+      - run: npm ci && npm run build
+        working-directory: frontend
       - run: |
           python -c 'import json,os,urllib.request; r=urllib.request.Request("http://127.0.0.1:11434/api/pull",data=json.dumps({"model":os.environ["OLLAMA_MODEL"],"stream":False}).encode(),headers={"Content-Type":"application/json"}); print(urllib.request.urlopen(r,timeout=600).read().decode())'
           mkdir -p artifacts/http-proof
           python -m uvicorn ripple.main:app --host 127.0.0.1 --port 8000 > artifacts/http-proof/server.log 2>&1 &
-      - run: python -m ripple.http_smoke
+      - run: python -m ripple.http_smoke --restart-database
       - uses: actions/upload-artifact@v4
         if: always()
         with:

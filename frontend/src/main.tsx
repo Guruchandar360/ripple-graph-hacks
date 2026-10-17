@@ -623,6 +623,7 @@ function App() {
   const migrationPresent=sources.some(s=>s.id==="migration");
   const evidenceChange=[...(run?.events ?? [])].reverse().find(e=>e.title==="Evidence changed" || e.title==="Evidence revision revalidation");
   const previousAction=run?.proposals.find(p=>p.stale)?.action ?? run?.previous_recommendation?.action;
+  const recordedMemoryCount=new Set(replays.flatMap(r=>r.graph.nodes.filter(n=>n.label==="Incident" && n.id.startsWith("memory-")).map(n=>n.id))).size;
   const status = run?.status ?? (preview ? "fixture_preview" : "ready");
   const relatedEntityIds = selected ? new Set([selected.id, ...graph.edges.filter(e => e.target === selected.id && e.kind === "CHANGES").map(e => e.source)]) : new Set<string>();
   const linkedSources = sources.filter(s => graph.edges.some(e => relatedEntityIds.has(e.source) && e.target === s.id && e.kind === "SUPPORTED_BY"));
@@ -671,7 +672,7 @@ function App() {
           >
             <History size={17} />
             Incident memory
-            <span className="nav-count">{workspace?.memory_count ?? 0}</span>
+            <span className="nav-count">{isShowcase ? recordedMemoryCount : workspace?.memory_count ?? 0}</span>
           </button>
           <button
             aria-label="Evaluation results"
