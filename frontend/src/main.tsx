@@ -45,6 +45,7 @@ import {
   Plus,
   Minus,
   Maximize2,
+  Menu,
   Radio,
   RefreshCw,
   Search,
@@ -213,6 +214,37 @@ function App() {
     return () => document.removeEventListener("keydown", key);
   }, []);
   const [showSources, setShowSources] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [noticeDismissed, setNoticeDismissed] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusable = () => Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), a[href], select:not(:disabled), summary'
+    ) ?? []).filter(el => el.getClientRects().length > 0);
+    focusable()[0]?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSidebarOpen(false);
+      if (event.key === "Tab") {
+        const elements = focusable();
+        const first = elements[0], last = elements.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault(); last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault(); first?.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", key);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", key);
+      menuButtonRef.current?.focus();
+    };
+  }, [sidebarOpen]);
   const [mode, setMode] = useState<"graph" | "baseline">("graph");
   useEffect(() => { window.scrollTo({top:0,left:0,behavior:"instant"}); }, [view]);
   const [search, setSearch] = useState("");
@@ -239,14 +271,14 @@ function App() {
       timelineRef.current.scrollTop = timelineRef.current.scrollHeight;
     }
   }, [run?.events.length]);
-  const [compact, setCompact] = useState(window.innerWidth <= 680);
+  const [compact, setCompact] = useState(window.innerWidth <= 900);
   const [fitWorkspace, setFitWorkspace] = useState(window.innerWidth >= 1200 && window.innerHeight >= 650);
   useEffect(() => {
     const resize = () => {
-      setCompact(window.innerWidth <= 680);
+      setCompact(window.innerWidth <= 900);
       setFitWorkspace(window.innerWidth >= 1200 && window.innerHeight >= 650);
       window.requestAnimationFrame(() =>
-        flowRef.current?.fitView({ padding: 0.12 }),
+        flowRef.current?.fitView({ padding: window.innerWidth <= 900 ? 0.06 : 0.12 }),
       );
     };
     window.addEventListener("resize", resize);
@@ -594,17 +626,17 @@ function App() {
           id: n.id,
           type: "service",
           position: fitWorkspace
-            ? ({ storefront: {x:0,y:0}, checkout: {x:200,y:0}, payments: {x:400,y:0}, ledger: {x:400,y:110}, inventory: {x:200,y:110}, notifications: {x:0,y:110} }[n.id] ?? {x:0,y:0})
+            ? ({ storefront: {x:0,y:0}, checkout: {x:300,y:0}, payments: {x:600,y:0}, ledger: {x:600,y:220}, inventory: {x:300,y:220}, notifications: {x:0,y:220} }[n.id] ?? {x:0,y:0})
             : compact
             ? ({
                 storefront: { x: 0, y: 0 },
-                checkout: { x: 0, y: 140 },
-                payments: { x: 0, y: 280 },
-                inventory: { x: 225, y: 140 },
-                ledger: { x: 225, y: 280 },
+                checkout: { x: 0, y: 210 },
+                payments: { x: 0, y: 420 },
+                inventory: { x: 225, y: 210 },
+                ledger: { x: 225, y: 420 },
                 notifications: { x: 225, y: 0 },
               }[n.id] ?? { x: 0, y: 0 })
-            : { x: Number(n.data.x), y: Number(n.data.y) },
+            : ({ storefront: {x:0,y:0}, checkout: {x:300,y:0}, payments: {x:600,y:0}, ledger: {x:600,y:220}, inventory: {x:300,y:220}, notifications: {x:0,y:220} }[n.id] ?? {x:Number(n.data.x),y:Number(n.data.y)}),
           draggable: false,
           data: {
             name: String(n.data.name),
@@ -629,18 +661,18 @@ function App() {
           animated: active && affected.has(e.source),
           style: {
             stroke: highlighted.has(e.id)
-              ? "#5ce0c4"
+              ? "#2dd4a7"
               : affected.has(e.source)
                 ? "#d5a05b"
-                : "#34424e",
+                : "#3a5144",
             strokeWidth: highlighted.has(e.id) ? 2.5 : 1.5,
           },
           label: highlighted.has(e.id) ? "depends on" : undefined,
-          labelStyle: { fill: "#85a49e", fontSize: 10 },
-          labelBgStyle: { fill: "#101920" },
+          labelStyle: { fill: "#b5d4c8", fontSize: 14 },
+          labelBgStyle: { fill: "#111a16" },
           markerEnd: {
             type: "arrowclosed" as const,
-            color: highlighted.has(e.id) ? "#5ce0c4" : "#52616f",
+            color: highlighted.has(e.id) ? "#2dd4a7" : "#6b8977",
           },
         })),
     [graph, highlighted, active, affected],
@@ -658,7 +690,14 @@ function App() {
 
   return (
     <div className={`app-shell view-${view} ${isShowcase ? "is-showcase" : ""}`}>
-      <aside className="sidebar">
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
+      <aside id="workspace-navigation" ref={sidebarRef} className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}
+        aria-label="Workspace navigation" role={compact && sidebarOpen ? "dialog" : undefined} aria-modal={compact && sidebarOpen ? true : undefined} inert={compact && !sidebarOpen ? true : undefined}
+        onClick={event => {
+          if ((event.target as HTMLElement).closest("nav button, .scenario-item, .history-list button")) setSidebarOpen(false);
+        }}>
+        <button className="drawer-close icon-button" aria-label="Close navigation" onClick={() => setSidebarOpen(false)}><X size={20}/></button>
         <a
           className="brand"
           href="#"
@@ -720,9 +759,10 @@ function App() {
             <ArrowUpRight className="nav-extra" size={12} />
           </button>
         </nav>
-        <div className="nav-label scenario-label">
-          SCENARIOS<span>03</span>
-        </div>
+        <details className="sidebar-scenarios">
+        <summary className="nav-label scenario-label">
+          <span className="scenario-summary-label">Scenarios<small>{scenario.name}</small></span><span>03</span><ChevronDown size={14}/>
+        </summary>
         <div className="scenario-list">
           {scenarios.map((s) => (
             <button
@@ -740,9 +780,11 @@ function App() {
             </button>
           ))}
         </div>
+        </details>
         <div className="nav-label history-label">
           RECENT INVESTIGATIONS
           <button
+            aria-label="New investigation"
             title="New investigation"
             onClick={() => {
               setRun(null);
@@ -794,6 +836,7 @@ function App() {
       </aside>
       <div className="main-shell">
         <header className="topbar">
+          <button ref={menuButtonRef} className="mobile-menu-trigger icon-button" aria-label="Open navigation" aria-expanded={sidebarOpen} aria-controls="workspace-navigation" onClick={() => setSidebarOpen(true)}><Menu size={22}/></button>
           <div className="breadcrumb">
             <span>Workspace</span>
             <ChevronRight size={13} />
@@ -808,6 +851,7 @@ function App() {
             </strong>
           </div>
           <div className="topbar-right">
+            <span className="header-mode"><span className="status-dot"/>{run?.replay ? "REPLAY" : preview ? "FIXTURE PREVIEW" : "LIVE WORKSPACE"}</span>
             <button
               className="command-trigger"
               onClick={() => setShowCommands(true)}
@@ -829,6 +873,7 @@ function App() {
             </span>
             <button
               className="icon-button"
+              aria-label="Connection and setup"
               title="Connection and setup"
               onClick={() => setShowSetup(true)}
             >
@@ -836,14 +881,39 @@ function App() {
             </button>
           </div>
         </header>
-        {isShowcase && (
-          <div className="showcase-notice">
-            <Play size={14} />
-            <span><strong>Recorded showcase</strong> · Synthetic incidents. Explore actual exported runs in Results. Live investigations require the local backend.</span>
-            <a href="https://github.com/Guruchandar360/ripple-graph-hacks#run-locally" target="_blank" rel="noreferrer">Run locally <ArrowUpRight size={12} /></a>
-          </div>
-        )}
-        <main>
+        <main id="main-content">
+          {!noticeDismissed && (
+            <div className={`mode-banner ${preview ? "preview" : ""}`}>
+              <span>
+                {isShowcase && <><strong>Recorded showcase</strong> · </>}
+                {run?.replay
+                  ? `Synthetic recording · ${run.model ?? "model"} · ${run.mode} mode. Actions are disabled.`
+                  : preview
+                    ? "Explore the synthetic scenario. Connect your graph and model to investigate."
+                    : "Synthetic infrastructure. Real graph queries, state changes, and probe results."}
+                {isShowcase && " Live investigations require the local backend."}
+              </span>
+              <button
+                aria-label={evidenceChange ? "Jump to evidence change" : undefined}
+                className={evidenceChange ? "amber-text" : ""}
+                onClick={() => {
+                  if (evidenceChange) {
+                    inspectEvidence(["migration"]);
+                    timelineRef.current?.querySelector(`[data-event-id="${evidenceChange.id}"]`)?.scrollIntoView({block:"center",behavior:"smooth"});
+                  } else setShowSetup(true);
+                }}
+              >
+                {evidenceChange ? "View evidence change" : preview ? "Connect workspace" : "Connection details"}
+                {evidenceChange ? <Zap size={13}/> : <ArrowRight size={13} />}
+              </button>
+              {isShowcase && (
+                <a className="notice-local" href="https://github.com/Guruchandar360/ripple-graph-hacks#run-locally" target="_blank" rel="noreferrer">
+                  Run locally <ArrowUpRight size={14}/>
+                </a>
+              )}
+              <button className="notice-dismiss icon-button" aria-label="Dismiss workspace notice" onClick={() => setNoticeDismissed(true)}><X size={16}/></button>
+            </div>
+          )}
           {error && (
             <div role="alert" className="error-banner">
               <TriangleAlert size={17} />
@@ -867,6 +937,40 @@ function App() {
                     works.
                   </p>
                 </div>
+                <div className="hero-actions">
+                <div className="incident-action">
+                  <button
+                    className="primary"
+                    onClick={startInvestigation}
+                    disabled={busy || active || !!run?.replay}
+                  >
+                    {busy || active ? (
+                      <LoaderCircle size={16} className="spin" />
+                    ) : (
+                      <Sparkles size={16} />
+                    )}
+                    {active
+                      ? "Investigating…"
+                      : run
+                        ? "Investigate again"
+                        : "Start investigation"}
+                    <ArrowRight size={15} />
+                  </button>
+                  <label className="mode-select">
+                    <select
+                      aria-label="Investigation mode"
+                      value={mode}
+                      onChange={(e) =>
+                        setMode(e.target.value as "graph" | "baseline")
+                      }
+                      disabled={active}
+                    >
+                      <option value="graph">Graph-backed agent</option>
+                      <option value="baseline">Full-document baseline</option>
+                    </select>
+                    <ChevronDown size={12} />
+                  </label>
+                </div>
                 <button
                   className="secondary small"
                   onClick={() => setShowSources(true)}
@@ -875,50 +979,8 @@ function App() {
                   Explore evidence
                   <ArrowUpRight size={13} />
                 </button>
+                </div>
               </section>
-              <div className={`mode-banner ${preview ? "preview" : ""}`}>
-                <span>
-                  <span className="mini-pill">
-                    {run?.replay
-                      ? "REPLAY"
-                      : preview
-                        ? "FIXTURE PREVIEW"
-                        : "LIVE WORKSPACE"}
-                  </span>
-                  {run?.replay
-                    ? `Recorded ${run.model ?? "model"} investigation · ${run.mode} mode. Actions are disabled.`
-                    : preview
-                      ? "Explore the synthetic scenario. Connect your graph and model to investigate."
-                      : "Synthetic infrastructure. Real graph queries, state changes, and probe results."}
-                </span>
-                <button aria-label={evidenceChange ? "Jump to evidence change" : undefined} className={evidenceChange ? "amber-text" : ""} onClick={() => {
-                  if (evidenceChange) {
-                    inspectEvidence(["migration"]);
-                    timelineRef.current?.querySelector(`[data-event-id="${evidenceChange.id}"]`)?.scrollIntoView({block:"center",behavior:"smooth"});
-                  } else setShowSetup(true);
-                }}>
-                  {evidenceChange ? "View evidence change" : preview ? "Connect workspace" : "Connection details"}
-                  {evidenceChange ? <Zap size={13}/> : <ArrowRight size={13} />}
-                </button>
-              </div>
-              <ContextBar
-                services={services.length}
-                sources={sources.filter((s) => s.data.active !== false).length}
-                revision={run?.replay ? run.current_revision ?? 0 : workspace?.revision ?? 0}
-                memory={run?.replay ? graph.nodes.filter(n => n.label === "Incident" && n.id.startsWith("memory-")).length : workspace?.memory_count ?? 0}
-                preview={preview}
-                stage={
-                  run?.status === "recovered"
-                    ? 4
-                    : run?.proposals.length
-                      ? 3
-                      : affected.size
-                        ? 2
-                        : run?.events.length && run.events.length > 1
-                          ? 1
-                          : 0
-                }
-              />
               <label className="mobile-scenario-picker">
                 <span>SCENARIO</span>
                 <select
@@ -972,42 +1034,26 @@ function App() {
                     </span>
                   </div>
                 </div>
-                <div className="incident-action">
-                  <button
-                    className="primary"
-                    onClick={startInvestigation}
-                    disabled={busy || active || !!run?.replay}
-                  >
-                    {busy || active ? (
-                      <LoaderCircle size={16} className="spin" />
-                    ) : (
-                      <Sparkles size={16} />
-                    )}
-                    {active
-                      ? "Investigating…"
-                      : run
-                        ? "Investigate again"
-                        : "Start investigation"}
-                    <ArrowRight size={15} />
-                  </button>
-                  <label className="mode-select">
-                    <select
-                      aria-label="Investigation mode"
-                      value={mode}
-                      onChange={(e) =>
-                        setMode(e.target.value as "graph" | "baseline")
-                      }
-                      disabled={active}
-                    >
-                      <option value="graph">Graph-backed agent</option>
-                      <option value="baseline">Full-document baseline</option>
-                    </select>
-                    <ChevronDown size={12} />
-                  </label>
-                </div>
               </section>
+              <ContextBar
+                services={services.length}
+                sources={sources.filter((s) => s.data.active !== false).length}
+                revision={run?.replay ? run.current_revision ?? 0 : workspace?.revision ?? 0}
+                memory={run?.replay ? graph.nodes.filter(n => n.label === "Incident" && n.id.startsWith("memory-")).length : workspace?.memory_count ?? 0}
+                preview={preview}
+                stage={
+                  run?.status === "recovered"
+                    ? 4
+                    : run?.proposals.length
+                      ? 3
+                      : affected.size
+                        ? 2
+                        : run?.events.length && run.events.length > 1
+                          ? 1
+                          : 0
+                }
+              />
               <div className="investigation-grid">
-                <div className="center-column">
                   <section className="panel graph-panel">
                     <div className="panel-heading">
                       <div>
@@ -1053,7 +1099,7 @@ function App() {
                         edges={flowEdges}
                         nodeTypes={nodeTypes}
                         fitView
-                        fitViewOptions={{ padding: 0.16 }}
+                        fitViewOptions={{ padding: compact ? 0.06 : 0.12 }}
                         minZoom={0.15}
                         maxZoom={1.3}
                         nodesConnectable={false}
@@ -1070,9 +1116,14 @@ function App() {
                           variant={BackgroundVariant.Dots}
                           gap={20}
                           size={1}
-                          color="#27333d"
+                          color="#294033"
                         />
                       </ReactFlow>
+                      <span className="graph-controls">
+                        <button aria-label="Zoom in graph" onClick={() => flowRef.current?.zoomIn()}><Plus size={13}/></button>
+                        <button aria-label="Zoom out graph" onClick={() => flowRef.current?.zoomOut()}><Minus size={13}/></button>
+                        <button aria-label="Fit graph to panel" onClick={() => flowRef.current?.fitView({padding:compact ? .06 : .12})}><Maximize2 size={13}/></button>
+                      </span>
                       {!services.length && (
                         <div className="graph-empty">
                           <Network size={30} />
@@ -1089,11 +1140,7 @@ function App() {
                         }{" "}
                         dependency relationships
                       </span>
-                      <span className="graph-controls">
-                        <button aria-label="Zoom in graph" onClick={() => flowRef.current?.zoomIn()}><Plus size={13}/></button>
-                        <button aria-label="Zoom out graph" onClick={() => flowRef.current?.zoomOut()}><Minus size={13}/></button>
-                        <button aria-label="Fit graph to panel" onClick={() => flowRef.current?.fitView({padding:.12})}><Maximize2 size={13}/></button>
-                      </span>
+
                       <span>
                         {preview
                           ? "Read-only preview"
@@ -1102,7 +1149,7 @@ function App() {
                       </span>
                     </div>
                   </section>
-                  <PolicyLedger graph={graph} preview={preview} onInspect={inspectEvidence} />
+                <div className="investigation-columns">
                   <section className="panel timeline-panel">
                     <div className="panel-heading">
                       <div>
@@ -1204,7 +1251,6 @@ function App() {
                       </div>
                     )}
                   </section>
-                </div>
                 <aside className="detail-column" aria-label="Recovery decision and evidence" tabIndex={0}>
                   <nav className="detail-jumps" aria-label="Decision and evidence shortcuts">
                     <button onClick={() => jumpToDetail(decisionRef.current)} aria-label="Jump to recovery decision">
@@ -1442,6 +1488,8 @@ function App() {
                     )}
                   </section>
                 </aside>
+                </div>
+                <PolicyLedger graph={graph} preview={preview} onInspect={inspectEvidence} />
               </div>
               <footer className="page-footer">
                 <span>

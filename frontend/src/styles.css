@@ -116,7 +116,7 @@ svg {
   gap: 10px;
   margin: 31px 0 27px;
   padding: 12px 10px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .workspace-avatar {
   display: grid;
@@ -133,14 +133,14 @@ svg {
 }
 .workspace-picker strong {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: #e0e7ee;
   font-weight: 500;
 }
 .workspace-picker > div > span {
   display: block;
   color: #9aa8b5;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 1px;
 }
 .workspace-picker > svg {
@@ -150,7 +150,7 @@ svg {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.6px;
   color: #7c8c9e;
   margin: 0 12px 13px;
@@ -178,14 +178,14 @@ svg {
 .key-hint {
   margin-left: auto;
   letter-spacing: 1px;
-  font-size: 10px;
+  font-size: 12px;
   color: #72b9ab;
 }
 .nav-count {
   margin-left: auto;
   border: 1px solid var(--line);
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 12px;
   padding: 0 5px;
 }
 .scenario-label {
@@ -215,7 +215,7 @@ svg {
 }
 .scenario-number {
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     SFMono-Regular,
     Consolas,
     monospace;
@@ -233,13 +233,13 @@ svg {
   background: #18322e;
 }
 .scenario-item strong {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   display: block;
   max-width: 139px;
 }
 .scenario-item small {
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.9px;
   color: #7e8c9d;
   margin-top: 4px;
@@ -254,14 +254,14 @@ svg {
 }
 .history-label {
   margin-top: 33px;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.2px;
 }
 .history-label button {
   display: flex;
 }
 .history-empty {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.8;
   padding: 4px 12px;
   color: #637487;
@@ -273,7 +273,7 @@ svg {
   width: 100%;
   text-align: left;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 12px;
   color: #a9b8c5;
 }
 .history-list > button:hover {
@@ -285,7 +285,7 @@ svg {
 .history-list small {
   display: block;
   color: #7d8c9a;
-  font-size: 9px;
+  font-size: 12px;
 }
 .sidebar-bottom {
   margin-top: auto;
@@ -300,14 +300,14 @@ svg {
   border-radius: 7px;
   background: linear-gradient(110deg, #172a2a, #111d25);
   color: #7ad8c2;
-  font-size: 11px;
+  font-size: 12px;
 }
 .graph-powered > div {
   flex: 1;
 }
 .graph-powered span {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: #7e9e9b;
   margin-top: 2px;
 }
@@ -316,7 +316,7 @@ svg {
   align-items: center;
   gap: 10px;
   padding: 22px 9px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .profile-avatar {
   background: #24303d;
@@ -332,7 +332,7 @@ svg {
   flex: 1;
 }
 .profile > div > span {
-  font-size: 9px;
+  font-size: 12px;
   color: #7b8b9c;
   display: block;
   margin-top: 1px;
@@ -356,7 +356,7 @@ svg {
   display: flex;
   gap: 12px;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
 }
 .breadcrumb > span {
   color: #738598;
@@ -375,7 +375,7 @@ svg {
 }
 .simulation-label {
   font:
-    9px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   letter-spacing: 1px;
@@ -388,7 +388,7 @@ svg {
   border-radius: 4px;
 }
 .connection {
-  font-size: 10px;
+  font-size: 12px;
   color: #9faab6;
   display: flex;
   gap: 7px;
@@ -425,7 +425,7 @@ main {
   gap: 18px;
 }
 .eyebrow {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.6px;
   font-weight: 600;
   color: #8b9cac;
@@ -449,7 +449,7 @@ main {
 }
 .page-intro p {
   color: #8d9eae;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.05px;
 }
 .secondary {
@@ -461,14 +461,14 @@ main {
   justify-content: center;
   gap: 8px;
   background: #121c25;
-  font-size: 11px;
+  font-size: 12px;
   color: #cad3dc;
 }
 .secondary:hover {
   background: #1c2a34;
 }
 .secondary.small {
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 10px;
 }
 .mode-banner {
@@ -481,7 +481,7 @@ main {
   border: 1px solid #244039;
   border-radius: 6px;
   color: #9ab5ab;
-  font-size: 10px;
+  font-size: 12px;
   gap: 12px;
 }
 .mode-banner.preview {
@@ -496,7 +496,7 @@ main {
 }
 .mini-pill {
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   letter-spacing: 1px;
@@ -510,7 +510,7 @@ main {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
   color: #c0d4e1;
 }
@@ -545,7 +545,7 @@ main {
 }
 .incident-code {
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     SFMono-Regular,
     Consolas,
     monospace;
@@ -556,7 +556,7 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1;
   padding: 5px 7px;
   border: 1px solid #5d4930;
@@ -590,7 +590,7 @@ main {
   margin-bottom: 7px;
 }
 .incident-main > p {
-  font-size: 10px;
+  font-size: 12px;
   color: #92a3b3;
   max-width: 650px;
 }
@@ -600,7 +600,7 @@ main {
   gap: 17px;
   margin-top: 15px;
   color: #8a9aa9;
-  font-size: 9px;
+  font-size: 12px;
 }
 .incident-meta > span {
   display: flex;
@@ -623,7 +623,7 @@ main {
   background: #67dec3;
   color: #0b2e28;
   font-weight: 650;
-  font-size: 11px;
+  font-size: 12px;
   padding: 11px 14px;
   border-radius: 6px;
   box-shadow: 0 2px 12px #5ce0c410;
@@ -646,7 +646,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 9px;
+  font-size: 12px;
   color: #94a4b2;
 }
 .mode-select select {
@@ -700,13 +700,13 @@ main {
   color: #91a4b4;
 }
 .panel-heading h3 {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
   letter-spacing: 0.1px;
 }
 .count-tag {
-  font-size: 8px;
+  font-size: 12px;
   color: #9aabb9;
   border: 1px solid #303e49;
   padding: 1px 5px;
@@ -716,7 +716,7 @@ main {
 }
 .panel-caption {
   font:
-    7px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   letter-spacing: 0.9px;
@@ -732,7 +732,7 @@ main {
   gap: 14px;
   padding: 13px 16px;
   color: #7e94a4;
-  font-size: 8px;
+  font-size: 12px;
 }
 .graph-context > span {
   display: flex;
@@ -817,7 +817,7 @@ main {
 }
 .node-kind {
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   color: #8296a6;
@@ -844,7 +844,7 @@ main {
   color: #dce5ee;
 }
 .node-owner {
-  font-size: 8px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -853,7 +853,7 @@ main {
   text-transform: capitalize;
 }
 .node-owner > span {
-  font-size: 7px;
+  font-size: 12px;
   color: #8d9dad;
 }
 .react-flow__handle {
@@ -869,7 +869,7 @@ main {
   padding: 12px 16px;
   border-top: 1px solid #1f2b36;
   color: #8297a8;
-  font-size: 8px;
+  font-size: 12px;
 }
 .graph-footer > span {
   display: flex;
@@ -912,7 +912,7 @@ main {
   color: #c6d3de;
 }
 .timeline-empty > p {
-  font-size: 10px;
+  font-size: 12px;
   color: #8599a8;
   text-align: center;
   line-height: 1.8;
@@ -924,7 +924,7 @@ main {
   gap: 15px;
   margin-top: 23px;
   color: #647b8d;
-  font-size: 8px;
+  font-size: 12px;
 }
 .process-steps > span {
   display: flex;
@@ -959,12 +959,12 @@ main {
   color: #80bbaa;
 }
 .decision-empty h4 {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: #cedae4;
 }
 .decision-empty > p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   color: #879aa9;
   margin: 9px auto 20px;
@@ -977,7 +977,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 8px;
+  font-size: 12px;
   color: #8499a9;
 }
 .evidence-change-card {
@@ -1002,7 +1002,7 @@ main {
   place-items: center;
 }
 .evidence-change-card .eyebrow {
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 1.1px;
   margin-bottom: 13px;
   max-width: 200px;
@@ -1015,7 +1015,7 @@ main {
   color: #e1d8c8;
 }
 .evidence-change-card p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   color: #aa9e8d;
   margin-top: 9px;
@@ -1025,7 +1025,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 12px;
   width: 100%;
   border: 1px solid #70573c;
   border-radius: 5px;
@@ -1038,7 +1038,7 @@ main {
   background: #4b3824;
 }
 .evidence-change-card small {
-  font-size: 8px;
+  font-size: 12px;
   color: #928775;
   display: block;
   text-align: center;
@@ -1053,7 +1053,7 @@ main {
   gap: 8px;
   width: 100%;
   padding: 11px 15px;
-  font-size: 9px;
+  font-size: 12px;
   color: #b0beca;
 }
 .source-list > button > svg {
@@ -1072,7 +1072,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 8px;
+  font-size: 12px;
   color: #6f8496;
   padding: 23px 0;
 }
@@ -1101,7 +1101,7 @@ main {
   border-radius: 6px;
   padding: 12px;
   color: #f4b3b6;
-  font-size: 11px;
+  font-size: 12px;
 }
 .error-banner > span {
   flex: 1;
@@ -1164,20 +1164,20 @@ main {
   gap: 10px;
 }
 .event-heading strong {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: #cfdae4;
 }
 .event-heading time {
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   color: #788b9c;
   white-space: nowrap;
 }
 .event-kind {
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: #6ca89b;
   display: block;
@@ -1187,7 +1187,7 @@ main {
   color: #bd9d69;
 }
 .event-content > p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   color: #a1b1bf;
   margin-top: 5px;
@@ -1204,7 +1204,7 @@ main {
 }
 .citation-row > button {
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   display: flex;
@@ -1224,7 +1224,7 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 12px;
   color: #86ad9e;
   padding: 10px 0 15px;
 }
@@ -1234,7 +1234,7 @@ main {
   gap: 17px;
   padding: 12px 18px;
   border-top: 1px solid var(--line);
-  font-size: 8px;
+  font-size: 12px;
   color: #8297a8;
 }
 .inline-warning {
@@ -1246,7 +1246,7 @@ main {
   padding: 10px;
   border-radius: 5px;
   color: #dfb97e;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
   margin-top: 13px;
 }
@@ -1264,7 +1264,7 @@ main {
 }
 .code-chip {
   font:
-    9px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   display: inline-block;
@@ -1275,7 +1275,7 @@ main {
   color: #b4c7d8;
 }
 .decision-body > p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.8;
   color: #a0b2c0;
   margin-top: 12px;
@@ -1289,7 +1289,7 @@ main {
   border-top: 1px solid var(--line);
 }
 .probe-results > strong {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
 }
 .probe-results > div {
@@ -1297,7 +1297,7 @@ main {
   align-items: center;
   gap: 7px;
   color: #80d4b1;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 8px;
 }
 .probe-results > div > span {
@@ -1305,7 +1305,7 @@ main {
 }
 .probe-results b {
   font:
-    9px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
 }
@@ -1318,12 +1318,12 @@ main {
   margin: 9px 0;
 }
 .inspector-body > p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.9;
   color: #a0b2bf;
 }
 .source-time {
-  font-size: 8px;
+  font-size: 12px;
   color: #849cad;
   display: flex;
   align-items: center;
@@ -1332,7 +1332,7 @@ main {
 }
 .source-id {
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     Consolas,
     monospace;
   display: inline-block;
@@ -1349,7 +1349,7 @@ main {
   border: 1px solid #2d4354;
   padding: 13px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .missing-evidence > strong {
   font-weight: 500;
@@ -1366,7 +1366,7 @@ main {
   color: #8398a9;
 }
 .text-xs {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
 }
 .section-summary {
@@ -1389,7 +1389,7 @@ main {
 }
 .section-summary p {
   color: #9eb3bb;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.9;
 }
 .empty-state {
@@ -1451,7 +1451,7 @@ main {
   display: flex;
   gap: 8px;
   align-items: start;
-  font-size: 11px;
+  font-size: 12px;
   color: #bbbc9f;
   border: 1px solid #464d39;
   background: #222a21;
@@ -1471,7 +1471,7 @@ main {
   margin-bottom: 22px;
 }
 .evaluation-info p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.9;
 }
 .evaluation-info > svg {
@@ -1500,7 +1500,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 11px;
+  font-size: 12px;
 }
 th {
   font-weight: 500;
@@ -1514,7 +1514,7 @@ td {
 }
 td small {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: #718a9c;
   margin-top: 5px;
 }
@@ -1525,7 +1525,7 @@ td small {
 .empty-recordings {
   padding: 25px;
   color: #91a5b5;
-  font-size: 11px;
+  font-size: 12px;
 }
 .replay-row {
   display: flex;
@@ -1534,7 +1534,7 @@ td small {
   width: 100%;
   padding: 17px 20px;
   border-bottom: 1px solid var(--line);
-  font-size: 11px;
+  font-size: 12px;
 }
 .replay-row > span:first-of-type {
   flex: 1;
@@ -1587,7 +1587,7 @@ td small {
   color: #e1eaf1;
 }
 .modal > p {
-  font-size: 11px;
+  font-size: 12px;
   color: #9aafbf;
   line-height: 1.9;
   margin-bottom: 22px;
@@ -1612,7 +1612,7 @@ td small {
 }
 .setup-row > div > span {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: #829aaa;
   margin-top: 3px;
 }
@@ -1624,7 +1624,7 @@ td small {
   margin: 20px 0 15px;
 }
 .setup-code > span {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   display: block;
@@ -1633,7 +1633,7 @@ td small {
 }
 .setup-code code {
   font:
-    11px/1.9 ui-monospace,
+    12px/1.9 ui-monospace,
     Consolas,
     monospace;
   color: #85c5b4;
@@ -1644,7 +1644,7 @@ td small {
   justify-content: center;
   gap: 25px;
   margin-top: 17px;
-  font-size: 10px;
+  font-size: 12px;
   color: #9fbeb6;
 }
 .setup-links > a {
@@ -1688,7 +1688,7 @@ td small {
   color: #9eb3c3;
 }
 .source-document small {
-  font-size: 8px;
+  font-size: 12px;
   color: #7893a6;
   margin-top: 15px;
   display: block;
@@ -1764,14 +1764,14 @@ td small {
     max-width: 390px;
   }
   .panel-caption {
-    font-size: 6px;
+    font-size: 12px;
     letter-spacing: 0.3px;
   }
   .panel-heading {
     padding: 14px 12px;
   }
   .panel-heading h3 {
-    font-size: 10px;
+    font-size: 12px;
   }
   .graph-hint {
     display: none;
@@ -1784,16 +1784,16 @@ td small {
   }
   .incident-meta {
     gap: 10px;
-    font-size: 8px;
+    font-size: 12px;
   }
   .primary {
-    font-size: 10px;
+    font-size: 12px;
   }
   .evidence-change-card {
     padding: 17px 14px;
   }
   .evidence-change-card .eyebrow {
-    font-size: 6px;
+    font-size: 12px;
   }
   .evidence-change-icon {
     right: 13px;
@@ -1804,7 +1804,7 @@ td small {
     gap: 6px;
   }
   .workspace-picker strong {
-    font-size: 10px;
+    font-size: 12px;
   }
   .topbar-right {
     gap: 14px;
@@ -1845,7 +1845,7 @@ td small {
     flex: 1;
   }
   .incident-meta {
-    font-size: 9px;
+    font-size: 12px;
   }
   .incident-main > p {
     max-width: none;
@@ -1854,7 +1854,7 @@ td small {
     display: flex;
   }
   .panel-caption {
-    font-size: 7px;
+    font-size: 12px;
   }
   .page-intro h1 {
     font-size: 28px;
@@ -1916,7 +1916,7 @@ td small {
     padding: 0 14px;
   }
   .breadcrumb {
-    font-size: 10px;
+    font-size: 12px;
     gap: 7px;
   }
   .breadcrumb > span {
@@ -1929,7 +1929,7 @@ td small {
     gap: 10px;
   }
   .simulation-label {
-    font-size: 7px;
+    font-size: 12px;
     padding: 3px 4px;
   }
   .connection {
@@ -1956,7 +1956,7 @@ td small {
     letter-spacing: -0.8px;
   }
   .page-intro p {
-    font-size: 10px;
+    font-size: 12px;
     max-width: 240px;
     line-height: 1.8;
   }
@@ -1970,11 +1970,11 @@ td small {
     display: none;
   }
   .eyebrow {
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 1px;
   }
   .mode-banner {
-    font-size: 9px;
+    font-size: 12px;
     padding: 9px;
     align-items: start;
   }
@@ -2004,10 +2004,10 @@ td small {
   .incident-meta {
     flex-wrap: wrap;
     gap: 9px;
-    font-size: 8px;
+    font-size: 12px;
   }
   .incident-main > p {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.8;
   }
   .incident-action {
@@ -2027,7 +2027,7 @@ td small {
     height: 260px;
   }
   .graph-context {
-    font-size: 7px;
+    font-size: 12px;
     gap: 10px;
     padding: 11px;
   }
@@ -2038,18 +2038,18 @@ td small {
     display: none;
   }
   .panel-heading h3 {
-    font-size: 10px;
+    font-size: 12px;
   }
   .graph-footer {
     padding: 11px 10px;
-    font-size: 7px;
+    font-size: 12px;
   }
   .timeline-empty h4 {
-    font-size: 11px;
+    font-size: 12px;
   }
   .process-steps {
     gap: 7px;
-    font-size: 7px;
+    font-size: 12px;
   }
   .timeline {
     padding: 15px 11px;
@@ -2059,19 +2059,19 @@ td small {
     gap: 7px;
   }
   .event-heading strong {
-    font-size: 10px;
+    font-size: 12px;
   }
   .event-heading time {
-    font-size: 7px;
+    font-size: 12px;
   }
   .event-content > p {
-    font-size: 9px;
+    font-size: 12px;
   }
   .timeline-event {
     gap: 9px;
   }
   .page-footer {
-    font-size: 7px;
+    font-size: 12px;
     line-height: 1.8;
   }
   .modal {
@@ -2087,17 +2087,17 @@ td small {
     gap: 8px;
   }
   .setup-row > div > span {
-    font-size: 8px;
+    font-size: 12px;
   }
   .setup-row .status-pill {
-    font-size: 7px;
+    font-size: 12px;
   }
   .section-summary {
     padding: 20px;
     gap: 20px;
   }
   .section-summary p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .metrics-grid {
     grid-template-columns: 1fr;
@@ -2120,14 +2120,14 @@ td small {
     font-size: 18px;
   }
   .empty-state p {
-    font-size: 11px;
+    font-size: 12px;
   }
   .evaluation-info {
     padding: 14px;
     gap: 9px;
   }
   .evaluation-info p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .memory-card {
     padding: 19px;
@@ -2157,11 +2157,11 @@ td small {
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 14px;
-    font-size: 10px;
+    font-size: 12px;
     background: #121e28;
   }
   .mobile-scenario-picker > span {
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 1px;
     color: #849bab;
   }
@@ -2172,7 +2172,7 @@ td small {
     background: none;
     color: #c1d6e4;
     border: 0;
-    font-size: 10px;
+    font-size: 12px;
   }
   .mobile-scenario-picker option {
     background: #14222c;

@@ -3,7 +3,7 @@
 ## Automated implementation checks
 
 - **44 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39039350264), including **two real FalkorDB integration tests** against version 6.0.2.
-- **Seven application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation, participant checklist and late startup responses preserving a selected replay.
+- **Eight application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, keyboard-operated mobile drawer, command navigation, participant checklist and late startup responses preserving a selected replay.
 - **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
 - Strict TypeScript compilation, production build and Ruff checks passed.
 - Locally: 42 backend tests passed; two real-server integration tests are skipped because this Windows host has no running FalkorDB server.
@@ -13,15 +13,19 @@ Behavioral tests use an explicit test-only repository double. Agent-loop unit te
 The real database tests verify actual incoming dependency paths, persisted action results and memory, native policy supersession, and rejection of stale approval. The static showcase never substitutes for FalkorDB during live operations.
 
 Browser coverage includes the desktop workspace at 1280×720, 1366×768,
-1440×900, 1536×864 and 1920×1080 at normal zoom. Short windows down to 600 pixels
-high preserve scrolling and bounded evidence dialogs; phone/tablet navigation
-reaches every view. `frontend/scripts/verify-public.mjs` also checks the actual
-published site, panel bounds, browser errors and MP4 delivery.
+1440×900, 1536×864 and 1920×1080 at normal zoom. The page scrolls naturally; the
+graph is at least 420 pixels tall, while timeline and recommendation text expand
+without internal clipping. Short windows down to 600 pixels high preserve bounded
+evidence dialogs; phone/tablet navigation reaches every view.
+`frontend/scripts/verify-public.mjs` checks the actual published site, natural
+flow, browser errors and MP4 delivery. `frontend/scripts/audit-design.mjs` checks
+the bundled fonts, a 12px minimum text size, graph labels and clipping across
+desktop, tablet and phone sizes, and saves screenshots in `artifacts/`.
 
-The decision sidebar has persistent Decision, Change and Sources shortcuts so
+The decision column retains Decision, Change and Sources shortcuts so
 lower evidence cards are discoverable without changing browser zoom. Each shortcut
-scrolls to and focuses its destination; the timeline and sidebar are keyboard
-scrollable. Desktop browser checks exercise the shortcuts at each tested size.
+scrolls to and focuses its destination. Keyboard users can navigate the mobile
+drawer and operate graph controls. Browser checks exercise these interactions.
 
 ## Real model measurements
 

@@ -80,7 +80,7 @@ export function ContextBar({
           { name: "Verify", icon: Sparkles },
         ].map((s, i) => (
           <span className="journey-group" key={s.name}>
-            <span className={`journey-step ${i < stage ? "done" : ""}`}>
+            <span className={`journey-step ${i < stage ? "done" : ""} ${i === Math.min(stage, 3) ? "current" : ""}`} aria-current={i === Math.min(stage, 3) ? "step" : undefined}>
               {i < stage ? <Check size={12} /> : <s.icon size={12} />}
               {s.name}
             </span>

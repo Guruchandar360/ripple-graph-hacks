@@ -36,11 +36,11 @@ and output in the [official pricing](https://ai.google.dev/gemini-api/docs/prici
 Account access and quota still need verification; no automatic model switch or
 paid fallback occurs. Gemini has not been measured in this project.
 
-The investigation workspace adapts to the available browser size at 100% zoom.
-Desktop panels use the window height; long evidence, timeline and decision
-content scroll inside their panels. Narrow or short windows retain normal page
-scrolling. Memory, results and checklist views also remain reachable on phones
-and tablets.
+The investigation workspace uses natural page scrolling at 100% zoom. A large
+dependency graph leads into the timeline and recovery decision; explanations and
+evidence expand to show their complete content. Inter and JetBrains Mono are
+bundled locally. Tablet and phone layouts stack the panels and use a navigation
+drawer. Memory, results, evidence dialogs and the checklist remain available.
 
 ## Run locally
 

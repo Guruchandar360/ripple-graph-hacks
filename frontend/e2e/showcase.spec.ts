@@ -13,10 +13,13 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   }
   await expect(page.getByText("Recorded showcase", {exact:true})).toBeVisible();
   await expect(page.getByText("6 services", {exact:true})).toBeVisible();
+  await page.getByRole("button", {name:"Dismiss workspace notice",exact:true}).click();
+  await expect(page.locator(".mode-banner")).toHaveCount(0);
+  await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
   if (await page.locator(".probe-results").count()) {
+    await page.locator(".probe-results").scrollIntoViewIfNeeded();
     await expect(page.locator(".probe-results")).toBeInViewport();
-    const probe = await page.locator(".probe-results").boundingBox();
-    expect(probe!.y + probe!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+    expect(await page.locator(".proposal-rationale").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBeTruthy();
   }
   const start = page.getByRole("button", {name:"Start investigation",exact:true});
   if (await start.count()) {
@@ -46,6 +49,7 @@ test("showcase loads under its public subpath and cannot send live mutations", a
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     if (width >= 1200) {
       for (const selector of [".graph-panel", ".timeline-panel", ".page-footer"]) {
+        await page.locator(selector).scrollIntoViewIfNeeded();
         await expect(page.locator(selector)).toBeInViewport();
       }
       await page.getByRole("button", {name:"Jump to sources",exact:true}).click();
