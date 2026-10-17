@@ -1007,6 +1007,7 @@ function App() {
                       {run?.incident ?? scenario.incident}
                     </span>
                     <span
+                      data-status={status}
                       className={`status-pill ${status === "recovered" ? "green" : status === "investigating" ? "teal" : "amber"}`}
                     >
                       <span className="status-dot" />
