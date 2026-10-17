@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from ripple import simulator
 from ripple.config import Settings
+from ripple.evidence import resolve_sources
 from ripple.fixtures import SCENARIOS, initial_sources, migration_source, source
 from ripple.models import Diagnosis, DomainError, Proposal, now
 from ripple.repository import GraphRepository
@@ -92,7 +93,7 @@ class RippleService:
             return self.public_state(self.repo.read(workspace))
 
     def start(self, workspace: str, mode="graph") -> dict:
-        if not self.settings.api_key:
+        if not self.settings.model_configured:
             raise DomainError(
                 "Set GEMINI_API_KEY in the server environment to start a live investigation.",
                 503,
@@ -117,6 +118,8 @@ class RippleService:
                 "generation": state["generation"],
                 "revision": state["revision"],
                 "mode": mode,
+                "model_provider": self.settings.provider,
+                "model": self.settings.active_model,
                 "status": "investigating",
                 "created_at": now(),
                 "events": [],
@@ -207,7 +210,9 @@ class RippleService:
             elif name == "retrieve_memory":
                 if run["mode"] == "baseline":
                     raise DomainError("Graph incident-memory retrieval is disabled for this baseline.", 400)
-                memories = self.repo.memories(workspace)
+                target = args.get("service", "payments")
+                self._service(state, target)
+                memories = self.repo.memories(workspace, target)
                 result = {"outcomes": memories, "evidence_ids": [m["id"] for m in memories]}
                 run["memory_ids"] = [m["id"].removeprefix("memory-") for m in memories]
                 self.event(
@@ -268,7 +273,7 @@ class RippleService:
                     "result": None,
                     "created_at": now(),
                 }
-                blocked = self.block_reason(state, p)
+                blocked = self.block_reason(workspace, state, p)
                 p["blocked_reason"] = blocked
                 run["proposals"].append(p)
                 self.event(
@@ -294,14 +299,13 @@ class RippleService:
         if target not in {s["id"] for s in state["services"]}:
             raise DomainError("Unknown simulator service.", 400, "invalid_service")
 
-    @staticmethod
-    def block_reason(state: dict, action: dict) -> str | None:
+    def block_reason(self, workspace: str, state: dict, action: dict) -> str | None:
         sources = {s["id"]: s for s in state["sources"] if s["active"]}
-        if "telemetry-gap" in sources:
-            return "Origin diagnostics are missing; no supported action is justified by current evidence."
-        if action["action"] == "rollback_deployment":
-            if "migration" in sources:
-                return "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible."
+        rules = self.repo.policies(workspace, action["action"], action["target"])
+        blocked = [rule for rule in rules if not rule["allowed"]]
+        if blocked:
+            return " ".join(rule["reason"] for rule in blocked)
+        if action["action"] == "rollback_deployment" and not any(rule["allowed"] for rule in rules):
             return "Current ledger compatibility is unverified. Obtain migration evidence before rollback."
         if action["action"] == "disable_feature_flag" and (
             action["target"] != "payments" or not any(s.get("flag_enabled") is True for s in sources.values())
@@ -324,7 +328,7 @@ class RippleService:
                 raise DomainError("Migration evidence has already been ingested.")
             if run["status"] == "investigating":
                 raise DomainError("Wait for the investigation to pause before injecting evidence.")
-            state["sources"].append(migration_source())
+            state["sources"] = resolve_sources([*state["sources"], migration_source()])
             state["revision"] += 1
             for candidate in state["runs"].values():
                 if candidate["generation"] == state["generation"]:
@@ -359,7 +363,7 @@ class RippleService:
                 raise DomainError(
                     "Evidence changed. This approval is stale; investigate again.", code="stale_action"
                 )
-            reason = self.block_reason(state, action)
+            reason = self.block_reason(workspace, state, action)
             if reason or action["blocked_reason"]:
                 raise DomainError(reason or action["blocked_reason"], code="action_blocked")
             if run["status"] != "awaiting_approval":
@@ -372,7 +376,22 @@ class RippleService:
                 | set(self.repo.impact(workspace, "checkout")["affected_services"])
             )
             before = [simulator.probe(state["simulator"], s, state["dependencies"]) for s in targets]
-            runtime = simulator.execute(state["simulator"], action["action"], action["target"])
+            try:
+                runtime = simulator.execute(state["simulator"], action["action"], action["target"])
+            except DomainError as exc:
+                action["blocked_reason"] = exc.message
+                run["status"] = "needs_evidence"
+                self.event(
+                    run,
+                    "warning",
+                    "Runtime precondition blocked execution",
+                    exc.message,
+                    action["evidence_ids"],
+                    action_id=action_id,
+                )
+                self.repo.save(workspace, state)
+                self.archive_graph(workspace, state, run)
+                raise
             after = [simulator.probe(runtime, s, state["dependencies"]) for s in targets]
             verified = (
                 bool(after) and any(not p["healthy"] for p in before) and all(p["healthy"] for p in after)

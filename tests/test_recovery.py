@@ -10,7 +10,7 @@ from ripple.repository import projection
 WS = "a" * 32
 
 
-def investigate(service, scenario="outdated-fix", workspace=WS):
+def investigate(service, scenario="memory", workspace=WS):
     service.load(workspace, scenario)
     run = service.start(workspace)
     service.tool(workspace, run["id"], "get_context", {})
@@ -44,8 +44,8 @@ def test_flag_action_changes_actual_simulator_state_and_verifies_impact(service,
 
 
 def test_new_evidence_invalidates_previously_approved_action(service, repo):
-    run, pid = investigate(service)
-    proposal = propose(service, run, pid)
+    run, pid = investigate(service, "outdated-fix")
+    proposal = propose(service, run, pid, "rollback_deployment")
     service.inject(WS, run["id"])
     with pytest.raises(DomainError, match="approval is stale"):
         service.execute(WS, run["id"], proposal["action_id"])
@@ -54,8 +54,8 @@ def test_new_evidence_invalidates_previously_approved_action(service, repo):
 
 
 def test_reinvestigate_after_migration_retains_compatible_recovery(service):
-    run, pid = investigate(service)
-    propose(service, run, pid)
+    run, pid = investigate(service, "outdated-fix")
+    propose(service, run, pid, "rollback_deployment")
     service.inject(WS, run["id"])
     fresh = service.start(WS)
     service.tool(WS, fresh["id"], "get_context", {})
@@ -74,11 +74,11 @@ def test_duplicate_and_concurrent_approval_execute_once(service, repo):
     assert len(repo.read(WS)["memory"]) == 1
 
 
-def test_old_rollback_is_blocked_without_current_compatibility(service, repo):
-    run, pid = investigate(service)
+def test_old_advisory_proposal_is_still_checked_against_physical_runtime(service, repo):
+    run, pid = investigate(service, "outdated-fix")
     result = propose(service, run, pid, "rollback_deployment")
-    assert not result["accepted"]
-    with pytest.raises(DomainError, match="compatibility is unverified"):
+    assert result["accepted"]
+    with pytest.raises(DomainError, match="Runtime precondition failed"):
         service.execute(WS, run["id"], result["action_id"])
     assert repo.read(WS)["simulator"]["executions"] == 0
 
@@ -146,7 +146,7 @@ def test_insufficient_evidence_blocks_remediation_and_accepts_honest_diagnosis(s
 
 
 def test_citations_must_be_retrieved_and_active(service, repo):
-    run, pid = investigate(service)
+    run, pid = investigate(service, "outdated-fix")
     for invalid in ["invented-source", "migration"]:
         with pytest.raises(DomainError, match="actually retrieved"):
             service.tool(

@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 
+from ripple.evidence import resolve_sources
 from ripple.models import now
 
 SERVICES = [
@@ -96,6 +97,15 @@ def initial_sources(scenario: str) -> list[dict]:
                 "feature-flag, or resource-exhaustion evidence explains the HTTP 503. "
                 "Obtain origin logs and request traces before choosing remediation.",
                 "2026-10-16T09:03:00Z",
+                policies=[
+                    {
+                        "action": action,
+                        "target": "*",
+                        "allowed": False,
+                        "reason": "Origin diagnostics are missing; no supported action is justified by current evidence.",
+                    }
+                    for action in ["rollback_deployment", "disable_feature_flag", "restart_service"]
+                ],
             )
         )
     else:
@@ -106,7 +116,7 @@ def initial_sources(scenario: str) -> list[dict]:
                     "Payments v2.4 release record",
                     "Payments v2.4 enabled strict_currency_validation. Checkout still sends legacy currency "
                     "strings. The previous v2.3 release predates ledger schema 2. "
-                    "The flag can be disabled at runtime without changing the deployed version.",
+                    "Both rollback and a runtime flag change require the current compatibility advisory.",
                     "2026-10-16T09:00:00Z",
                 ),
                 source(
@@ -121,17 +131,41 @@ def initial_sources(scenario: str) -> list[dict]:
                     "flag-config",
                     "Payments runtime configuration",
                     "strict_currency_validation=true. Toggle is scoped to payments. "
-                    "Disabling it restores acceptance of legacy currency strings. "
+                    "Disabling it restores acceptance of legacy currency strings, but requires a current safety advisory. "
                     "Verify downstream checkout and storefront probes after any change.",
                     "2026-10-16T09:01:00Z",
                     record_type="flag_config",
                     flag_enabled=True,
                 ),
+                source(
+                    "compatibility",
+                    "Last received ledger compatibility advisory",
+                    "The last received signed advisory reports ledger schema 1 as of 08:00 UTC. "
+                    "It permits rollback to payments v2.3. A flag-only mitigation has not been approved "
+                    "in this advisory. A later schema migration may supersede this record; runtime "
+                    "preconditions are checked again before any action executes.",
+                    "2026-10-16T08:00:00Z",
+                    fact_key="payments-ledger-compatibility",
+                    policies=[
+                        {
+                            "action": "rollback_deployment",
+                            "target": "payments",
+                            "allowed": True,
+                            "reason": "The last received schema 1 advisory permits payments v2.3 rollback.",
+                        },
+                        {
+                            "action": "disable_feature_flag",
+                            "target": "payments",
+                            "allowed": False,
+                            "reason": "A flag-only mitigation requires an updated ledger safety advisory.",
+                        },
+                    ],
+                ),
             ]
         )
     if scenario == "memory":
         items.append(migration_source())
-    return items
+    return resolve_sources(items)
 
 
 def migration_source() -> dict:
@@ -142,6 +176,21 @@ def migration_source() -> dict:
         "Rollback to v2.3 is blocked. Payments v2.4 supports schema 2; its currency flag can "
         "be disabled without rolling back. This supersedes assumptions made in INC-1988.",
         "2026-10-16T08:55:00Z",
+        fact_key="payments-ledger-compatibility",
+        policies=[
+            {
+                "action": "rollback_deployment",
+                "target": "payments",
+                "allowed": False,
+                "reason": "Ledger schema 2 blocks payments v2.3. The old rollback procedure is incompatible.",
+            },
+            {
+                "action": "disable_feature_flag",
+                "target": "payments",
+                "allowed": True,
+                "reason": "The schema 2 advisory permits disabling validation while retaining payments v2.4.",
+            },
+        ],
     )
 
 

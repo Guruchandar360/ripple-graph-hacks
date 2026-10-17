@@ -29,6 +29,8 @@ import {
   CircleCheck,
   CircleDot,
   Clock3,
+  Command,
+  Rocket,
   Code2,
   Database,
   ExternalLink,
@@ -70,6 +72,10 @@ import type {
 import { api, post } from "./api";
 import "@xyflow/react/dist/style.css";
 import "./styles.css";
+import "./polish.css";
+import { ContextBar } from "./components/ContextBar";
+import { LaunchReadiness } from "./components/LaunchReadiness";
+import { CommandMenu } from "./components/CommandMenu";
 
 const fallbackScenarios: Scenario[] = [
   {
@@ -169,9 +175,9 @@ function ServiceNode({ data }: NodeProps<Node<ServiceNodeData>>) {
 const nodeTypes = { service: ServiceNode };
 
 function App() {
-  const [view, setView] = useState<"investigate" | "memory" | "results">(
-    "investigate",
-  );
+  const [view, setView] = useState<
+    "investigate" | "memory" | "results" | "readiness"
+  >("investigate");
   const [scenarios, setScenarios] = useState(fallbackScenarios);
   const [scenario, setScenario] = useState(fallbackScenarios[0]);
   const [health, setHealth] = useState<Health | null>(null);
@@ -187,6 +193,18 @@ function App() {
   const [evaluations, setEvaluations] = useState<Evaluations | null>(null);
   const [replays, setReplays] = useState<Replay[]>([]);
   const [showSetup, setShowSetup] = useState(false);
+  const [showCommands, setShowCommands] = useState(false);
+  const closeCommands = useCallback(() => setShowCommands(false), []);
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setShowCommands((v) => !v);
+      }
+    };
+    document.addEventListener("keydown", key);
+    return () => document.removeEventListener("keydown", key);
+  }, []);
   const [showSources, setShowSources] = useState(false);
   const [mode, setMode] = useState<"graph" | "baseline">("graph");
   const [search, setSearch] = useState("");
@@ -623,6 +641,14 @@ function App() {
             <Activity size={17} />
             Evaluation results
           </button>
+          <button
+            className={view === "readiness" ? "nav-item selected" : "nav-item"}
+            onClick={() => setView("readiness")}
+          >
+            <Rocket size={17} />
+            Launch checklist
+            <ArrowUpRight className="nav-extra" size={12} />
+          </button>
         </nav>
         <div className="nav-label scenario-label">
           SCENARIOS<span>03</span>
@@ -706,10 +732,23 @@ function App() {
                 ? "Investigate"
                 : view === "memory"
                   ? "Incident memory"
-                  : "Evaluation results"}
+                  : view === "readiness"
+                    ? "Launch checklist"
+                    : "Evaluation results"}
             </strong>
           </div>
           <div className="topbar-right">
+            <button
+              className="command-trigger"
+              onClick={() => setShowCommands(true)}
+              aria-label="Open command menu"
+            >
+              <Search size={13} />
+              <span>Quick actions</span>
+              <kbd>
+                <Command size={10} /> K
+              </kbd>
+            </button>
             <span className="simulation-label">
               <Layers3 size={12} />
               SIMULATOR
@@ -780,6 +819,24 @@ function App() {
                   <ArrowRight size={13} />
                 </button>
               </div>
+              <ContextBar
+                services={services.length}
+                sources={sources.filter((s) => s.data.active !== false).length}
+                revision={workspace?.revision ?? run?.current_revision ?? 0}
+                memory={workspace?.memory_count ?? 0}
+                preview={preview}
+                stage={
+                  run?.status === "recovered"
+                    ? 4
+                    : run?.proposals.length
+                      ? 3
+                      : affected.size
+                        ? 2
+                        : run?.events.length && run.events.length > 1
+                          ? 1
+                          : 0
+                }
+              />
               <label className="mobile-scenario-picker">
                 <span>SCENARIO</span>
                 <select
@@ -1502,8 +1559,22 @@ function App() {
               </section>
             </>
           )}
+          {view === "readiness" && (
+            <LaunchReadiness onConfigure={() => setShowSetup(true)} />
+          )}
         </main>
       </div>
+      {showCommands && (
+        <CommandMenu
+          onClose={closeCommands}
+          onNavigate={setView}
+          onInvestigate={() => {
+            setView("investigate");
+            startInvestigation();
+          }}
+          onSetup={() => setShowSetup(true)}
+        />
+      )}
       {showSetup && (
         <div className="modal-backdrop" onClick={() => setShowSetup(false)}>
           <section

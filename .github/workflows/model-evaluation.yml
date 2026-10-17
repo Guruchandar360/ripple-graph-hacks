@@ -1,0 +1,50 @@
+name: Real model evaluation
+on:
+  workflow_dispatch:
+    inputs:
+      cases:
+        description: Number of real synthetic cases (1-12), each in graph and baseline modes
+        default: "1"
+        required: true
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    services:
+      falkordb:
+        image: falkordb/falkordb:6.0.2
+        ports: ["6379:6379"]
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 12
+      ollama:
+        image: ollama/ollama:latest
+        ports: ["11434:11434"]
+    env:
+      MODEL_PROVIDER: ollama
+      OLLAMA_MODEL: qwen3:1.7b
+      RUN_TIMEOUT_SECONDS: "300"
+      GLOBAL_DAILY_RUNS: "100"
+      WORKSPACE_DAILY_RUNS: "10"
+      MAX_WORKSPACES: "100"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Pull explicit free local model
+        run: |
+          curl --fail http://127.0.0.1:11434/api/pull -d '{"model":"qwen3:1.7b","stream":false}'
+          curl --fail http://127.0.0.1:11434/api/version
+          curl --fail http://127.0.0.1:11434/api/tags
+      - name: Run real model / graph comparisons
+        env:
+          CASE_COUNT: ${{ inputs.cases }}
+        run: python -m ripple.evaluate --cases "$CASE_COUNT" --mode both
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-model-evaluation
+          path: |
+            artifacts/evaluations.json
+            artifacts/replays/

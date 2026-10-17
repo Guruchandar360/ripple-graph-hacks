@@ -12,6 +12,7 @@ from pathlib import Path
 
 from ripple.agent import Agent
 from ripple.config import Settings
+from ripple.evidence import resolve_sources
 from ripple.fixtures import migration_source, source
 from ripple.models import DomainError, now
 from ripple.repository import GraphRepository
@@ -48,7 +49,7 @@ CASES = [
 
 
 def bootstrap_memory(service, workspace, failed=False):
-    service.load(workspace, "outdated-fix")
+    service.load(workspace, "memory")
     run = service.start(workspace)
     service.tool(workspace, run["id"], "get_context", {})
     probe = service.tool(workspace, run["id"], "probe_service", {"service": "payments"})
@@ -71,7 +72,7 @@ def prepare(service, workspace, case):
         bootstrap_memory(service, workspace, failed=case.variant == "failed_restart")
     service.load(workspace, case.scenario)
     state = service.repo.read(workspace)
-    if case.variant in {"migration", "shuffled"}:
+    if case.scenario == "outdated-fix" and case.variant != "late":
         state["sources"].append(migration_source())
     if case.variant == "shuffled":
         state["sources"].reverse()
@@ -121,6 +122,7 @@ def prepare(service, workspace, case):
                 superseded_by="topology",
             )
         )
+    state["sources"] = resolve_sources(state["sources"])
     state["revision"] += 1
     service.repo.save(workspace, state)
 
@@ -201,7 +203,7 @@ async def measure(service, agent, case, mode, index):
 
 async def evaluate(args):
     settings = Settings()
-    if not settings.api_key:
+    if not settings.model_configured:
         raise SystemExit("GEMINI_API_KEY is required. No benchmark was run and no scores were generated.")
     repo = GraphRepository(settings)
     repo.health()
@@ -220,7 +222,8 @@ async def evaluate(args):
     result = {
         "measured": bool(rows),
         "created_at": now(),
-        "model": settings.model,
+        "model": settings.active_model,
+        "model_provider": settings.provider,
         "cases": rows,
         "summary": {
             "runs": len(rows),

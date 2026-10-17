@@ -25,6 +25,7 @@ RELATIONS = {
     "EXECUTED",
     "VERIFIED_BY",
     "LEARNED_FROM",
+    "PERMITS",
 }
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,39 @@ def projection(state: dict) -> tuple[list[dict], list[dict]]:
         edge(a, b, "DEPENDS_ON")
     for source in state["sources"]:
         add(source["id"], "Source", source)
+    templates = set()
+    for record in state["sources"]:
+        for index, rule in enumerate(record.get("policies", [])):
+            action_id = f"template:{rule['action']}:{rule['target']}"
+            if action_id not in templates:
+                add(
+                    action_id,
+                    "Action",
+                    {
+                        "name": rule["action"].replace("_", " "),
+                        "template": True,
+                        "action": rule["action"],
+                        "target": rule["target"],
+                    },
+                )
+                templates.add(action_id)
+            rid = f"policy:{record['id']}:{index}"
+            add(
+                rid,
+                "Constraint",
+                {
+                    **rule,
+                    "active": record.get("active", False),
+                    "name": rule["reason"],
+                    "source_id": record["id"],
+                    "effective_at": record["effective_at"],
+                },
+            )
+            edge(rid, record["id"], "SUPPORTED_BY", record["id"])
+            edge(rid, action_id, "PERMITS" if rule["allowed"] else "BLOCKS", record["id"])
+    if any(s["id"] == "topology" for s in state["sources"]):
+        for service in state["services"]:
+            edge(service["id"], "topology", "SUPPORTED_BY")
     if state["scenario"]:
         incident = state["scenario"]["incident"]
         add(incident, "Incident", {"name": incident, "summary": state["scenario"]["symptom"]})
@@ -85,6 +119,7 @@ def projection(state: dict) -> tuple[list[dict], list[dict]]:
     for memory in state["memory"]:
         mid = f"memory-{memory['id']}"
         add(mid, "Incident", memory)
+        edge(mid, memory["target"], "AFFECTS", "")
         for run in state["runs"].values():
             if memory["id"] in run.get("memory_ids", []):
                 edge(run["id"], mid, "LEARNED_FROM", "")
@@ -172,7 +207,26 @@ class GraphRepository:
             aliases[node["id"]] = alias
             params[f"id{i}"] = node["id"]
             params[f"data{i}"] = json.dumps(node["data"])
-            query += f"CREATE ({alias}:Entity:{node['label']} {{id:$id{i}, data:$data{i}}})\n"
+            native = ""
+            for key in [
+                "name",
+                "title",
+                "active",
+                "effective_at",
+                "ingested_at",
+                "record_type",
+                "fact_key",
+                "template",
+                "action",
+                "target",
+                "allowed",
+                "verified",
+            ]:
+                value = node["data"].get(key)
+                if isinstance(value, (str, bool, int, float)):
+                    params[f"p{i}_{key}"] = value
+                    native += f", {key}:$p{i}_{key}"
+            query += f"CREATE ({alias}:Entity:{node['label']} {{id:$id{i}, data:$data{i}{native}}})\n"
         for i, rel in enumerate(edges):
             assert rel["kind"] in RELATIONS
             params[f"edge{i}"] = json.dumps(rel)
@@ -227,7 +281,25 @@ class GraphRepository:
             "ownership": [{"service": r[0], "team": json.loads(r[1])} for r in rows],
             "sources": [s for s in sources if s.get("active")],
             "evidence_ids": [s["id"] for s in sources if s.get("active")],
+            "policy_graph": self.policies(workspace),
         }
+
+    def policies(self, workspace: str, action: str | None = None, target: str | None = None) -> list[dict]:
+        rows = self._query(
+            self.graph_name(workspace),
+            """
+        MATCH (c:Constraint)-[r:BLOCKS|PERMITS]->(a:Action)
+        MATCH (c)-[:SUPPORTED_BY]->(s:Source)
+        WHERE c.active=true AND a.template=true
+        RETURN c.data, s.id
+        """,
+        )
+        rules = [{**json.loads(row[0]), "source_id": row[1]} for row in rows]
+        return [
+            rule
+            for rule in rules
+            if (not action or rule["action"] == action) and (not target or rule["target"] in {target, "*"})
+        ]
 
     def sources(self, workspace: str) -> list[dict]:
         return [
@@ -235,13 +307,15 @@ class GraphRepository:
             for r in self._query(self.graph_name(workspace), "MATCH (s:Source) RETURN s.data")
         ]
 
-    def memories(self, workspace: str) -> list[dict]:
+    def memories(self, workspace: str, target: str | None = None) -> list[dict]:
         # Prior verified/failed outcomes are graph incident nodes, independent of chat context.
         return [
             json.loads(r[0])
             for r in self._query(
                 self.graph_name(workspace),
-                "MATCH (i:Incident) WHERE i.id STARTS WITH 'memory-' RETURN i.data",
+                "MATCH (i:Incident)-[:AFFECTS]->(s:Service) "
+                "WHERE i.id STARTS WITH 'memory-' AND ($target='' OR s.id=$target) RETURN i.data",
+                {"target": target or ""},
             )
         ]
 

@@ -5,6 +5,7 @@ from copy import deepcopy
 import pytest
 
 from ripple.config import Settings
+from ripple.evidence import policy_records
 from ripple.fixtures import new_state
 from ripple.models import DomainError
 from ripple.repository import projection
@@ -79,8 +80,23 @@ class TestRepository:
         sources = [s for s in self.sources(workspace) if s["active"]]
         return {"sources": sources, "evidence_ids": [s["id"] for s in sources]}
 
-    def memories(self, workspace):
-        return [{**m, "id": f"memory-{m['id']}"} for m in self.read(workspace)["memory"]]
+    def policies(self, workspace, action=None, target=None):
+        state = self.read(workspace)
+        if action and target:
+            return policy_records(state["sources"], action, target)
+        return [
+            {**rule, "source_id": source["id"]}
+            for source in state["sources"]
+            if source["active"]
+            for rule in source.get("policies", [])
+        ]
+
+    def memories(self, workspace, target=None):
+        return [
+            {**m, "id": f"memory-{m['id']}"}
+            for m in self.read(workspace)["memory"]
+            if not target or m["target"] == target
+        ]
 
     def reserve_run(self, workspace):
         self.check()

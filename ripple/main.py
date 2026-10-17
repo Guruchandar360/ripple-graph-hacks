@@ -15,6 +15,7 @@ from ripple.agent import Agent
 from ripple.config import Settings
 from ripple.fixtures import SCENARIOS, initial_sources, new_state
 from ripple.models import DomainError, EvidenceRequest, StartRun
+from ripple.readiness import checklist
 from ripple.repository import GraphRepository, projection
 from ripple.service import RippleService
 
@@ -92,8 +93,9 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
             database = "unavailable"
         return {
             "database": database,
-            "model": settings.model,
-            "model_configured": bool(settings.api_key),
+            "model": settings.active_model,
+            "model_provider": settings.provider,
+            "model_configured": settings.model_configured,
             "synthetic": True,
             "limits": {
                 "workspace_daily": settings.workspace_daily_runs,
@@ -170,6 +172,14 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
             "summary": None,
             "message": "No benchmark has been executed. No scores are claimed.",
         }
+
+    @app.get("/api/readiness")
+    def readiness():
+        try:
+            graph_connected = repo.health()
+        except DomainError:
+            graph_connected = False
+        return checklist(ROOT, graph_connected=graph_connected, model_configured=settings.model_configured)
 
     @app.get("/api/replays")
     def replays():

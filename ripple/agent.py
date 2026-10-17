@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from ripple.config import Settings
 from ripple.models import DomainError
+from ripple.providers import OllamaAdapter
 from ripple.service import RippleService
 
 logger = logging.getLogger(__name__)
@@ -100,7 +101,13 @@ class Agent:
     def __init__(self, service: RippleService, settings: Settings):
         self.service, self.settings = service, settings
         self.semaphore = asyncio.Semaphore(1)
-        self.client = genai.Client(api_key=settings.api_key) if settings.api_key else None
+        self.client = (
+            OllamaAdapter(settings.ollama_host)
+            if settings.provider == "ollama"
+            else genai.Client(api_key=settings.api_key)
+            if settings.api_key
+            else None
+        )
 
     async def run(self, workspace: str, run_id: str):
         start, calls = time.monotonic(), 0
@@ -138,7 +145,7 @@ class Agent:
                             async with self.semaphore:
                                 calls += 1
                                 response = await self.client.aio.models.generate_content(
-                                    model=self.settings.model,
+                                    model=self.settings.active_model,
                                     contents=contents,
                                     config=types.GenerateContentConfig(
                                         system_instruction=SYSTEM,
@@ -205,6 +212,8 @@ class Agent:
                 else "Gemini request failed. Check model access and API configuration, then retry."
             )
             await self._fail(workspace, run_id, message)
+        except DomainError as exc:
+            await self._fail(workspace, run_id, exc.message)
         except Exception:
             logger.exception("Investigation failed (run %s)", run_id)
             await self._fail(
