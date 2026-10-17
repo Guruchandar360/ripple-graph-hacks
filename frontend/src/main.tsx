@@ -1614,6 +1614,7 @@ function App() {
                       data-replay-case={r.evaluation_case}
                       data-replay-phase={r.demonstration_phase}
                       data-replay-repetition={r.repetition}
+                      data-replay-memory-count={r.memory_ids?.length ?? 0}
                       className="replay-row"
                       onClick={() => {
                         setRun({ ...r, replay: true });

@@ -96,13 +96,15 @@ OLLAMA_HOST=http://127.0.0.1:11434
 OLLAMA_MODEL=qwen3:4b-instruct-2507-q4_K_M
 OLLAMA_TOOL_MODE=json
 RUN_TIMEOUT_SECONDS=300
+MAX_MODEL_TURNS=5
 ```
 
 Keep Ollama running (`ollama serve` if its desktop service is not already active).
 This selection never sends requests to Gemini, and failures never trigger a paid
 fallback. CPU investigations can exceed the normal two-minute limit; for local
-benchmarking explicitly set `RUN_TIMEOUT_SECONDS=300`. Eight model turns remain
-the limit. Document any changed limits when reporting results. The real-model CI
+benchmarking explicitly set `RUN_TIMEOUT_SECONDS=300`. The CPU demonstration uses
+five turns to reserve time for a structured conclusion; the default application
+and comparative benchmark use eight. Document changed limits when reporting results. The real-model CI
 workflow demonstrates clean Linux setup with FalkorDB and Ollama service containers.
 
 The reproduced local configuration explicitly selects `OLLAMA_TOOL_MODE=json`.

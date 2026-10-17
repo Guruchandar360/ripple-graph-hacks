@@ -15,14 +15,16 @@ Repository-double and scripted-provider unit tests are separate from these runs.
 | `development/targeted-evidence-revision.json` | [39025199638](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638) | C02 only, both modes; current-context preload and service enums |
 | `development/context-preload-suite.json` | [39025933130](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025933130) | Complete 24-run measurement before memory preloading and repeated-read prevention |
 | `development/first-three-sequences.json` | [39025201898](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025201898) | All three sequential attempts; no sequence passed every acceptance check |
-| `http-proof.json` | [39026444207](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39026444207) | Actual Uvicorn HTTP requests, real model and FalkorDB, duplicate approval, visitor isolation and persistence through database restart |
+| `development/eight-turn-http-proof.json` | [39026444207](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39026444207) | Earlier successful eight-turn HTTP proof |
+| `http-proof.json` | [39032068060](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032068060) | Five-turn HTTP recovery, duplicate approval, visitor isolation and persistence through database restart |
 | `development/cached-http-timeout.json` | [39031198337](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031198337) | Later CPU-model attempt hit the 300-second bound before producing an approvable proposal; no action executed |
 
 The instruct-model measurements explicitly select
 `qwen3:4b-instruct-2507-q4_K_M` through Ollama. They do not measure Gemini.
 The JSON protocol constrains function-call syntax; the model chooses arguments,
 evidence and actions. CPU runs use 300 seconds per investigation and eight model
-turns; the default application window is 120 seconds. A late-evidence case has
+turns for comparative benchmarks; the CPU HTTP/demonstration configuration uses
+five turns. The default application window is 120 seconds. A late-evidence case has
 two fresh investigations and reports their combined time and calls.
 
 All complete measurements retain failures. Development cases are not held out;

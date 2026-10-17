@@ -39,6 +39,7 @@ async function openCase(id, expected, phase) {
   const row = page.locator(`[data-replay-case="${id}"][data-replay-mode="graph"]${sequence}`).first();
   if (!(await row.count())) throw new Error(`Required actual graph replay ${id} is absent; refusing to fake a demo.`);
   if (expected && await row.getAttribute("data-replay-status") !== expected) throw new Error(`Actual ${id} did not reach ${expected}; refusing to present it as successful.`);
+  if (phase === "memory" && Number(await row.getAttribute("data-replay-memory-count")) < 1) throw new Error("This run did not retrieve memory; refusing to claim it did.");
   await row.click();
   await page.getByText("REPLAY", { exact: true }).waitFor();
   await page.evaluate(() => scrollTo(0, 0));

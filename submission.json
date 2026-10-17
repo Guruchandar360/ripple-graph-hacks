@@ -10,5 +10,5 @@
   "video_path": "demo/ripple-demo.mp4",
   "video_kind": "actual_agent_replay",
   "video_label": "Captioned development smoke test replay, not a live hosted backend",
-  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025198861", "label": "43 backend tests, 6 browser checks, plus real model HTTP proof"}
+  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031190485", "label": "44 backend tests, 6 browser checks, plus real model HTTP proof"}
 }

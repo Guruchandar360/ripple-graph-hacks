@@ -19,3 +19,19 @@
 Record a working run only after configuring real services. Keep an unedited local
 recording as a fallback for free-host cold starts. No recording is included merely
 because this script exists. Finish with public repo/setup links and AI disclosure.
+
+## Reproduce the captioned recording
+
+Run the built local application with exported actual replays available. From
+`frontend`, run `node scripts/record-demo.mjs`; it refuses missing or unsuccessful
+required scenarios and refuses a memory claim without recorded retrieval IDs.
+Set `DEMO_REPETITION` to a recorded sequential demonstration number to select the
+same repetition's recovery, memory and insufficient-evidence phases. Without it,
+the script selects graph-mode benchmark replays.
+
+The recorder adds explanatory captions over actual application state. It does
+not manufacture events, actions or probe outcomes. The original WebM is retained;
+`scripts/transcode_demo.py` packages an H.264 MP4 with fast start after installing
+the optional `imageio-ffmpeg==0.6.0` dependency. Inspect decoded frames as well as
+duration and dimensions before publishing. The public URL and repository both
+identify recordings as replays of a synthetic simulator.

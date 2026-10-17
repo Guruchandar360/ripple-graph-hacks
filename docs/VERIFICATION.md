@@ -39,7 +39,7 @@ WeMakeDevs registration is not verified; the inspected browser session is signed
 
 ## Additional measured proof
 
-The README's Docker Compose setup completed a model-backed recovery through real HTTP requests in 103.490 seconds. It verified all three affected request probes, returned the identical result for duplicate approval, preserved memory across both a scenario reload and a database container restart, and returned HTTP 404 to a different visitor. See [the actual workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39026444207) and `demo/http-proof.json`. This used Ollama with the explicit JSON tool protocol, not Gemini.
+The README's Docker Compose setup completed a model-backed recovery through real HTTP requests in 175.738 seconds with a five-turn CPU budget and a 300-second window. It verified all three affected request probes, returned the identical result for duplicate approval, preserved memory across both a scenario reload and a database container restart, and returned HTTP 404 to a different visitor. See [the actual workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032068060) and `demo/http-proof.json`. This used Ollama with the explicit JSON tool protocol, not Gemini. An earlier successful eight-turn proof and the later eight-turn timeout are both preserved under `demo/development/`.
 
 A captioned replay video is committed as `demo/ripple-demo.mp4`, with the original WebM retained. Chromium decoded the recording at 1440×1000; the initial smoke recording is 59.24 seconds. It is recorded actual agent output, not a hosted live agent.
 

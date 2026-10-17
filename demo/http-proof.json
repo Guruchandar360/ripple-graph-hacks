@@ -1,5 +1,9 @@
 {
   "passed": true,
+  "configuration": {
+    "max_model_turns": 5,
+    "timeout_seconds": 300
+  },
   "health": {
     "database": "connected",
     "model": "qwen3:4b-instruct-2507-q4_K_M",
@@ -11,11 +15,11 @@
       "global_daily": 100
     }
   },
-  "run_id": "6297dff068cf45e48698f1f941a27997",
+  "run_id": "31c8310d5ba34c5782deca425451256d",
   "model_calls": 4,
-  "elapsed_ms": 103490,
+  "elapsed_ms": 175738,
   "verified_result": {
-    "action_id": "e8fd54c1fde24a20b9c2cf13c31f9fda",
+    "action_id": "8cc495f1946242aaaec307ff07fa87cd",
     "verified": true,
     "before": [
       {
@@ -63,7 +67,7 @@
         "synthetic": true
       }
     ],
-    "executed_at": "2026-10-17T10:54:16.991073+00:00",
+    "executed_at": "2026-10-17T12:24:14.077422+00:00",
     "synthetic": true
   },
   "duplicate_result_identical": true,
