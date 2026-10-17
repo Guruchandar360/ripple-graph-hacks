@@ -53,6 +53,10 @@ Expected impact is computed from all six simulator request probes **before** any
 remediation, exclusively inside the evaluator. An incomplete model-reported
 impact set is marked incorrect even if its action recovers the system. The UI
 shows impact accuracy and execution violations alongside outcome success.
+`expected_met` checks the expected terminal state (and whether an exercised
+stale approval was rejected). Citation validity and impact correctness are
+separate metrics; a recovered incident can still have an incomplete reported
+impact set. A green recovery result is not a claim that every metric passed.
 
 For a late evidence case, a model may legitimately ask for updated diagnostics
 instead of proposing an action. `stale_approval_rejected=null` means there was no

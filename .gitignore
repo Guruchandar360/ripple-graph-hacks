@@ -9,6 +9,7 @@ playwright-report/
 .env
 artifacts/
 frontend/public/showcase/
+demo/ripple-smoke-demo.webm
 *.egg-info/
 *.tsbuildinfo
 falkordb-page.html

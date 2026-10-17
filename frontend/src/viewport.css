@@ -9,6 +9,8 @@
 .graph-controls button:hover { color:#8ce8c7; border-color:#71b59e; }
 .graph-footer { flex-wrap:wrap; gap:6px; }
 .table-panel { overflow:auto; }
+.results-actions { display:flex; align-items:center; gap:15px; }
+@media(max-width:680px) { .view-results .page-intro { flex-wrap:wrap; } .results-actions { width:100%; } }
 
 @media (min-width:1200px) and (min-height:650px) {
   .view-investigate { height:100dvh; min-height:0; overflow:hidden; }

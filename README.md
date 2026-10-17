@@ -80,14 +80,15 @@ Gemini remains the default. To run entirely locally, install Ollama and pull a
 tool-capable model, then select it in `.env`:
 
 ```sh
-ollama pull qwen3:4b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 ```
 
 ```dotenv
 MODEL_PROVIDER=ollama
 OLLAMA_HOST=http://127.0.0.1:11434
-OLLAMA_MODEL=qwen3:4b
-OLLAMA_TOOL_MODE=native
+OLLAMA_MODEL=qwen3:4b-instruct-2507-q4_K_M
+OLLAMA_TOOL_MODE=json
+RUN_TIMEOUT_SECONDS=300
 ```
 
 Keep Ollama running (`ollama serve` if its desktop service is not already active).
@@ -97,11 +98,12 @@ benchmarking explicitly set `RUN_TIMEOUT_SECONDS=300`. Eight model turns remain
 the limit. Document any changed limits when reporting results. The real-model CI
 workflow demonstrates clean Linux setup with FalkorDB and Ollama service containers.
 
-For a local model that does not reliably emit native calls, explicitly select
-`OLLAMA_TOOL_MODE=json`. The adapter uses Ollama's constrained JSON decoding for
+The reproduced local configuration explicitly selects `OLLAMA_TOOL_MODE=json`.
+The adapter uses Ollama's constrained JSON decoding for
 the same allowlisted tool requests; the model still chooses every tool and argument.
 This protocol is recorded in each run and benchmark. Gemini always uses native
-function calling. No provider or protocol is switched automatically.
+function calling. `OLLAMA_TOOL_MODE=native` remains available for native local
+tool calling. No provider or protocol is switched automatically.
 
 ### Frontend development
 

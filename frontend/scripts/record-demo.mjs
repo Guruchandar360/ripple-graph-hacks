@@ -4,6 +4,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 const destination = path.resolve("../demo");
+const smoke = process.argv.includes("--smoke");
 await mkdir(destination, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, recordVideo: { dir: path.resolve("../artifacts/video"), size: { width: 1440, height: 1000 } } });
@@ -42,15 +43,21 @@ async function openCase(id, expected) {
 }
 await caption("Yesterday’s fix can break today’s system.", "Ripple follows connected evidence, rechecks recommendations and verifies simulator recovery. All model output shown next was recorded from actual runs.", 8);
 await results();
-await caption("Measured behavior, including failures.", "Both workflows use the same model, source documents, probe capabilities and eight-turn budget. This small synthetic evaluation does not establish general superiority.", 9);
-await openCase("C02", "recovered");
+await caption("Measured behavior, including limitations.", smoke ? "This is the development smoke test. Both modes recovered; their reported impact sets were incomplete. It is not the full 12-case benchmark." : "Both workflows use the same model, source documents, probe capabilities and eight-turn budget. This small synthetic evaluation does not establish general superiority.", 9);
+await openCase(smoke ? "C01" : "C02", "recovered");
 await caption("The graph changes what an action is allowed to do.", "A newer ledger advisory supersedes the old compatibility record. These service paths and action policies were retrieved from FalkorDB.", 8);
 const changed = page.locator(".timeline-event").filter({ hasText: "Evidence changed" }).first();
+if (!smoke) {
 if (!(await changed.count())) throw new Error("The actual evidence-change event is missing.");
 await changed.scrollIntoViewIfNeeded();
 await caption("Evidence changed. Old approvals cannot execute.", "The timeline retains the earlier investigation and the migration event. Ripple starts a fresh model conversation against the current graph revision.", 9);
+} else {
+  await page.locator(".policy-list > button").first().click();
+  await caption("Inspect the policy and its original evidence.", "The ledger migration blocks rollback while permitting a scoped flag change. The selected source is available without leaving the investigation.", 9);
+}
 await page.locator(".recommendation").scrollIntoViewIfNeeded();
 await caption("An action is not a recovery until the probes pass.", "Inspect the actual before → after request status codes. The simulator transition and its audit result are persisted together; actions are disabled in this replay.", 9);
+if (!smoke) {
 await openCase("C08", "recovered");
 const memory = page.locator(".timeline-event").filter({ hasText: "Incident memory retrieved" }).first();
 await memory.scrollIntoViewIfNeeded();
@@ -58,11 +65,13 @@ await caption("A fresh conversation remembers through the graph.", "The model re
 await openCase("C10", "needs_evidence");
 await page.locator(".timeline").scrollIntoViewIfNeeded();
 await caption("Insufficient evidence means no executed remediation.", "The agent can identify missing diagnostics and stop. Deterministic guards provide an independent boundary if the model proposes an unsafe action.", 9);
+}
 await results();
 await caption("Open source. Reproducible. Explicit limits.", "github.com/Guruchandar360/ripple-graph-hacks · Actual Qwen/Ollama runs with FalkorDB. Synthetic infrastructure, AI-assisted implementation, and complete local setup are disclosed.", 10);
 const video = page.video();
 await context.close();
-await video.saveAs(path.join(destination, "ripple-demo.webm"));
+const filename = smoke ? "ripple-smoke-demo.webm" : "ripple-demo.webm";
+await video.saveAs(path.join(destination, filename));
 await browser.close();
 if (errors.length) throw new Error(errors.join("\n"));
-console.log(`Recorded actual application output: ${path.join(destination, "ripple-demo.webm")}`);
+console.log(`Recorded actual application output: ${path.join(destination, filename)}`);

@@ -4,9 +4,11 @@
   "primary_track": "Agents That Act on Connected Data",
   "additional_tracks": ["Agent Memory and Coordination", "Company Brain"],
   "deployment_url": null,
+  "showcase_url": "https://guruchandar360.github.io/ripple-graph-hacks/",
   "registration_verified": false,
   "participant_review_verified": false,
-  "video_path": null,
-  "video_kind": null,
-  "verification": null
+  "video_path": "demo/ripple-demo.webm",
+  "video_kind": "actual_agent_replay",
+  "video_label": "Captioned development smoke test replay, not a live hosted backend",
+  "verification": {"url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39024144453", "label": "41 backend tests, real FalkorDB integration, browser and responsive checks"}
 }

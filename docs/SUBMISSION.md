@@ -4,6 +4,13 @@
 
 **Public repository:** https://github.com/Guruchandar360/ripple-graph-hacks
 
+**Recorded showcase:** https://guruchandar360.github.io/ripple-graph-hacks/
+
+**Captioned working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.webm
+
+The current video is an explicitly labeled replay of actual model output. The
+public site is read-only; use the README to run the full backend locally.
+
 **Primary track:** Agents That Act on Connected Data
 
 Optional additional tracks should be declared only if the final demonstrated
@@ -31,9 +38,13 @@ All operational data is synthetic. No production systems are connected.
 - Evaluation methodology: `docs/EVALUATION.md`.
 - Participant technical guide: `docs/CONTRIBUTOR_GUIDE.md`.
 - AI assistance disclosure: README.
-- Actual model results/replays: attach exported artifacts only after their workflows finish.
-- Working video: attach the actual recording, clearly identifying provider, replay status,
-  synthetic data and what was executed.
+- Actual model results/replays: `demo/evaluations.json` and `demo/replays/`.
+  The current development smoke test is two measured runs; full-suite results
+  replace it only when actually recorded. Earlier development failures remain
+  inspectable under `demo/development/`.
+- Working video: `demo/ripple-demo.webm`, identifying the provider, replay status,
+  synthetic data and measured behavior, including incomplete impact reporting.
+- Technical blog: `docs/BLOG.md` (public repository article; no external post claimed).
 - Full application deployment: configure Render and FalkorDB, or use complete local setup.
   A static replay showcase is not described as a hosted live backend.
 

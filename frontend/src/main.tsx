@@ -1500,7 +1500,7 @@ function App() {
                     baseline.
                   </p>
                 </div>
-                <Activity size={36} className="teal-text" />
+                <div className="results-actions"><a className="secondary small" href={isShowcase ? `${import.meta.env.BASE_URL}showcase/ripple-demo.webm` : "/api/demo-video"} target="_blank" rel="noreferrer"><Play size={14}/>Watch recorded demo<ArrowUpRight size={13}/></a><Activity size={28} className="teal-text" /></div>
               </section>
               <div className="evaluation-info">
                 <ShieldCheck size={19} />
@@ -1555,7 +1555,7 @@ function App() {
                                   c.expected_met ? "teal-text" : "amber-text"
                                 }
                               >
-                                {c.expected_met ? "Passed" : "Review"}
+                                {human(c.status)}
                               </span>
                             </td>
                             <td>{c.valid_citations ? "Valid" : "Invalid"}</td>
