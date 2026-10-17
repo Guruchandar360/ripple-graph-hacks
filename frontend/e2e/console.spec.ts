@@ -117,3 +117,26 @@ test("command navigation and participant checklist remain accessible and honest"
   await expect(page.getByText("Participant step", {exact:true})).toHaveCount(2);
   await expect(page.getByText("Preparation status is not an organizer's eligibility approval.")).toBeVisible();
 });
+
+test("desktop workspace fits at normal zoom and every evidence panel remains reachable", async ({page}) => {
+  await page.goto("/");
+  await expect(page.getByText("6 services", {exact:true})).toBeVisible();
+  for (const [width,height] of [[1280,720],[1366,768],[1440,900],[1536,864],[1920,1080]]) {
+    await page.setViewportSize({width,height});
+    for (const selector of [".graph-panel", ".timeline-panel", ".policy-ledger", ".page-footer"]) {
+      const box = await page.locator(selector).boundingBox();
+      expect(box, `${selector} exists at ${width}×${height}`).not.toBeNull();
+      expect(box!.y, `${selector} top`).toBeGreaterThanOrEqual(0);
+      expect(box!.y + box!.height, `${selector} bottom at ${width}×${height}`).toBeLessThanOrEqual(height + 1);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight + 1)).toBeTruthy();
+    await page.locator(".inspector").scrollIntoViewIfNeeded();
+    await expect(page.getByRole("heading", {name:"Evidence library",exact:true})).toBeVisible();
+    await page.locator(".policy-list > button").first().click();
+    await expect(page.getByRole("heading", {name:"Selected context",exact:true})).toBeVisible();
+    await page.getByRole("button", {name:"Clear selected context"}).click();
+  }
+  await page.setViewportSize({width:1366,height:768});
+  await page.locator(".detail-column").evaluate(el => { el.scrollTop=0; });
+  await page.screenshot({path:"../artifacts/ripple-laptop-100-percent.png"});
+});

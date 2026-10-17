@@ -53,7 +53,7 @@ export function ContextBar({
     },
   ];
   return (
-    <>
+    <div className="context-strip">
       <div className="context-metrics">
         {metrics.map((m) => (
           <div className="context-metric" key={m.label}>
@@ -95,6 +95,6 @@ export function ContextBar({
               : "Completed tool events only"}
         </span>
       </div>
-    </>
+    </div>
   );
 }

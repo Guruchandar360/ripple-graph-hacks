@@ -10,6 +10,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+from ripple import simulator
 from ripple.agent import Agent
 from ripple.config import Settings
 from ripple.evidence import resolve_sources
@@ -130,6 +131,13 @@ def prepare(service, workspace, case):
 async def measure(service, agent, case, mode, index):
     workspace = uuid.uuid4().hex
     prepare(service, workspace, case)
+    initial = service.repo.read(workspace)
+    # Evaluator-only ground truth: failing synthetic request probes before remediation.
+    expected_impact = {
+        s["id"]
+        for s in initial["services"]
+        if not simulator.probe(initial["simulator"], s["id"], initial["dependencies"])["healthy"]
+    }
     run = service.start(workspace, mode)
     await agent.run(workspace, run["id"])
     result = service.get_run(workspace, run["id"])
@@ -161,11 +169,6 @@ async def measure(service, agent, case, mode, index):
     reported = set((final["diagnosis"] or {}).get("affected_services", []))
     if action:
         reported = set(action.get("affected_services", []))
-    expected_impact = {"storefront", "checkout", "payments"}
-    if case.variant == "extra_dependency":
-        expected_impact |= {"notifications", "inventory"}
-    if case.scenario == "insufficient":
-        expected_impact = {"checkout", "storefront"}
     citations = [sid for p in final["proposals"] for sid in p["evidence_ids"]]
     citations += (final["diagnosis"] or {}).get("evidence_ids", [])
     row = {

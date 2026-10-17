@@ -20,6 +20,8 @@ Inspect current context, determine affected services, retrieve memory when avail
 Work efficiently: get_context already returns full active source text; do not inspect the same records again.
 Batch independent tool calls in a single response when possible. Use dependency impact for the suspected
 originating service, not just the caller reporting the symptom. Include the complete supported impact set.
+Before proposing, retrieve the proposed target's impact. affected_services means the failing target
+PLUS every transitive caller affected by its failure, never merely the target or symptom surface.
 Read current policy carefully: never propose an action explicitly blocked by current evidence.
 Plan to finish evidence collection within five model turns so there is time to submit a grounded result.
 Never invent a source ID. Cite only evidence IDs returned by tools during this run.
@@ -67,7 +69,10 @@ def declarations(mode: str):
                 "target": string,
                 "summary": string,
                 "evidence_ids": array,
-                "affected_services": array,
+                "affected_services": {
+                    **array,
+                    "description": "Complete affected service set, including target and all transitive callers. Graph mode: use get_impact for the action target. Baseline: follow the dependency catalog transitively.",
+                },
             },
             ["action", "target", "summary", "evidence_ids", "affected_services"],
         ),
@@ -82,7 +87,7 @@ def declarations(mode: str):
         specs += [
             (
                 "get_impact",
-                "Traverse incoming FalkorDB dependency paths to determine a service's blast radius.",
+                "Traverse incoming FalkorDB paths to determine a service's full blast radius. Before proposing an action, call this for the action target, not only the surface reporting the symptom.",
                 {"service": string},
                 ["service"],
             ),

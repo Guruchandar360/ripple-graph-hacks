@@ -73,6 +73,7 @@ import { api, post, isShowcase } from "./api";
 import "@xyflow/react/dist/style.css";
 import "./styles.css";
 import "./polish.css";
+import "./viewport.css";
 import { ContextBar } from "./components/ContextBar";
 import { LaunchReadiness } from "./components/LaunchReadiness";
 import { CommandMenu } from "./components/CommandMenu";
@@ -215,10 +216,23 @@ function App() {
   const flowRef = useRef<ReactFlowInstance<Node<ServiceNodeData>, Edge> | null>(
     null,
   );
+  const inspectorRef = useRef<HTMLElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const followEvents = useRef(true);
+  useEffect(() => {
+    if (selected) inspectorRef.current?.scrollIntoView({block:"nearest", behavior:"smooth"});
+  }, [selected?.id]);
+  useEffect(() => {
+    if (run && !run.replay && followEvents.current && timelineRef.current) {
+      timelineRef.current.scrollTop = timelineRef.current.scrollHeight;
+    }
+  }, [run?.events.length]);
   const [compact, setCompact] = useState(window.innerWidth <= 680);
+  const [fitWorkspace, setFitWorkspace] = useState(window.innerWidth >= 1200 && window.innerHeight >= 650);
   useEffect(() => {
     const resize = () => {
       setCompact(window.innerWidth <= 680);
+      setFitWorkspace(window.innerWidth >= 1200 && window.innerHeight >= 650);
       window.requestAnimationFrame(() =>
         flowRef.current?.fitView({ padding: 0.12 }),
       );
@@ -536,7 +550,9 @@ function App() {
         .map((n) => ({
           id: n.id,
           type: "service",
-          position: compact
+          position: fitWorkspace
+            ? ({ storefront: {x:0,y:0}, checkout: {x:200,y:0}, payments: {x:400,y:0}, ledger: {x:400,y:110}, inventory: {x:200,y:110}, notifications: {x:0,y:110} }[n.id] ?? {x:0,y:0})
+            : compact
             ? ({
                 storefront: { x: 0, y: 0 },
                 checkout: { x: 0, y: 140 },
@@ -556,7 +572,7 @@ function App() {
             implicated: affected.has(n.id),
           },
         })),
-    [graph, selected, probes, affected, compact],
+    [graph, selected, probes, affected, compact, fitWorkspace],
   );
   const flowEdges: Edge[] = useMemo(
     () =>
@@ -594,7 +610,7 @@ function App() {
   const linkedSources = sources.filter(s => graph.edges.some(e => relatedEntityIds.has(e.source) && e.target === s.id && e.kind === "SUPPORTED_BY"));
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell view-${view}`}>
       <aside className="sidebar">
         <a
           className="brand"
@@ -973,7 +989,7 @@ function App() {
                     </div>
                     <div className="flow-wrapper">
                       <ReactFlow
-                        key={compact ? "compact" : "wide"}
+                        key={fitWorkspace ? "fit" : compact ? "compact" : "wide"}
                         onInit={(instance) => {
                           flowRef.current = instance;
                         }}
@@ -1076,7 +1092,10 @@ function App() {
                         </div>
                       </div>
                     ) : (
-                      <div className="timeline">
+                      <div className="timeline" ref={timelineRef} onScroll={e => {
+                        const el=e.currentTarget;
+                        followEvents.current=el.scrollHeight-el.scrollTop-el.clientHeight < 50;
+                      }}>
                         {run.events.map((e) => (
                           <TimelineEvent
                             key={e.id}
@@ -1278,7 +1297,7 @@ function App() {
                       </small>
                     </section>
                   )}
-                  <section className="panel inspector">
+                  <section className="panel inspector" ref={inspectorRef}>
                     <div className="panel-heading">
                       <div>
                         <FileText size={15} />
