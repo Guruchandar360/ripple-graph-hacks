@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: ripple
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && npm --prefix frontend ci && npm --prefix frontend run build
+    startCommand: uvicorn ripple.main:app --host 0.0.0.0 --port $PORT --workers 1 --proxy-headers
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FALKORDB_HOST
+        sync: false
+      - key: FALKORDB_PORT
+        sync: false
+      - key: FALKORDB_PASSWORD
+        sync: false
+      - key: FALKORDB_SSL
+        value: "true"

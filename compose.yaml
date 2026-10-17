@@ -1,0 +1,12 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:6.0.2
+    ports:
+      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ripple_graph:/data
+    command: ["--appendonly", "yes"]
+    restart: unless-stopped
+volumes:
+  ripple_graph:

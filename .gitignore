@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+frontend/dist/
+test-results/
+playwright-report/
+.env
+artifacts/
+*.egg-info/
+*.tsbuildinfo
+falkordb-page.html
+
