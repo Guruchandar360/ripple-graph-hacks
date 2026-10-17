@@ -7,10 +7,17 @@ export class ApiError extends Error {
     super(message);
   }
 }
+export const isShowcase = import.meta.env.VITE_STATIC_SHOWCASE === "true";
 export async function api<T>(path: string, options?: RequestInit): Promise<T> {
+  if (isShowcase && options?.method && options.method !== "GET") {
+    throw new ApiError("This is a read-only showcase of recorded runs. Use the documented local setup for live investigations.", "showcase_readonly", 405);
+  }
+  const url = isShowcase
+    ? `${import.meta.env.BASE_URL}showcase/${path.slice(1).replaceAll("/", "-").split("?")[0]}.json`
+    : `/api${path}`;
   let response: Response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetch(url, {
       credentials: "same-origin",
       ...options,
       headers: { "Content-Type": "application/json", ...options?.headers },

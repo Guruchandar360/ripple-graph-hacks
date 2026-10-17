@@ -1,0 +1,46 @@
+{
+  "measured": true,
+  "created_at": "2026-10-17T09:41:09.374285+00:00",
+  "model": "qwen3:1.7b",
+  "model_provider": "ollama",
+  "cases": [
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "graph",
+      "status": "interrupted",
+      "verified": false,
+      "expected_met": false,
+      "valid_citations": true,
+      "correct_impact": false,
+      "model_calls": 8,
+      "elapsed_ms": 75241,
+      "invalid_proposals": 1,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": "Model turn limit reached. Evidence is saved; start a fresh investigation."
+    },
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "baseline",
+      "status": "interrupted",
+      "verified": false,
+      "expected_met": false,
+      "valid_citations": false,
+      "correct_impact": false,
+      "model_calls": 8,
+      "elapsed_ms": 54336,
+      "invalid_proposals": 0,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": "Model turn limit reached. Evidence is saved; start a fresh investigation."
+    }
+  ],
+  "summary": {
+    "runs": 2,
+    "expected_met": 0,
+    "verified_recoveries": 0
+  },
+  "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, not model-generated history. Baseline has documents but no incident-memory retrieval."
+}

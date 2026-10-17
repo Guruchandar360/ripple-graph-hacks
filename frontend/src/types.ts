@@ -63,6 +63,8 @@ export type Run = {
   status: string;
   incident: string;
   mode: string;
+  model?: string;
+  model_provider?: string;
   created_at: string;
   events: RunEvent[];
   proposals: Proposal[];
@@ -81,6 +83,8 @@ export type Run = {
   replay: boolean;
 };
 export type Replay = Run & {
+  evaluation_case?: string;
+  evaluation_name?: string;
   label?: string;
   graph: GraphData;
   scenario: Scenario;
@@ -130,6 +134,9 @@ export type EvaluationRow = {
 };
 export type Evaluations = {
   measured: boolean;
+  model?: string;
+  model_provider?: string;
+  limitations?: string;
   cases: EvaluationRow[];
   message?: string;
   created_at?: string;

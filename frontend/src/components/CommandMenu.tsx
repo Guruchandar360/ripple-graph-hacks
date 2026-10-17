@@ -30,11 +30,18 @@ export function CommandMenu({
 }) {
   const [query, setQuery] = useState("");
   const ref = useRef<HTMLInputElement>(null);
+  const dialog = useRef<HTMLElement>(null);
   useEffect(() => {
     const old = document.activeElement as HTMLElement | null;
     ref.current?.focus();
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
+      if (e.key === "Tab") {
+        const nodes = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button, input, a[href]') ?? []);
+        const first = nodes[0], last = nodes.at(-1);
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
     };
     document.addEventListener("keydown", key);
     return () => {
@@ -83,6 +90,7 @@ export function CommandMenu({
   return (
     <div className="modal-backdrop command-backdrop" onClick={onClose}>
       <section
+        ref={dialog}
         className="command-menu"
         role="dialog"
         aria-modal="true"

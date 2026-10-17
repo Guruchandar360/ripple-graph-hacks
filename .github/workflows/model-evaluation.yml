@@ -6,6 +6,10 @@ on:
         description: Number of real synthetic cases (1-12), each in graph and baseline modes
         default: "1"
         required: true
+      model:
+        description: Explicit tool-capable free Ollama model
+        default: "qwen3:4b"
+        required: true
 jobs:
   evaluate:
     runs-on: ubuntu-latest
@@ -20,7 +24,7 @@ jobs:
         ports: ["11434:11434"]
     env:
       MODEL_PROVIDER: ollama
-      OLLAMA_MODEL: qwen3:1.7b
+      OLLAMA_MODEL: ${{ inputs.model }}
       RUN_TIMEOUT_SECONDS: "300"
       GLOBAL_DAILY_RUNS: "100"
       WORKSPACE_DAILY_RUNS: "10"
@@ -34,7 +38,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Pull explicit free local model
         run: |
-          curl --fail http://127.0.0.1:11434/api/pull -d '{"model":"qwen3:1.7b","stream":false}'
+          python -c 'import json,os,urllib.request; r=urllib.request.Request("http://127.0.0.1:11434/api/pull", data=json.dumps({"model":os.environ["OLLAMA_MODEL"],"stream":False}).encode(), headers={"Content-Type":"application/json"}); print(urllib.request.urlopen(r,timeout=600).read().decode())'
           curl --fail http://127.0.0.1:11434/api/version
           curl --fail http://127.0.0.1:11434/api/tags
       - name: Run real model / graph comparisons

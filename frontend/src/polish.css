@@ -1237,3 +1237,20 @@ main {
     transform: none !important;
   }
 }
+/* A public static deployment never presents itself as a live backend. */
+.showcase-notice { display:flex; align-items:center; gap:10px; padding:12px 30px; background:#16312d; border-bottom:1px solid #2d6656; color:#b7dfd1; font-size:12px; line-height:1.6; }
+.showcase-notice > svg { flex-shrink:0; color:#60ddb2; }
+.showcase-notice a { margin-left:auto; display:flex; align-items:center; gap:5px; flex-shrink:0; color:#85edc8; }
+@media(max-width:600px) { .showcase-notice { padding:12px 18px; align-items:flex-start; flex-wrap:wrap; } .showcase-notice > span { flex:1; } .showcase-notice a { margin-left:24px; } }
+.policy-ledger { margin-top:18px; }
+.policy-list { padding:4px 16px; }
+.policy-list > button { display:flex; width:100%; align-items:center; gap:12px; padding:14px 0; text-align:left; border-bottom:1px solid #26323e; }
+.policy-list > button:last-child { border:0; }
+.policy-list strong { font-size:12px; font-weight:550; text-transform:capitalize; }
+.policy-list small { display:block; font-size:11px; color:#93a6b6; margin-top:4px; line-height:1.6; }
+.policy-badge { padding:4px 7px; border:1px solid; border-radius:5px; font:9px ui-monospace,monospace; flex-shrink:0; letter-spacing:0.06em; }
+.policy-badge.permit { color:#80dfb4; border-color:#31594b; background:#183329; }
+.policy-badge.block { color:#f0c18b; border-color:#685031; background:#352b1e; }
+.policy-source { margin-left:auto; display:flex; align-items:center; gap:6px; font:10px ui-monospace,monospace; color:#99b6ac; }
+.before-probe { color:#d3a16f; font-weight:400; }
+@media(max-width:600px) { .policy-source { display:none; } .policy-list > button { align-items:flex-start; } .policy-badge { margin-top:2px; } }

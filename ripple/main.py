@@ -164,6 +164,8 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
     @app.get("/api/evaluations")
     def evaluations():
         artifact = ROOT / "artifacts" / "evaluations.json"
+        if not artifact.exists():
+            artifact = ROOT / "demo" / "evaluations.json"
         if artifact.exists():
             return json.loads(artifact.read_text(encoding="utf-8"))
         return {
@@ -184,6 +186,8 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
     @app.get("/api/replays")
     def replays():
         directory = ROOT / "artifacts" / "replays"
+        if not directory.exists():
+            directory = ROOT / "demo" / "replays"
         return (
             [
                 {**json.loads(p.read_text(encoding="utf-8")), "id": p.stem, "replay": True}

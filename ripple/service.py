@@ -294,6 +294,13 @@ class RippleService:
             self.archive_graph(workspace, state, run)
             return result
 
+    def record_tool_error(self, workspace: str, run_id: str, name: str, detail: str):
+        with self.lock(workspace):
+            state = self.repo.read(workspace)
+            run = self._run(state, run_id)
+            self.event(run, "warning", "Tool request rejected", f"{name}: {detail[:700]}")
+            self.repo.save(workspace, state)
+
     @staticmethod
     def _service(state: dict, target: str):
         if target not in {s["id"] for s in state["services"]}:

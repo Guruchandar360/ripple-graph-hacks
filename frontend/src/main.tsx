@@ -69,13 +69,14 @@ import type {
   Evaluations,
   Replay,
 } from "./types";
-import { api, post } from "./api";
+import { api, post, isShowcase } from "./api";
 import "@xyflow/react/dist/style.css";
 import "./styles.css";
 import "./polish.css";
 import { ContextBar } from "./components/ContextBar";
 import { LaunchReadiness } from "./components/LaunchReadiness";
 import { CommandMenu } from "./components/CommandMenu";
+import { PolicyLedger } from "./components/PolicyLedger";
 
 const fallbackScenarios: Scenario[] = [
   {
@@ -766,6 +767,13 @@ function App() {
             </button>
           </div>
         </header>
+        {isShowcase && (
+          <div className="showcase-notice">
+            <Play size={14} />
+            <span><strong>Recorded showcase</strong> · Synthetic incidents. Explore actual exported runs in Results. Live investigations require the local backend.</span>
+            <a href="https://github.com/Guruchandar360/ripple-graph-hacks#run-locally" target="_blank" rel="noreferrer">Run locally <ArrowUpRight size={12} /></a>
+          </div>
+        )}
         <main>
           {error && (
             <div role="alert" className="error-banner">
@@ -809,7 +817,7 @@ function App() {
                         : "LIVE WORKSPACE"}
                   </span>
                   {run?.replay
-                    ? "Viewing an exported investigation. Actions are disabled."
+                    ? `Recorded ${run.model ?? "model"} investigation · ${run.mode} mode. Actions are disabled.`
                     : preview
                       ? "Explore the synthetic scenario. Connect your graph and model to investigate."
                       : "Synthetic infrastructure. Real graph queries, state changes, and probe results."}
@@ -1016,6 +1024,7 @@ function App() {
                       </span>
                     </div>
                   </section>
+                  <PolicyLedger graph={graph} preview={preview} onInspect={inspectEvidence} />
                   <section className="panel timeline-panel">
                     <div className="panel-heading">
                       <div>
@@ -1103,6 +1112,7 @@ function App() {
                     )}
                     {run && (
                       <div className="timeline-footer">
+                        {run.model && <span>{run.model}</span>}
                         <span>{run.model_calls} model calls</span>
                         <span>
                           {(run.elapsed_ms / 1000).toFixed(1)}s elapsed
@@ -1181,7 +1191,7 @@ function App() {
                                   <XCircle size={13} />
                                 )}
                                 <span>{p.service}</span>
-                                <b>{p.status_code}</b>
+                                <b><span className="before-probe">{latestProposal.result?.before.find(b => b.service === p.service)?.status_code ?? "—"}</span> → {p.status_code}</b>
                               </div>
                             ))}
                           </div>
@@ -1462,6 +1472,7 @@ function App() {
               </div>
               {evaluations?.measured ? (
                 <>
+                  <p className="evaluation-info">Measured with {evaluations.model} via {evaluations.model_provider}. {evaluations.limitations}</p>
                   <div className="metrics-grid">
                     <Metric
                       label="Measured runs"
@@ -1531,6 +1542,10 @@ function App() {
                   replays.map((r) => (
                     <button
                       key={r.id}
+                      data-replay-id={r.id}
+                      data-replay-status={r.status}
+                      data-replay-mode={r.mode}
+                      data-replay-case={r.evaluation_case}
                       className="replay-row"
                       onClick={() => {
                         setRun({ ...r, replay: true });
@@ -1544,7 +1559,7 @@ function App() {
                     >
                       <Play size={15} />
                       <span>
-                        {r.incident} · {human(r.status)}
+                        {r.incident} · {human(r.status)} · {r.mode} {r.evaluation_case ? `· ${r.evaluation_case}` : ""}
                       </span>
                       <span className="mini-pill">REPLAY</span>
                       <ArrowRight size={14} />

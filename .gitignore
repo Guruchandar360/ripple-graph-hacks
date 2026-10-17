@@ -8,6 +8,7 @@ test-results/
 playwright-report/
 .env
 artifacts/
+frontend/public/showcase/
 *.egg-info/
 *.tsbuildinfo
 falkordb-page.html

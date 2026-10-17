@@ -8,8 +8,14 @@ def checklist(root: Path, *, graph_connected: bool, model_configured: bool) -> d
     manifest_path = root / "submission.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     video = manifest.get("video_path")
-    video_ready = bool(video and (root / video).is_file() and manifest.get("video_kind") == "live_agent")
+    video_ready = bool(
+        video
+        and (root / video).is_file()
+        and manifest.get("video_kind") in {"live_agent", "actual_agent_replay"}
+    )
     evaluation = root / "artifacts" / "evaluations.json"
+    if not evaluation.exists():
+        evaluation = root / "demo" / "evaluations.json"
     measured = False
     if evaluation.exists():
         measured = bool(json.loads(evaluation.read_text(encoding="utf-8")).get("measured"))
@@ -58,7 +64,7 @@ def checklist(root: Path, *, graph_connected: bool, model_configured: bool) -> d
             "model",
             "Live model access",
             False,
-            "An API key is configured; actual provider authorization still needs a live run."
+            "A provider is configured; actual authorization still needs a live run."
             if model_configured
             else "Configure Gemini access. No successful live model run is claimed.",
             None,
@@ -76,7 +82,7 @@ def checklist(root: Path, *, graph_connected: bool, model_configured: bool) -> d
             "video",
             "Working agent demo video",
             video_ready,
-            "A live-agent recording is attached."
+            "A recording of actual agent output is attached. Recorded replays are labeled."
             if video_ready
             else "Record the configured live agent. A simulator-only walkthrough must be labeled separately.",
             None,

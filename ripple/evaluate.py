@@ -134,21 +134,20 @@ async def measure(service, agent, case, mode, index):
     await agent.run(workspace, run["id"])
     result = service.get_run(workspace, run["id"])
     stale_rejected = None
+    prior_runs = []
     if case.variant == "late" and result["status"] != "interrupted":
         pending = next((p for p in result["proposals"] if not p["blocked_reason"]), None)
         service.inject(workspace, run["id"])
+        prior_runs.append(service.get_run(workspace, run["id"]))
         if pending:
             try:
                 service.execute(workspace, run["id"], pending["id"])
                 stale_rejected = False
             except DomainError as exc:
                 stale_rejected = exc.code == "stale_action"
-        previous_calls, previous_ms = result["model_calls"], result["elapsed_ms"]
         run = service.start(workspace, mode)
         await agent.run(workspace, run["id"])
         result = service.get_run(workspace, run["id"])
-        result["model_calls"] += previous_calls
-        result["elapsed_ms"] += previous_ms
     action = next(
         (p for p in reversed(result["proposals"]) if not p["blocked_reason"] and not p["stale"]), None
     )
@@ -178,8 +177,9 @@ async def measure(service, agent, case, mode, index):
         "expected_met": final["status"] == case.expect,
         "valid_citations": bool(citations) and set(citations).issubset(final["seen_evidence"]),
         "correct_impact": reported == expected_impact,
-        "model_calls": result["model_calls"],
-        "elapsed_ms": result["elapsed_ms"],
+        "model_calls": final["model_calls"] + sum(r["model_calls"] for r in prior_runs),
+        "elapsed_ms": final["elapsed_ms"] + sum(r["elapsed_ms"] for r in prior_runs),
+        "memory_retrieved": bool(final["memory_ids"]),
         "invalid_proposals": sum(bool(p["blocked_reason"]) for p in final["proposals"]),
         "executed_violations": sum(bool(p["result"] and p["blocked_reason"]) for p in final["proposals"]),
         "stale_approval_rejected": stale_rejected,
@@ -190,14 +190,28 @@ async def measure(service, agent, case, mode, index):
         row["superseded_owner_excluded"] = not retrieved
         row["expected_met"] &= not retrieved
     if case.variant == "late":
-        row["expected_met"] &= stale_rejected is True
+        row["expected_met"] &= stale_rejected is not False
     replay = {
         **final,
         "replay": True,
         "scenario": state["scenario"],
         "graph": service.repo.graph(workspace),
         "label": "Actual model run against the executable synthetic simulator",
+        "evaluation_case": f"C{index:02d}",
+        "evaluation_name": case.name,
+        "prior_run_ids": [r["id"] for r in prior_runs],
     }
+    if prior_runs:
+        # Preserve actual earlier calls and the evidence-change event, with original run IDs.
+        replay["events"] = [
+            {**event, "id": i, "source_run_id": source_run}
+            for i, (source_run, event) in enumerate(
+                ((r["id"], e) for r in [*prior_runs, final] for e in r["events"]), 1
+            )
+        ]
+        replay["proposals"] = [p for r in [*prior_runs, final] for p in r["proposals"]]
+        replay["model_calls"] = row["model_calls"]
+        replay["elapsed_ms"] = row["elapsed_ms"]
     return row, replay
 
 
@@ -209,17 +223,25 @@ async def evaluate(args):
     repo.health()
     service = RippleService(repo, settings)
     agent = Agent(service, settings)
-    rows, replay_records = [], []
+    rows = []
+    output = Path(args.output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    replay_dir = output.parent / "replays"
+    replay_dir.mkdir(exist_ok=True)
     modes = ["graph", "baseline"] if args.mode == "both" else [args.mode]
     for index, case in enumerate(CASES[: args.cases], 1):
         for mode in modes:
             print(f"Running C{index:02d} / {mode}: {case.name}", flush=True)
             row, replay = await measure(service, agent, case, mode, index)
             rows.append(row)
-            replay_records.append(replay)
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    result = {
+            (replay_dir / f"{replay['id']}.json").write_text(json.dumps(replay, indent=2), encoding="utf-8")
+            output.write_text(json.dumps(report(settings, rows), indent=2), encoding="utf-8")
+            print(json.dumps(row), flush=True)
+    print(f"Wrote {len(rows)} actual evaluation runs to {output}")
+
+
+def report(settings, rows):
+    return {
         "measured": bool(rows),
         "created_at": now(),
         "model": settings.active_model,
@@ -233,12 +255,6 @@ async def evaluate(args):
         "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, "
         "not model-generated history. Baseline has documents but no incident-memory retrieval.",
     }
-    output.write_text(json.dumps(result, indent=2), encoding="utf-8")
-    replay_dir = output.parent / "replays"
-    replay_dir.mkdir(exist_ok=True)
-    for record in replay_records:
-        (replay_dir / f"{record['id']}.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
-    print(f"Wrote {len(rows)} actual evaluation runs to {output}")
 
 
 def main():
