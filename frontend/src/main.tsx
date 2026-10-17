@@ -292,8 +292,9 @@ function App() {
     return result;
   }, []);
 
-  const refreshGraph = useCallback(async () => {
+  const refreshGraph = useCallback(async (request = generation.current) => {
     const data = await api<GraphData>("/graph");
+    if (request !== generation.current) return;
     setGraph(data);
     setPreview(false);
     setSelected((current) =>
@@ -303,31 +304,32 @@ function App() {
 
   useEffect(() => {
     let cancelled = false;
+    const request = generation.current;
     (async () => {
       try {
         const list = await api<Scenario[]>("/scenarios");
-        if (cancelled) return;
+        if (cancelled || request !== generation.current) return;
         setScenarios(list);
         const healthState = await refreshHealth();
-        if (cancelled) return;
+        if (cancelled || request !== generation.current) return;
         if (healthState.database === "connected") {
           const ws = await api<Workspace>("/workspace");
-          if (cancelled) return;
+          if (cancelled || request !== generation.current) return;
           setWorkspace(ws);
           if (ws.scenario) {
             setScenario(ws.scenario);
-            await refreshGraph();
+            await refreshGraph(request);
             return;
           }
         }
         const data = await api<{ graph: GraphData }>("/preview/outdated-fix");
-        if (!cancelled) {
+        if (!cancelled && request === generation.current) {
           setGraph(data.graph);
           setPreview(true);
         }
         if (isShowcase) {
           const records = await api<Replay[]>("/replays");
-          if (cancelled) return;
+          if (cancelled || request !== generation.current) return;
           const featured = records.find(r => r.mode === "graph" && r.status === "recovered" && r.evaluation_case === "C02")
             ?? records.find(r => r.mode === "graph" && r.status === "recovered");
           if (featured) {
@@ -338,9 +340,9 @@ function App() {
           }
         }
       } catch (e) {
-        if (!cancelled) setError((e as Error).message);
+        if (!cancelled && request === generation.current) setError((e as Error).message);
       } finally {
-        if (!cancelled) setBusy(false);
+        if (!cancelled && request === generation.current) setBusy(false);
       }
     })();
     return () => {
@@ -444,66 +446,82 @@ function App() {
   }
 
   async function startInvestigation() {
+    const request = ++generation.current;
     setBusy(true);
     setError(null);
     setSelectedEvidence([]);
     try {
       const h = await refreshHealth();
+      if (request !== generation.current) return;
       if (h.database !== "connected" || !h.model_configured) {
         setShowSetup(true);
         return;
       }
       if (preview || workspace?.scenario?.id !== scenario.id) {
-        setWorkspace(await post<Workspace>(`/scenarios/${scenario.id}/load`));
-        await refreshGraph();
+        const ws = await post<Workspace>(`/scenarios/${scenario.id}/load`);
+        if (request !== generation.current) return;
+        setWorkspace(ws);
+        await refreshGraph(request);
       }
+      if (request !== generation.current) return;
       const next = await post<Run>("/runs", { mode });
+      if (request !== generation.current) return;
       setRun({ ...next, cursor: next.events.length });
-      setWorkspace(await api<Workspace>("/workspace"));
+      const ws = await api<Workspace>("/workspace");
+      if (request === generation.current) setWorkspace(ws);
     } catch (e) {
-      setError((e as Error).message);
+      if (request === generation.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (request === generation.current) setBusy(false);
     }
   }
 
   async function inject() {
     if (!run) return;
+    const request = ++generation.current;
     setBusy(true);
     setError(null);
     try {
-      setRun(
-        await post<Run>(`/runs/${run.id}/evidence`, { event: "migration" }),
-      );
-      await refreshGraph();
+      const next = await post<Run>(`/runs/${run.id}/evidence`, { event: "migration" });
+      if (request !== generation.current) return;
+      setRun(next);
+      await refreshGraph(request);
+      if (request !== generation.current) return;
       setSelectedEvidence(["migration"]);
     } catch (e) {
-      setError((e as Error).message);
+      if (request === generation.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (request === generation.current) setBusy(false);
     }
   }
   async function execute(proposal: Proposal) {
     if (!run) return;
+    const request = ++generation.current;
     setBusy(true);
     setError(null);
     try {
       await post(`/runs/${run.id}/actions/${proposal.id}/execute`);
-      setRun(await api<Run>(`/runs/${run.id}`));
-      await refreshGraph();
-      setWorkspace(await api<Workspace>("/workspace"));
+      if (request !== generation.current) return;
+      const next = await api<Run>(`/runs/${run.id}`);
+      if (request !== generation.current) return;
+      setRun(next);
+      await refreshGraph(request);
+      const ws = await api<Workspace>("/workspace");
+      if (request === generation.current) setWorkspace(ws);
     } catch (e) {
-      setError((e as Error).message);
+      if (request === generation.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (request === generation.current) setBusy(false);
     }
   }
   async function openHistory(id: string) {
+    const request = ++generation.current;
     setBusy(true);
     setError(null);
     setView("investigate");
     try {
       const record = await api<Run>(`/runs/${id}`);
+      if (request !== generation.current) return;
       setRun(record);
       if (record.graph_snapshot) {
         setGraph(record.graph_snapshot);
@@ -514,9 +532,9 @@ function App() {
       setSelected(null);
       setSelectedEvidence([]);
     } catch (e) {
-      setError((e as Error).message);
+      if (request === generation.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (request === generation.current) setBusy(false);
     }
   }
   function inspectEvidence(ids: string[], finding?: number) {
@@ -1206,7 +1224,7 @@ function App() {
                         </span>
                         <h3>{formatAction(latestProposal.action)}</h3>
                         <div className="code-chip">{latestProposal.target}</div>
-                        <p>{latestProposal.summary}</p>
+                        <div key={latestProposal.id} className="proposal-rationale" role="region" aria-label="Recommendation rationale" tabIndex={0}><p>{latestProposal.summary}</p></div>
                         {latestProposal.blocked_reason && (
                           <div className="inline-warning">
                             <TriangleAlert size={15} />
@@ -1617,6 +1635,9 @@ function App() {
                       data-replay-memory-count={r.memory_ids?.length ?? 0}
                       className="replay-row"
                       onClick={() => {
+                        generation.current += 1;
+                        setBusy(false);
+                        setError(null);
                         setRun({ ...r, replay: true });
                         setGraph(r.graph);
                         setScenario(r.scenario);

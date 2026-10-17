@@ -22,9 +22,9 @@ are separate checks. It is not connected to a real company's infrastructure.
    in both workflows; graph mode also preloads persisted incident outcomes using
    the native memory query. These events are labeled as application work, not model
    decisions. Historical outcomes require current applicability checks. Service
-   parameters enumerate the actual six supported service IDs. Completed snapshot
-   reads are removed from subsequent tool choices to prevent retrieval loops;
-   proposal targets are limited to services probed in that investigation.
+   parameters enumerate the actual six supported service IDs. The model retains
+   its read tools; repeated-read restrictions were reverted after a measured
+   regression. The server rejects proposals without a retrieved target probe.
 4. A proposal must cite evidence retrieved during that run, and its target must
    have been probed. Evidence is not treated as an instruction to execute code.
 5. Current `Constraint` nodes link through `BLOCKS` or `PERMITS` to supported

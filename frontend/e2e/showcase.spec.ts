@@ -13,6 +13,9 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   }
   await expect(page.getByText("Recorded showcase", {exact:true})).toBeVisible();
   await expect(page.getByText("6 services", {exact:true})).toBeVisible();
+  if (await page.locator(".probe-results").count()) {
+    await expect(page.locator(".probe-results")).toBeInViewport();
+  }
   const start = page.getByRole("button", {name:"Start investigation",exact:true});
   if (await start.count()) {
     await start.click();

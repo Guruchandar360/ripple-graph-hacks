@@ -97,6 +97,15 @@ does not isolate the database's causal contribution or prove general superiority
 Actual exported measurements and failures are published with their model and
 provider identity. The benchmark uses only synthetic cases.
 
+One complete development sample (`demo/development/memory-cache-suite.json`)
+reached 16 of 24 expected terminal states: graph mode reached 6/12 and the
+full-document baseline 10/12. No executed policy violations occurred, but this
+does not establish graph superiority. The sample also exposed CPU timeouts and
+incomplete impact reports. Later adapter work keeps its tool catalog stable
+while passing current authorization constraints separately; subsequent measured
+results are reported in [MEASUREMENTS.md](MEASUREMENTS.md), without deleting the
+earlier failures.
+
 ## Reproduce and inspect
 
 [Source and local setup](https://github.com/Guruchandar360/ripple-graph-hacks) ·

@@ -15,9 +15,11 @@ Repository-double and scripted-provider unit tests are separate from these runs.
 | `development/targeted-evidence-revision.json` | [39025199638](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638) | C02 only, both modes; current-context preload and service enums |
 | `development/context-preload-suite.json` | [39025933130](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025933130) | Complete 24-run measurement before memory preloading and repeated-read prevention |
 | `development/first-three-sequences.json` | [39025201898](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025201898) | All three sequential attempts; no sequence passed every acceptance check |
+| `development/cached-eight-turn-sequences.json` | [39031194829](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031194829) | Three sequences with experimental read restrictions; all failed, motivating their removal |
 | `evaluations.json`, `development/memory-cache-suite.json` | [39031191528](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031191528) | Complete 24-run sample with application memory preload and completed-read constraints; all failures retained |
 | `development/eight-turn-http-proof.json` | [39026444207](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39026444207) | Earlier successful eight-turn HTTP proof |
-| `http-proof.json` | [39032068060](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032068060) | Five-turn HTTP recovery, duplicate approval, visitor isolation and persistence through database restart |
+| `development/five-turn-http-proof-before-stable-prefix.json` | [39032068060](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032068060) | First five-turn HTTP proof |
+| `http-proof.json` | [39033501898](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898) | Stable-catalog five-turn HTTP recovery, duplicate approval, visitor isolation and persistence through database restart |
 | `development/cached-http-timeout.json` | [39031198337](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031198337) | Later CPU-model attempt hit the 300-second bound before producing an approvable proposal; no action executed |
 
 The instruct-model measurements explicitly select

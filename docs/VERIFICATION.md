@@ -3,7 +3,7 @@
 ## Automated implementation checks
 
 - **44 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031190485), including **two real FalkorDB integration tests** against version 6.0.2.
-- **Six application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation and participant checklist.
+- **Seven application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, command navigation, participant checklist and late startup responses preserving a selected replay.
 - **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
 - Strict TypeScript compilation, production build and Ruff checks passed.
 - Locally: 42 backend tests passed; two real-server integration tests are skipped because this Windows host has no running FalkorDB server.
@@ -44,7 +44,7 @@ WeMakeDevs registration is not verified; the inspected browser session is signed
 
 ## Additional measured proof
 
-The README's Docker Compose setup completed a model-backed recovery through real HTTP requests in 175.738 seconds with a five-turn CPU budget and a 300-second window. It verified all three affected request probes, returned the identical result for duplicate approval, preserved memory across both a scenario reload and a database container restart, and returned HTTP 404 to a different visitor. See [the actual workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032068060) and `demo/http-proof.json`. This used Ollama with the explicit JSON tool protocol, not Gemini. An earlier successful eight-turn proof and the later eight-turn timeout are both preserved under `demo/development/`.
+The README's Docker Compose setup completed a model-backed recovery through real HTTP requests in 186.295 seconds with a five-turn CPU budget and a 300-second window. It verified all three affected request probes, returned the identical result for duplicate approval, preserved memory across both a scenario reload and a database container restart, and returned HTTP 404 to a different visitor. See [the actual workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898) and `demo/http-proof.json`. This used Ollama with the explicit JSON tool protocol, not Gemini. An earlier successful eight-turn proof and the later eight-turn timeout are both preserved under `demo/development/`.
 
 A captioned replay video is committed as `demo/ripple-demo.mp4`, with the original WebM retained. Chromium decoded the recording at 1440×1000; the initial smoke recording is 59.24 seconds. It is recorded actual agent output, not a hosted live agent.
 

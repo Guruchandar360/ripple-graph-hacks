@@ -17,9 +17,10 @@ Graph mode also preloads persisted outcomes through the native memory query.
 Preloading is explicitly attributed to application code, never to a model tool
 decision. Memory retrieval and memory citation are reported separately: an outcome
 being available does not prove that it caused the model's recommendation.
-Completed deterministic reads of the unchanged snapshot are removed from later
-tool choices; proposal targets must have a current-run probe. These generic
-workflow guards do not choose a recovery action or disclose evaluator answers.
+Read tools remain available throughout evidence collection; an experimental
+restriction on completed reads was reverted after a measured regression.
+The server validates target probes before accepting proposals. These guards
+do not choose a recovery action or disclose evaluator answers.
 
 Cases cover known/late migration, ingestion order, changed topology, unrelated
 telemetry, failed historical recovery, verified memory, fresh conversation,

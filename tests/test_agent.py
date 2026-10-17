@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 from google.genai import types
 
-from ripple.agent import Agent, bounded_declarations, declarations, pending_declarations
+from ripple.agent import Agent, bounded_declarations, declarations
 
 
 def test_native_function_loop_produces_a_cited_action_without_executing_it(service, settings):
@@ -140,20 +140,48 @@ def test_last_two_turns_reserve_structured_conclusion_without_selecting_an_actio
     assert {f.name for f in available} == {"propose_action", "submit_diagnosis"}
 
 
-def test_completed_snapshot_reads_do_not_loop_and_proposals_require_a_probed_target():
-    receipts = [
-        {"name": "get_context", "arguments": {}},
-        {"name": "retrieve_memory", "arguments": {}},
-        {"name": "get_impact", "arguments": {"service": "payments"}},
-    ]
-    functions = pending_declarations(declarations("graph"), receipts)
-    names = {f.name for f in functions}
-    assert not names & {"get_context", "retrieve_memory", "inspect_source", "propose_action"}
-    impact = next(f for f in functions if f.name == "get_impact")
-    assert "payments" not in impact.parameters.properties["service"].enum
-    receipts.append({"name": "probe_service", "arguments": {"service": "payments"}})
-    functions = pending_declarations(declarations("graph"), receipts)
-    proposal = next(f for f in functions if f.name == "propose_action")
-    assert proposal.parameters.properties["target"].enum == ["payments"]
-    probe = next(f for f in functions if f.name == "probe_service")
-    assert "payments" not in probe.parameters.properties["service"].enum
+def test_rejected_model_proposal_preserves_evidence_and_can_finish_honestly(service, settings):
+    workspace = "e" * 32
+    service.load(workspace, "memory")
+    run = service.start(workspace)
+    calls = []
+
+    async def generate(**kwargs):
+        calls.append(kwargs)
+        if len(calls) == 1:
+            call = types.FunctionCall(
+                name="propose_action",
+                args={
+                    "action": "disable_feature_flag",
+                    "target": "payments",
+                    "summary": "The flag configuration suggests a mitigation, but no target probe was run.",
+                    "evidence_ids": ["flag-config"],
+                    "affected_services": ["payments"],
+                },
+            )
+        else:
+            call = types.FunctionCall(
+                name="submit_diagnosis",
+                args={
+                    "summary": "The current evidence needs a target probe before an action can be justified.",
+                    "affected_services": ["checkout"],
+                    "evidence_ids": ["flag-config"],
+                    "missing_evidence": ["Current payments request probe"],
+                },
+            )
+        return types.GenerateContentResponse(
+            candidates=[
+                types.Candidate(content=types.Content(role="model", parts=[types.Part(function_call=call)]))
+            ]
+        )
+
+    agent = Agent(service, settings)
+    agent.client = SimpleNamespace(aio=SimpleNamespace(models=SimpleNamespace(generate_content=generate)))
+    asyncio.run(agent.run(workspace, run["id"]))
+    final = service.get_run(workspace, run["id"])
+    assert final["status"] == "needs_evidence"
+    assert any(e["title"] == "Tool request rejected" for e in final["events"])
+    assert "flag-config" in final["seen_evidence"]
+    assert not final["proposals"]
+    assert service.repo.read(workspace)["simulator"]["executions"] == 0
+

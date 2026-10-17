@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "configuration": {
+    "max_model_turns": 5,
+    "timeout_seconds": 300
+  },
+  "health": {
+    "database": "connected",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_provider": "ollama",
+    "model_configured": true,
+    "synthetic": true,
+    "limits": {
+      "workspace_daily": 20,
+      "global_daily": 100
+    }
+  },
+  "run_id": "31c8310d5ba34c5782deca425451256d",
+  "model_calls": 4,
+  "elapsed_ms": 175738,
+  "verified_result": {
+    "action_id": "8cc495f1946242aaaec307ff07fa87cd",
+    "verified": true,
+    "before": [
+      {
+        "service": "checkout",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      }
+    ],
+    "after": [
+      {
+        "service": "checkout",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      }
+    ],
+    "executed_at": "2026-10-17T12:24:14.077422+00:00",
+    "synthetic": true
+  },
+  "duplicate_result_identical": true,
+  "memory_survived_scenario_reload": true,
+  "foreign_visitor_status": 404,
+  "scenario": "memory",
+  "transport": "actual HTTP requests to Uvicorn",
+  "database_restart_verified": true
+}

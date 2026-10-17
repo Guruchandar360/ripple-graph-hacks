@@ -168,3 +168,22 @@ test("memory, measured results and checklist adapt to phone, tablet and laptop w
     }
   }
 });
+
+test("a late startup response cannot replace a selected recorded graph", async ({page}) => {
+  let releaseHealth!: () => void;
+  const gate = new Promise<void>(resolve => { releaseHealth=resolve; });
+  await page.route("**/api/health", async route => {
+    await gate;
+    await route.fulfill({json:{database:"unavailable",model:"unconfigured",model_configured:false,limits:{workspace_daily:3,global_daily:10}}});
+  });
+  await page.goto("/");
+  await page.getByRole("button", {name:"Evaluation results",exact:true}).click();
+  await page.locator('[data-replay-id="fcc820e43a9d4addb5859a2ad5c53ea4"]').click();
+  const healthResponse=page.waitForResponse("**/api/health");
+  releaseHealth();
+  await healthResponse;
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
+  await expect(page.locator(".context-metric").filter({hasText:"Evidence revision"}).locator("strong")).toHaveText("4");
+  await expect(page.getByText("Recovery confirmed by probes",{exact:true})).toBeVisible();
+});
