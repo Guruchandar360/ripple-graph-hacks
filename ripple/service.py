@@ -137,6 +137,32 @@ class RippleService:
             }
             self.event(run, "observation", "Investigation opened", state["scenario"]["symptom"], ["alert"])
             run["seen_evidence"].append("alert")
+            previous = next(
+                (r for r in reversed(list(state["runs"].values())) if r["generation"] == state["generation"]),
+                None,
+            )
+            changed = (
+                next((e for e in reversed(previous["events"]) if e["title"] == "Evidence changed"), None)
+                if previous
+                else None
+            )
+            if changed:
+                run["revalidates_run_id"] = previous["id"]
+                if previous["proposals"]:
+                    old = previous["proposals"][-1]
+                    run["previous_recommendation"] = {
+                        "action": old["action"],
+                        "target": old["target"],
+                        "revision": old["revision"],
+                    }
+                self.event(
+                    run,
+                    "observation",
+                    "Evidence revision revalidation",
+                    "A fresh conversation is checking the changed evidence. The prior recommendation remains inspectable in incident history.",
+                    changed["evidence_ids"],
+                    revalidates_run_id=previous["id"],
+                )
             state["runs"][run["id"]] = run
             self.repo.save(workspace, state)
             return deepcopy(run)

@@ -16,6 +16,9 @@
 .comparison-scroll th { white-space:normal; }
 .comparison-scroll td small { display:block; font-size:10px; color:#8fa5b2; margin-top:5px; }
 .comparison-note { font-size:10px; line-height:1.8; color:#93aab5; padding:12px 18px; background:#122229; }
+.recommendation-change { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:9px 0; font-size:10px; line-height:1.6; }
+.recommendation-change > span { color:#d6a875; text-decoration:line-through; }
+.recommendation-change > strong { color:#93e2bd; font-weight:500; }
 @media(max-width:680px) { .view-results .page-intro { flex-wrap:wrap; } .results-actions { width:100%; } }
 
 @media (min-width:1200px) and (min-height:650px) {

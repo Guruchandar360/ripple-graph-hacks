@@ -66,6 +66,8 @@ export type Run = {
   model?: string;
   model_provider?: string;
   tool_protocol?: string;
+  revalidates_run_id?: string;
+  previous_recommendation?: {action:string;target:string;revision:number};
   created_at: string;
   events: RunEvent[];
   proposals: Proposal[];

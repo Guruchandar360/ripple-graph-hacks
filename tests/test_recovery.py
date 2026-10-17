@@ -58,6 +58,9 @@ def test_reinvestigate_after_migration_retains_compatible_recovery(service):
     propose(service, run, pid, "rollback_deployment")
     service.inject(WS, run["id"])
     fresh = service.start(WS)
+    assert fresh["revalidates_run_id"] == run["id"]
+    assert fresh["previous_recommendation"]["action"] == "rollback_deployment"
+    assert fresh["seen_evidence"] == ["alert"]
     service.tool(WS, fresh["id"], "get_context", {})
     probe = service.tool(WS, fresh["id"], "probe_service", {"service": "payments"})
     proposal = propose(service, fresh, probe["evidence_ids"][0])

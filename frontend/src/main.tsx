@@ -620,6 +620,9 @@ function App() {
   const services = graph.nodes.filter((n) => n.label === "Service");
   const sources = graph.nodes.filter((n) => n.label === "Source");
   const latestProposal = run?.proposals.at(-1);
+  const migrationPresent=sources.some(s=>s.id==="migration");
+  const evidenceChange=[...(run?.events ?? [])].reverse().find(e=>e.title==="Evidence changed" || e.title==="Evidence revision revalidation");
+  const previousAction=run?.proposals.find(p=>p.stale)?.action ?? run?.previous_recommendation?.action;
   const status = run?.status ?? (preview ? "fixture_preview" : "ready");
   const relatedEntityIds = selected ? new Set([selected.id, ...graph.edges.filter(e => e.target === selected.id && e.kind === "CHANGES").map(e => e.source)]) : new Set<string>();
   const linkedSources = sources.filter(s => graph.edges.some(e => relatedEntityIds.has(e.source) && e.target === s.id && e.kind === "SUPPORTED_BY"));
@@ -1280,31 +1283,34 @@ function App() {
                         <Zap size={17} />
                       </div>
                       <div className="eyebrow amber-text">
-                        THE CONTEXT CAN CHANGE
+                        {evidenceChange ? "EVIDENCE CHANGED" : "THE CONTEXT CAN CHANGE"}
                       </div>
                       <h3>
-                        A familiar fix.
-                        <br />A new constraint.
+                        {evidenceChange ? <>A new fact.<br/>A safer decision.</> : <>A familiar fix.<br/>A new constraint.</>}
                       </h3>
                       <p>
-                        A late migration record can invalidate an earlier
-                        recovery decision.
+                        {evidenceChange ? "A newer ledger advisory superseded the old compatibility record. Earlier approval cannot execute." : "A late migration record can invalidate an earlier recovery decision."}
                       </p>
+                      {evidenceChange && previousAction && <div className="recommendation-change"><span>{formatAction(previousAction)}</span><ArrowRight size={12}/><strong>{latestProposal && !latestProposal.stale ? formatAction(latestProposal.action) : "Revalidation required"}</strong></div>}
                       <button
-                        onClick={inject}
+                        onClick={() => {
+                          if (migrationPresent) {
+                            inspectEvidence(["migration"]);
+                            if(evidenceChange) timelineRef.current?.querySelector(`[data-event-id="${evidenceChange.id}"]`)?.scrollIntoView({block:"center",behavior:"smooth"});
+                          } else inject();
+                        }}
                         disabled={
-                          !run ||
+                          !migrationPresent && (!run ||
                           active ||
                           busy ||
                           preview ||
-                          run.replay ||
-                          sources.some((s) => s.id === "migration")
+                          run.replay)
                         }
                       >
-                        {sources.some((s) => s.id === "migration") ? (
+                        {migrationPresent ? (
                           <>
                             <Check size={13} />
-                            Migration evidence present
+                            Inspect changed evidence
                           </>
                         ) : (
                           <>
@@ -1819,6 +1825,7 @@ function TimelineEvent({
           : GitBranch;
   return (
     <article
+      data-event-id={event.id}
       className={`timeline-event ${event.kind} ${selected ? "event-selected" : ""}`}
     >
       <span className="event-icon">
