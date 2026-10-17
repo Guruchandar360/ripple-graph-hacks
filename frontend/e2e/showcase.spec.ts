@@ -29,6 +29,12 @@ test("showcase loads under its public subpath and cannot send live mutations", a
     await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
     await expect(page.getByText("RECORDED GRAPH", {exact:true})).toBeVisible();
     await expect(page.getByRole("button", {name:"Investigate again"})).toBeDisabled();
+    const supporting = page.getByRole("button", {name:"Show supporting paths",exact:true}).first();
+    if (await supporting.count()) {
+      await supporting.click();
+      await expect(page.locator(".event-selected")).toHaveCount(1);
+      await expect(page.locator(".react-flow__edge-text").first()).toHaveText("depends on");
+    }
   }
   for (const [width,height] of [[390,844],[768,900],[1280,720],[1366,768],[1440,900]]) {
     await page.setViewportSize({width,height});

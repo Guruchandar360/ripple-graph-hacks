@@ -191,6 +191,8 @@ function App() {
   const [run, setRun] = useState<Run | null>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const [selectedEvidence, setSelectedEvidence] = useState<string[]>([]);
+  const [selectedFinding, setSelectedFinding] = useState<number | null>(null);
+  useEffect(() => { setSelectedFinding(null); }, [run?.id]);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [memory, setMemory] = useState<Memory[]>([]);
@@ -517,8 +519,9 @@ function App() {
       setBusy(false);
     }
   }
-  function inspectEvidence(ids: string[]) {
+  function inspectEvidence(ids: string[], finding?: number) {
     setSelectedEvidence(ids);
+    setSelectedFinding(finding ?? null);
     const source = graph.nodes.find((n) => ids.includes(n.id));
     if (source) setSelected(source);
   }
@@ -552,11 +555,11 @@ function App() {
       new Set(
         run?.events
           .filter((e) =>
-            e.evidence_ids.some((id) => selectedEvidence.includes(id)),
+            selectedFinding !== null ? e.id === selectedFinding : e.evidence_ids.some((id) => selectedEvidence.includes(id)),
           )
           .flatMap((e) => e.paths?.flatMap((p) => p.edges) ?? []) ?? [],
       ),
-    [run, selectedEvidence],
+    [run, selectedEvidence, selectedFinding],
   );
   const flowNodes: Node<ServiceNodeData>[] = useMemo(
     () =>
@@ -1133,9 +1136,7 @@ function App() {
                             key={e.id}
                             event={e}
                             onInspect={inspectEvidence}
-                            selected={e.evidence_ids.some((id) =>
-                              selectedEvidence.includes(id),
-                            )}
+                            selected={selectedFinding !== null ? e.id === selectedFinding : e.evidence_ids.some((id) => selectedEvidence.includes(id))}
                           />
                         ))}
                         {active && (
@@ -1820,7 +1821,7 @@ function TimelineEvent({
   selected,
 }: {
   event: RunEvent;
-  onInspect: (ids: string[]) => void;
+  onInspect: (ids: string[], finding?: number) => void;
   selected: boolean;
 }) {
   const Icon =
@@ -1850,10 +1851,11 @@ function TimelineEvent({
             : event.kind.toUpperCase()}
         </span>
         <p>{event.detail}</p>
+        {!!event.paths?.length && <button className="path-citation" onClick={() => onInspect(event.evidence_ids,event.id)}><GitBranch size={11}/>Show supporting paths</button>}
         {event.evidence_ids.length > 0 && (
           <div className="citation-row">
             {event.evidence_ids.map((id) => (
-              <button onClick={() => onInspect([id])} key={id}>
+              <button onClick={() => onInspect([id],event.id)} key={id}>
                 <FileText size={10} />
                 {id}
               </button>
