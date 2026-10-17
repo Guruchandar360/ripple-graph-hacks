@@ -158,7 +158,7 @@ export function LaunchReadiness({ onConfigure }: { onConfigure: () => void }) {
             </p>
           </div>
           <a
-            href="https://github.com/gayathribuilds/ripple-graph-hacks/blob/main/docs/CONTRIBUTOR_GUIDE.md"
+            href="https://github.com/Guruchandar360/ripple-graph-hacks/blob/main/docs/CONTRIBUTOR_GUIDE.md"
             target="_blank"
             rel="noreferrer"
           >
@@ -176,7 +176,7 @@ export function LaunchReadiness({ onConfigure }: { onConfigure: () => void }) {
             </p>
           </div>
           <a
-            href="https://github.com/gayathribuilds/ripple-graph-hacks/actions"
+            href="https://github.com/Guruchandar360/ripple-graph-hacks/actions"
             target="_blank"
             rel="noreferrer"
           >

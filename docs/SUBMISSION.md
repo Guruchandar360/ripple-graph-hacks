@@ -2,7 +2,7 @@
 
 **Project:** Ripple — evidence-driven incident recovery
 
-**Public repository:** https://github.com/gayathribuilds/ripple-graph-hacks
+**Public repository:** https://github.com/Guruchandar360/ripple-graph-hacks
 
 **Primary track:** Agents That Act on Connected Data
 
