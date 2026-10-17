@@ -1,0 +1,51 @@
+{
+  "measured": true,
+  "created_at": "2026-10-17T10:05:41.174594+00:00",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "model_provider": "ollama",
+  "tool_protocol": "json",
+  "cases": [
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "baseline",
+      "status": "recovered",
+      "verified": true,
+      "expected_met": true,
+      "valid_citations": true,
+      "correct_impact": false,
+      "model_calls": 4,
+      "elapsed_ms": 131763,
+      "memory_retrieved": false,
+      "invalid_proposals": 0,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": null
+    },
+    {
+      "case": "C01",
+      "name": "Migration already known",
+      "mode": "graph",
+      "status": "recovered",
+      "verified": true,
+      "expected_met": true,
+      "valid_citations": true,
+      "correct_impact": false,
+      "model_calls": 3,
+      "elapsed_ms": 168061,
+      "memory_retrieved": false,
+      "invalid_proposals": 0,
+      "executed_violations": 0,
+      "stale_approval_rejected": null,
+      "error": null
+    }
+  ],
+  "summary": {
+    "runs": 2,
+    "expected_met": 2,
+    "verified_recoveries": 2
+  },
+  "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, not model-generated history. Baseline has documents but no incident-memory retrieval. Development fixtures are not a held-out test set. CPU evaluation uses a 300-second window when configured by CI, versus the application's default 120 seconds.",
+  "complete": true,
+  "expected_runs": 2
+}

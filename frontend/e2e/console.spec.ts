@@ -35,6 +35,8 @@ test("fixture preview is honest, inspectable and cannot execute recovery", async
 test("all scenarios, memory and results empty states work", async ({
   page,
 }) => {
+  await page.route("**/api/evaluations", route => route.fulfill({json:{measured:false,cases:[],summary:null}}));
+  await page.route("**/api/replays", route => route.fulfill({json:[]}));
   await page.goto("/");
   await expect(page.getByText("6 services", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: /03 Know what/ }).click();

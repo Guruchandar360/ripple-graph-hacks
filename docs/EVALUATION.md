@@ -44,6 +44,16 @@ executes graph and baseline modes sequentially with the same configuration.
 runs as an incomplete sample. Cases within a shard have their own isolated
 workspace graphs; memory bootstrap happens inside each case that needs history.
 
+The optional local `json` protocol constrains tool-call syntax, not decisions.
+Its model selects the tools, arguments, citations and proposed action. Both modes
+use the same selected protocol. Native Gemini calling remains the default live
+configuration. Reports identify this difference explicitly.
+
+Expected impact is computed from all six simulator request probes **before** any
+remediation, exclusively inside the evaluator. An incomplete model-reported
+impact set is marked incorrect even if its action recovers the system. The UI
+shows impact accuracy and execution violations alongside outcome success.
+
 For a late evidence case, a model may legitimately ask for updated diagnostics
 instead of proposing an action. `stale_approval_rejected=null` means there was no
 approval to exercise; it is not counted as a rejection. The real integration test

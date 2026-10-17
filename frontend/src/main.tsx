@@ -9,7 +9,6 @@ import { createRoot } from "react-dom/client";
 import {
   Background,
   BackgroundVariant,
-  Controls,
   Handle,
   Position,
   ReactFlow,
@@ -44,6 +43,8 @@ import {
   Network,
   Play,
   Plus,
+  Minus,
+  Maximize2,
   Radio,
   RefreshCw,
   Search,
@@ -320,6 +321,18 @@ function App() {
           setGraph(data.graph);
           setPreview(true);
         }
+        if (isShowcase) {
+          const records = await api<Replay[]>("/replays");
+          if (cancelled) return;
+          const featured = records.find(r => r.mode === "graph" && r.status === "recovered" && r.evaluation_case === "C02")
+            ?? records.find(r => r.mode === "graph" && r.status === "recovered");
+          if (featured) {
+            setRun({...featured,replay:true});
+            setGraph(featured.graph);
+            setScenario(featured.scenario);
+            setPreview(false);
+          }
+        }
       } catch (e) {
         if (!cancelled) setError((e as Error).message);
       } finally {
@@ -333,7 +346,7 @@ function App() {
 
   useEffect(() => {
     let cancelled = false;
-    if (view === "memory" && connected)
+    if (view === "memory" && (connected || isShowcase))
       api<Memory[]>("/memory")
         .then((v) => {
           if (!cancelled) setMemory(v);
@@ -1016,7 +1029,6 @@ function App() {
                           size={1}
                           color="#27333d"
                         />
-                        <Controls showInteractive={false} />
                       </ReactFlow>
                       {!services.length && (
                         <div className="graph-empty">
@@ -1033,6 +1045,11 @@ function App() {
                             .length
                         }{" "}
                         dependency relationships
+                      </span>
+                      <span className="graph-controls">
+                        <button aria-label="Zoom in graph" onClick={() => flowRef.current?.zoomIn()}><Plus size={13}/></button>
+                        <button aria-label="Zoom out graph" onClick={() => flowRef.current?.zoomOut()}><Minus size={13}/></button>
+                        <button aria-label="Fit graph to panel" onClick={() => flowRef.current?.fitView({padding:.12})}><Maximize2 size={13}/></button>
                       </span>
                       <span>
                         {preview
@@ -1496,7 +1513,7 @@ function App() {
               </div>
               {evaluations?.measured ? (
                 <>
-                  <p className="evaluation-info">Measured with {evaluations.model} via {evaluations.model_provider}. {evaluations.limitations}</p>
+                  <p className="evaluation-info">Measured with {evaluations.model} via {evaluations.model_provider}; tool protocol: {evaluations.tool_protocol ?? "native"}. {evaluations.limitations}</p>
                   {evaluations.complete === false && <div className="inline-warning">Partial benchmark: {evaluations.cases.length} of {evaluations.expected_runs} expected runs were recorded. Missing runs are not counted as successes.</div>}
                   <div className="metrics-grid">
                     <Metric
@@ -1519,6 +1536,8 @@ function App() {
                           <th>Case / mode</th>
                           <th>Outcome</th>
                           <th>Citations</th>
+                          <th>Impact</th>
+                          <th>Execution violations</th>
                           <th>Calls</th>
                           <th>Time</th>
                         </tr>
@@ -1540,6 +1559,8 @@ function App() {
                               </span>
                             </td>
                             <td>{c.valid_citations ? "Valid" : "Invalid"}</td>
+                            <td className={c.correct_impact ? "teal-text" : "amber-text"}>{c.correct_impact ? "Correct" : "Review"}</td>
+                            <td>{c.executed_violations}<small>{c.invalid_proposals} blocked proposals</small></td>
                             <td>{c.model_calls}</td>
                             <td>{(c.elapsed_ms / 1000).toFixed(1)}s</td>
                           </tr>
@@ -1659,7 +1680,7 @@ function App() {
               <span
                 className={`status-pill ${health?.model_configured ? "green" : "amber"}`}
               >
-                {health?.model_configured ? "Key configured" : "Key missing"}
+                {health?.model_provider === "ollama" ? "Local provider selected" : health?.model_configured ? "Key configured" : "Key missing"}
               </span>
             </div>
             <div className="setup-code">

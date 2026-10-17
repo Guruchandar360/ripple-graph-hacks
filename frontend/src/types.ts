@@ -65,6 +65,7 @@ export type Run = {
   mode: string;
   model?: string;
   model_provider?: string;
+  tool_protocol?: string;
   created_at: string;
   events: RunEvent[];
   proposals: Proposal[];
@@ -101,6 +102,7 @@ export type Memory = {
   created_at: string;
 };
 export type Health = {
+  model_provider?: string;
   database: string;
   model: string;
   model_configured: boolean;
@@ -136,6 +138,7 @@ export type Evaluations = {
   measured: boolean;
   model?: string;
   model_provider?: string;
+  tool_protocol?: string;
   limitations?: string;
   complete?: boolean;
   expected_runs?: number;

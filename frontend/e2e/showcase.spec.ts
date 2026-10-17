@@ -8,9 +8,14 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   await page.goto("./");
   await expect(page.getByText("Recorded showcase", {exact:true})).toBeVisible();
   await expect(page.getByText("6 services", {exact:true})).toBeVisible();
-  await page.getByRole("button", {name:"Start investigation"}).click();
-  await expect(page.getByRole("heading", {name:"Connect your workspace."})).toBeVisible();
-  await page.keyboard.press("Escape");
+  const start = page.getByRole("button", {name:"Start investigation",exact:true});
+  if (await start.count()) {
+    await start.click();
+    await expect(page.getByRole("heading", {name:"Connect your workspace."})).toBeVisible();
+    await page.keyboard.press("Escape");
+  } else {
+    await expect(page.getByRole("button", {name:"Investigate again",exact:true})).toBeDisabled();
+  }
   await page.getByRole("button", {name:"Evaluation results"}).click();
   await expect(page.getByRole("heading", {name:"Show the evidence."})).toBeVisible();
   const replay = page.locator('[data-replay-id]').first();

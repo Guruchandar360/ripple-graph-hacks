@@ -87,6 +87,7 @@ ollama pull qwen3:4b
 MODEL_PROVIDER=ollama
 OLLAMA_HOST=http://127.0.0.1:11434
 OLLAMA_MODEL=qwen3:4b
+OLLAMA_TOOL_MODE=native
 ```
 
 Keep Ollama running (`ollama serve` if its desktop service is not already active).
@@ -95,6 +96,12 @@ fallback. CPU investigations can exceed the normal two-minute limit; for local
 benchmarking explicitly set `RUN_TIMEOUT_SECONDS=300`. Eight model turns remain
 the limit. Document any changed limits when reporting results. The real-model CI
 workflow demonstrates clean Linux setup with FalkorDB and Ollama service containers.
+
+For a local model that does not reliably emit native calls, explicitly select
+`OLLAMA_TOOL_MODE=json`. The adapter uses Ollama's constrained JSON decoding for
+the same allowlisted tool requests; the model still chooses every tool and argument.
+This protocol is recorded in each run and benchmark. Gemini always uses native
+function calling. No provider or protocol is switched automatically.
 
 ### Frontend development
 
