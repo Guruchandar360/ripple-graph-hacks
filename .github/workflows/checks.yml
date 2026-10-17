@@ -22,7 +22,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: ruff check ripple tests
-      - run: pytest -q --junitxml=artifacts/backend-tests.xml
+      - run: python -m pytest -q --junitxml=artifacts/backend-tests.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
