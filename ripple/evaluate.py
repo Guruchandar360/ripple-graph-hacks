@@ -229,7 +229,7 @@ async def evaluate(args):
     replay_dir = output.parent / "replays"
     replay_dir.mkdir(exist_ok=True)
     modes = ["graph", "baseline"] if args.mode == "both" else [args.mode]
-    for index, case in enumerate(CASES[: args.cases], 1):
+    for index, case in enumerate(CASES[args.start - 1 : args.start - 1 + args.cases], args.start):
         for mode in modes:
             print(f"Running C{index:02d} / {mode}: {case.name}", flush=True)
             row, replay = await measure(service, agent, case, mode, index)
@@ -260,6 +260,7 @@ def report(settings, rows):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", type=int, choices=range(1, 13), default=1)
+    parser.add_argument("--start", type=int, choices=range(1, 13), default=1)
     parser.add_argument("--mode", choices=["graph", "baseline", "both"], default="both")
     parser.add_argument("--output", default="artifacts/evaluations.json")
     asyncio.run(evaluate(parser.parse_args()))

@@ -29,6 +29,7 @@ Rollback compatibility must be verified against current migration evidence. A bl
 investigate the constraint and choose another evidence-supported action or request missing evidence.
 Available actions: rollback_deployment, disable_feature_flag, restart_service. Only payments has a flag/rollback.
 Summaries should state observed evidence and uncertainty in plain English, never hidden chain-of-thought.
+Respond with native tool calls only; put concise explanations inside the structured summary fields.
 Finish within 8 model turns. No tool executes actions; a human approves separately.
 """
 

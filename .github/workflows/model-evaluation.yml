@@ -12,6 +12,10 @@ on:
         required: true
 jobs:
   evaluate:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: ${{ fromJSON(inputs.cases == '12' && '[1,4,7,10]' || '[1]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 55
     services:
@@ -44,9 +48,35 @@ jobs:
       - name: Run real model / graph comparisons
         env:
           CASE_COUNT: ${{ inputs.cases }}
-        run: python -m ripple.evaluate --cases "$CASE_COUNT" --mode both
+          CASE_START: ${{ matrix.start }}
+        run: |
+          if [ "$CASE_COUNT" = "12" ]; then CASE_COUNT=3; fi
+          python -m ripple.evaluate --start "$CASE_START" --cases "$CASE_COUNT" --mode both
       - uses: actions/upload-artifact@v4
         if: always()
+        with:
+          name: real-model-part-${{ matrix.start }}
+          path: |
+            artifacts/evaluations.json
+            artifacts/replays/
+  combine:
+    needs: evaluate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: real-model-part-*
+          path: parts
+      - name: Preserve all measured results
+        env:
+          CASE_COUNT: ${{ inputs.cases }}
+        run: python -m ripple.merge_evaluations parts artifacts --expected-runs "$((CASE_COUNT * 2))"
+      - uses: actions/upload-artifact@v4
         with:
           name: real-model-evaluation
           path: |
