@@ -36,6 +36,12 @@ jobs:
           VITE_STATIC_SHOWCASE: "true"
           VITE_BASE_PATH: /ripple-graph-hacks/
       - uses: actions/configure-pages@v5
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npx playwright test --config playwright.showcase.config.ts
+        working-directory: frontend
+        env:
+          STATIC_QA: "1"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist

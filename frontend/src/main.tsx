@@ -717,7 +717,7 @@ function App() {
               <Fingerprint size={18} />
             </span>
             <div>
-              Guest workspace<span>Private browser session</span>
+              {isShowcase ? "Public showcase" : "Guest workspace"}<span>{isShowcase ? "Synthetic recordings only" : "Private browser session"}</span>
             </div>
             <LockKeyhole size={13} />
           </div>
@@ -756,7 +756,7 @@ function App() {
             </span>
             <span className={`connection ${connected ? "connected" : ""}`}>
               <i />
-              {connected ? "Graph connected" : "Graph offline"}
+              {isShowcase ? "Recorded graphs" : connected ? "Graph connected" : "Graph offline"}
             </span>
             <button
               className="icon-button"
@@ -1395,7 +1395,7 @@ function App() {
                   <strong>{memory.length}</strong>
                 </div>
                 <p>
-                  Saved in your isolated FalkorDB graph.
+                  {isShowcase ? "Recorded outcomes exported from FalkorDB." : "Saved in your isolated FalkorDB graph."}
                   <br />
                   Failed actions stay visible as failed outcomes.
                 </p>

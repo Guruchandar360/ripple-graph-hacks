@@ -183,6 +183,13 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
             graph_connected = False
         return checklist(ROOT, graph_connected=graph_connected, model_configured=settings.model_configured)
 
+    @app.get("/api/demo-video")
+    def demo_video():
+        path = ROOT / "demo" / "ripple-demo.webm"
+        if not path.is_file():
+            raise DomainError("No demo video has been recorded.", 404, "not_found")
+        return FileResponse(path, media_type="video/webm")
+
     @app.get("/api/replays")
     def replays():
         directory = ROOT / "artifacts" / "replays"

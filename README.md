@@ -7,22 +7,32 @@ commerce company. It traverses dependencies in FalkorDB, retrieves timestamped
 sources and incident memory, proposes a recovery action, and verifies the result
 against an executable Python simulator. Nothing touches production infrastructure.
 
+[Public source](https://github.com/Guruchandar360/ripple-graph-hacks) ·
+[Recorded showcase](https://guruchandar360.github.io/ripple-graph-hacks/) ·
+[CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
+[Submission packet](docs/SUBMISSION.md)
+
 ## Current state
 
 Implemented: React console, six-service graph fixture, three incident scenarios,
-bounded Gemini function-calling loop, graph persistence, evidence revision checks,
+bounded native function-calling loop, graph persistence, evidence revision checks,
 idempotent simulator execution, incident memory, evaluation runner, and automated tests.
 
-**Real Gemini/FalkorDB credentials are required for live investigation.** Without
-them, the application offers a clearly labeled, read-only fixture preview and
-connection diagnostics. This is not a simulated live agent or a fallback graph.
-There are no claimed benchmark scores or recorded agent demos until actual runs
-are executed and exported. Deployment and a public source URL require your accounts.
+**Live investigation requires real FalkorDB and a configured model provider.**
+Gemini is the default; Ollama is an explicit free local alternative. Without these,
+the application offers a read-only fixture preview and connection diagnostics.
+The public GitHub Pages site is a **recorded showcase**, not the live Python backend.
+Recorded graphs originate in FalkorDB; exported model output is visibly labeled
+Replay and cannot execute actions. See [verification](docs/VERIFICATION.md) for
+actual measurements and remaining account-dependent checks.
 
 ## Run locally
 
 Requirements: Python 3.12+, Node 22+, a FalkorDB server (Cloud or Docker), and a
-Gemini API key with access to the configured model. No paid fallback is enabled.
+Gemini API key with model access **or** a local Ollama server. No paid fallback is enabled.
+
+Clone `https://github.com/Guruchandar360/ripple-graph-hacks.git` and run the following
+from the repository root. Start FalkorDB with the Docker instructions below first.
 
 ### Windows PowerShell
 
@@ -62,8 +72,29 @@ docker compose up -d
 
 The graph server binds to localhost:6379, its Browser to localhost:3000. A named
 volume and append-only persistence preserve data. Keep `FALKORDB_SSL=false` for
-this localhost-only configuration. The image currently uses `latest`; pin a
-tested release/digest for a reproducible hosted environment.
+this localhost-only configuration. Docker Compose and CI pin FalkorDB **6.0.2**.
+
+### Explicit free local model
+
+Gemini remains the default. To run entirely locally, install Ollama and pull a
+tool-capable model, then select it in `.env`:
+
+```sh
+ollama pull qwen3:4b
+```
+
+```dotenv
+MODEL_PROVIDER=ollama
+OLLAMA_HOST=http://127.0.0.1:11434
+OLLAMA_MODEL=qwen3:4b
+```
+
+Keep Ollama running (`ollama serve` if its desktop service is not already active).
+This selection never sends requests to Gemini, and failures never trigger a paid
+fallback. CPU investigations can exceed the normal two-minute limit; for local
+benchmarking explicitly set `RUN_TIMEOUT_SECONDS=300`. Eight model turns remain
+the limit. Document any changed limits when reporting results. The real-model CI
+workflow demonstrates clean Linux setup with FalkorDB and Ollama service containers.
 
 ### Frontend development
 
@@ -79,8 +110,9 @@ viewing changes through the production server on port 8000.
 ## Demo flow
 
 1. Load **Yesterday's fix** and start a graph-backed investigation.
-2. Inspect the dependency paths and cited sources. A rollback without verified
-   compatibility is blocked; the agent may already choose the documented flag fix.
+2. Inspect the dependency paths and cited sources. The last received advisory
+   permits rollback; the physical simulator independently rejects an incompatible
+   action. The model may request updated evidence instead of proposing rollback.
 3. Once investigation pauses, inject the migration record. Pending approvals
    become stale. Inspect the amber **Evidence changed** event and source.
 4. Start a fresh investigation. Approve a justified action; inspect actual
@@ -99,7 +131,7 @@ guards are separate from model reasoning and are visible in the event log.
 ```mermaid
 flowchart LR
   UI[React console] --> API[FastAPI / workspace cookie]
-  API --> Agent[Bounded Gemini tool loop]
+  API --> Agent[Bounded native tool loop]
   Agent --> Tools[Parameterized graph tools]
   Tools --> Graph[(FalkorDB)]
   API --> Guard[Revision and compatibility guard]
@@ -167,9 +199,10 @@ limit. Explicitly raise local `GLOBAL_DAILY_RUNS`, `WORKSPACE_DAILY_RUNS` and
 The runner stops on setup/quota failures rather than inventing results.
 
 Results and actual replays go into `artifacts/`. The UI reads these files. These
-files are ignored by Git; explicitly include desired synthetic result artifacts
-in a release/deployment if you want visitors to inspect them. The model/API keys
-and raw simulator fault configuration are not exported in replay artifacts.
+files are ignored by Git; reviewed public exports are committed under `demo/`,
+which the API uses when no local artifacts exist. The model/API keys and raw
+simulator fault configuration are not exported in replay artifacts. Each completed
+case is saved immediately so later interruptions do not erase earlier results.
 
 ## Free deployment
 
@@ -183,6 +216,20 @@ app loads. All live state is in FalkorDB, not Render's ephemeral filesystem.
 Restarted investigations are marked interrupted on startup; actions are never
 automatically repeated. No live deployment is claimed by the source configuration.
 
+The separate GitHub Pages workflow builds a static, read-only showcase after
+browser checks. It exposes synthetic recordings and results, has no credentials,
+and cannot start investigations or execute recoveries. To reproduce that build:
+
+```powershell
+.\.venv\Scripts\python -m ripple.export_showcase
+$env:VITE_STATIC_SHOWCASE = 'true'
+$env:VITE_BASE_PATH = '/ripple-graph-hacks/'
+npm --prefix frontend run build
+Remove-Item Env:VITE_STATIC_SHOWCASE, Env:VITE_BASE_PATH
+```
+
+Rebuild without those variables before running the full local backend.
+
 Public visitors can create up to 30 persisted workspaces by default. This is a
 capacity cap, not an automatic retention policy; increase it deliberately or
 clean up your own expired demonstration workspaces through FalkorDB Browser.
@@ -195,7 +242,9 @@ and Agent Memory and Coordination through provenance, ownership and memory.
 Provide a public repository URL, live deployment or complete local instructions,
 working demo video, graph model, actual Cypher, and measured results. Every fixture
 is synthetic. The participant must review and understand the code, architecture,
-queries and technical decisions before submitting.
+queries and technical decisions before submitting. See the [official-rules audit](docs/COMPLIANCE.md)
+and [participant technical guide](docs/CONTRIBUTOR_GUIDE.md). Registration and the
+organizer's final submission form are not automatically completed by this repository.
 
 **AI assistance disclosure:** Codex generated and revised implementation code,
 tests, styling, and documentation with AI assistance. Automated tests cover selected

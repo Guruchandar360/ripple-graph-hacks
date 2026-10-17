@@ -9,6 +9,7 @@ graph LR
   Deployment -->|SUPPORTED_BY| Source
   Constraint -->|SUPPORTED_BY| Source
   Constraint -->|BLOCKS| Action
+  Constraint -->|PERMITS| Action
   Run -->|PROPOSED / EXECUTED| Action
   Action -->|SUPPORTED_BY| Source
   Action -->|VERIFIED_BY| ProbeResult
@@ -57,13 +58,33 @@ baseline uses the same active documents but cannot call ownership/traversal tool
 ## Incident memory
 
 ```cypher
-MATCH (i:Incident)
-WHERE i.id STARTS WITH 'memory-'
+MATCH (i:Incident)-[:AFFECTS]->(s:Service)
+WHERE i.id STARTS WITH 'memory-' AND ($target='' OR s.id=$target)
 RETURN i.data
 ```
 
 This retrieves persisted outcomes independently of prior conversation messages.
 The agent must still inspect current evidence and probe before proposing reuse.
+
+## Current action policies
+
+```cypher
+MATCH (c:Constraint)-[r:BLOCKS|PERMITS]->(a:Action)
+MATCH (c)-[:SUPPORTED_BY]->(s:Source)
+WHERE c.active=true AND a.template=true
+RETURN c.data, s.id
+```
+
+This query is used by both proposal validation and execution. Typed synthetic
+source records project explicit policies into native graph relationships.
+An action/target filter is applied to the returned policies. A block takes
+precedence; rollback also requires an explicit current permit. The model cannot
+create or alter these policies through its tools.
+
+Records with the same `fact_key` are resolved by effective timestamp, independently
+of ingestion order. Superseded sources and policies remain inspectable but cannot
+authorize a current action. Equal timestamps use a deterministic ID tie-break;
+this is not a complete production conflict-resolution or trust system.
 
 ## Atomic mutation
 

@@ -105,3 +105,15 @@ test("desktop and mobile render without overflow or browser errors", async ({
   });
   expect(errors).toEqual([]);
 });
+
+test("command navigation and participant checklist remain accessible and honest", async ({page}) => {
+  await page.goto("/");
+  await page.keyboard.press("Control+k");
+  const dialog = page.getByRole("dialog", {name:"Command menu"});
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("textbox").fill("Launch checklist");
+  await dialog.getByRole("button", {name:/Launch checklist/}).click();
+  await expect(page.getByRole("heading", {name:"Ready for the spotlight."})).toBeVisible();
+  await expect(page.getByText("Participant step", {exact:true})).toHaveCount(2);
+  await expect(page.getByText("Preparation status is not an organizer's eligibility approval.")).toBeVisible();
+});
