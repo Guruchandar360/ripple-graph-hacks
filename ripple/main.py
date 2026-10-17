@@ -185,10 +185,12 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
 
     @app.get("/api/demo-video")
     def demo_video():
-        path = ROOT / "demo" / "ripple-demo.webm"
+        path = ROOT / "demo" / "ripple-demo.mp4"
+        if not path.is_file():
+            path = ROOT / "demo" / "ripple-demo.webm"
         if not path.is_file():
             raise DomainError("No demo video has been recorded.", 404, "not_found")
-        return FileResponse(path, media_type="video/webm")
+        return FileResponse(path, media_type="video/mp4" if path.suffix == ".mp4" else "video/webm")
 
     @app.get("/api/replays")
     def replays():

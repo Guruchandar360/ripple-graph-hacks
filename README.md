@@ -9,6 +9,7 @@ against an executable Python simulator. Nothing touches production infrastructur
 
 [Public source](https://github.com/Guruchandar360/ripple-graph-hacks) ·
 [Recorded showcase](https://guruchandar360.github.io/ripple-graph-hacks/) ·
+[Captioned demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
 [CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
 [Submission packet](docs/SUBMISSION.md)
 

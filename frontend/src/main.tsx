@@ -79,6 +79,7 @@ import { ContextBar } from "./components/ContextBar";
 import { LaunchReadiness } from "./components/LaunchReadiness";
 import { CommandMenu } from "./components/CommandMenu";
 import { PolicyLedger } from "./components/PolicyLedger";
+import { Comparison } from "./components/Comparison";
 
 const fallbackScenarios: Scenario[] = [
   {
@@ -792,7 +793,7 @@ function App() {
             </span>
             <span className={`connection ${connected ? "connected" : ""}`}>
               <i />
-              {isShowcase ? "Recorded graphs" : connected ? "Graph connected" : "Graph offline"}
+              {isShowcase || run?.replay ? "Recorded graphs" : connected ? "Graph connected" : "Graph offline"}
             </span>
             <button
               className="icon-button"
@@ -1505,7 +1506,7 @@ function App() {
                     baseline.
                   </p>
                 </div>
-                <div className="results-actions"><a className="secondary small" href={isShowcase ? `${import.meta.env.BASE_URL}showcase/ripple-demo.webm` : "/api/demo-video"} target="_blank" rel="noreferrer"><Play size={14}/>Watch recorded demo<ArrowUpRight size={13}/></a><Activity size={28} className="teal-text" /></div>
+                <div className="results-actions"><a className="secondary small" href={isShowcase ? `${import.meta.env.BASE_URL}showcase/ripple-demo.mp4` : "/api/demo-video"} target="_blank" rel="noreferrer"><Play size={14}/>Watch recorded demo<ArrowUpRight size={13}/></a><Activity size={28} className="teal-text" /></div>
               </section>
               <div className="evaluation-info">
                 <ShieldCheck size={19} />
@@ -1535,6 +1536,7 @@ function App() {
                     />
                   </div>
                   <div className="panel table-panel">
+                    <Comparison rows={evaluations.cases} />
                     <table>
                       <thead>
                         <tr>

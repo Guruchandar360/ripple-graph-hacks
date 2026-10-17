@@ -10,6 +10,12 @@
 .graph-footer { flex-wrap:wrap; gap:6px; }
 .table-panel { overflow:auto; }
 .results-actions { display:flex; align-items:center; gap:15px; }
+.comparison-panel { border:0; border-bottom:1px solid #31444d; border-radius:0; }
+.comparison-scroll { overflow:auto; }
+.comparison-scroll table { width:100%; min-width:650px; }
+.comparison-scroll th { white-space:normal; }
+.comparison-scroll td small { display:block; font-size:10px; color:#8fa5b2; margin-top:5px; }
+.comparison-note { font-size:10px; line-height:1.8; color:#93aab5; padding:12px 18px; background:#122229; }
 @media(max-width:680px) { .view-results .page-intro { flex-wrap:wrap; } .results-actions { width:100%; } }
 
 @media (min-width:1200px) and (min-height:650px) {

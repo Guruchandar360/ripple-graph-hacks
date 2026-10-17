@@ -67,7 +67,7 @@ await page.locator(".timeline").scrollIntoViewIfNeeded();
 await caption("Insufficient evidence means no executed remediation.", "The agent can identify missing diagnostics and stop. Deterministic guards provide an independent boundary if the model proposes an unsafe action.", 9);
 }
 await results();
-await caption("Open source. Reproducible. Explicit limits.", "github.com/Guruchandar360/ripple-graph-hacks · Actual Qwen/Ollama runs with FalkorDB. Synthetic infrastructure, AI-assisted implementation, and complete local setup are disclosed.", 10);
+await caption("Public source. Reproducible. Explicit limits.", "github.com/Guruchandar360/ripple-graph-hacks · Actual Qwen/Ollama runs with FalkorDB. Synthetic infrastructure, AI-assisted implementation, and complete local setup are disclosed.", 10);
 const video = page.video();
 await context.close();
 const filename = smoke ? "ripple-smoke-demo.webm" : "ripple-demo.webm";

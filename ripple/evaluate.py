@@ -250,6 +250,11 @@ def report(settings, rows):
         "model": settings.active_model,
         "model_provider": settings.provider,
         "tool_protocol": settings.ollama_tool_mode if settings.provider == "ollama" else "native",
+        "configuration": {
+            "max_model_turns": settings.max_turns,
+            "timeout_seconds": settings.timeout,
+            "temperature": 0.1,
+        },
         "cases": rows,
         "summary": {
             "runs": len(rows),

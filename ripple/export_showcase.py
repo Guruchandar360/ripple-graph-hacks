@@ -59,9 +59,10 @@ def export(destination: Path):
             f"preview-{scenario['id']}",
             {"preview": True, "scenario": scenario, "graph": {"nodes": nodes, "edges": edges}},
         )
-    video = ROOT / "demo" / "ripple-demo.webm"
-    if video.exists():
-        shutil.copyfile(video, destination / "ripple-demo.webm")
+    for extension in ("webm", "mp4"):
+        video = ROOT / "demo" / f"ripple-demo.{extension}"
+        if video.exists():
+            shutil.copyfile(video, destination / video.name)
     print(f"Exported read-only showcase to {destination}")
 
 
