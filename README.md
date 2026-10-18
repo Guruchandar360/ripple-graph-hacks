@@ -9,6 +9,7 @@ against an executable Python simulator. Nothing touches production infrastructur
 
 [Public source](https://github.com/Guruchandar360/ripple-graph-hacks) ·
 [Recorded showcase](https://guruchandar360.github.io/ripple-graph-hacks/) ·
+[Hosted workspace](https://ripple-graph-hacks.onrender.com) ·
 [Captioned demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
 [CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
 [Actual measurements](docs/MEASUREMENTS.md) ·
@@ -28,6 +29,18 @@ citation of actual prior model outcomes. These use 300-second CPU windows,
 above the normal 120-second app limit. Graph mode was slower and missed complete
 impact in two cases. [Raw results and limitations](docs/MEASUREMENTS.md).
 
+The free hosted backend passed an actual **Gemini + FalkorDB Cloud recovery**:
+one model call, **7.014 seconds** of persisted investigation time, verified
+503 → 200 probes, duplicate-action idempotency, memory after scenario reload,
+and foreign-visitor HTTP 404. A separate native sample passed **one complete
+three-scenario sequence**, with actual prior-memory citation and stale approval
+rejection. This is **1/1 sampled**, not three consecutive native passes.
+[Native receipts and limits](demo/live/README.md).
+
+Google AI Studio subsequently showed the free daily limit reached (21/20
+requests on October 18); further live calls may be blocked until reset. The
+showcase now opens an actual Gemini replay and remains usable without model quota.
+
 **Live investigation requires real FalkorDB and a configured model provider.**
 Gemini is the default; Ollama is an explicit free local alternative. Without these,
 the application offers a read-only fixture preview and connection diagnostics.
@@ -38,7 +51,7 @@ actual measurements and remaining account-dependent checks.
 
 The server defaults to `gemini-3.8-flash`. A direct official-SDK native function
 call passed on October 18; the older `gemini-2.5-flash` returned 404 for this
-account. This provider probe alone does not establish integrated agent reliability.
+account. The direct probe is separate from the subsequent integrated native receipts.
 Google's [access policy](https://ai.google.dev/gemini-api/docs/deprecations)
 limits 2.5 models to previous active users. The chosen model's standard tier
 currently lists free input and output in the
@@ -276,7 +289,8 @@ for real incidents or sensitive data.
 Render's free instance can sleep. A new visitor may see a cold start before the
 app loads. All live state is in FalkorDB, not Render's ephemeral filesystem.
 Restarted investigations are marked interrupted on startup; actions are never
-automatically repeated. No live deployment is claimed by the source configuration.
+automatically repeated. The hosted native verification is recorded separately
+in `demo/live/`; account quota can still prevent a new investigation.
 
 The separate GitHub Pages workflow builds a static, read-only showcase after
 browser checks. It exposes synthetic recordings and results, has no credentials,

@@ -6,11 +6,14 @@
 
 **Recorded showcase:** https://guruchandar360.github.io/ripple-graph-hacks/
 
+**Hosted workspace:** https://ripple-graph-hacks.onrender.com (free-model quota applies)
+
 **Captioned working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
 
 The video is an explicitly labeled selection of actual development model output;
 `demo/video.json` identifies the passing sequence and its measured memory origin. The
-public site is read-only; use the README to run the full backend locally.
+GitHub Pages site is read-only; the separate Render backend has an actual
+native recovery receipt. The README also provides local setup.
 
 **Primary track:** Agents That Act on Connected Data
 
@@ -54,8 +57,11 @@ All operational data is synthetic. No production systems are connected.
   passing evidence-first-v2 sequences; source records and limits are disclosed.
   The complete comparison still contains two incomplete graph impact reports.
 - Technical blog: `docs/BLOG.md` (public repository article; no external post claimed).
-- Full application deployment: configure Render and FalkorDB, or use complete local setup.
-  A static replay showcase is not described as a hosted live backend.
+- Hosted backend: free Render + FalkorDB Cloud, verified with actual Gemini.
+  `demo/live/` retains the HTTP receipt and a separate passing 1/1 native sequence.
+  Free Gemini quota was reached during October 18 verification; additional live
+  calls may fail until reset. CPU three-pass proof remains a separate configuration.
+  Plaintext database transport was explicitly approved for synthetic demo data only.
 
 ## Participant-owned checks
 

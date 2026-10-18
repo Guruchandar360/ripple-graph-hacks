@@ -891,7 +891,7 @@ function App() {
                   : preview
                     ? "Explore the synthetic scenario. Connect your graph and model to investigate."
                     : "Synthetic infrastructure. Real graph queries, state changes, and probe results."}
-                {isShowcase && " Live investigations require the local backend."}
+                {isShowcase && " A separate hosted workspace is available; free model quotas apply."}
               </span>
               <button
                 aria-label={evidenceChange ? "Jump to evidence change" : undefined}
@@ -906,6 +906,11 @@ function App() {
                 {evidenceChange ? "View evidence change" : preview ? "Connect workspace" : "Connection details"}
                 {evidenceChange ? <Zap size={13}/> : <ArrowRight size={13} />}
               </button>
+              {isShowcase && (
+                <a className="notice-local" href="https://ripple-graph-hacks.onrender.com" target="_blank" rel="noreferrer">
+                  Live workspace <ArrowUpRight size={14}/>
+                </a>
+              )}
               {isShowcase && (
                 <a className="notice-local" href="https://github.com/Guruchandar360/ripple-graph-hacks#run-locally" target="_blank" rel="noreferrer">
                   Run locally <ArrowUpRight size={14}/>

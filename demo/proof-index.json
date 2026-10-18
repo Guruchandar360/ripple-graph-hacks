@@ -110,7 +110,21 @@
     "demo/verification/backend-tests.xml": "2ffaba77b6774975f3494022885507700648fff37414a515027f6ef00c4459d6",
     "demo/verification/ci-results.txt": "7c988a34ef53b5164ec307061e9536f7b7aa8d2a36ed61a1a96fdac81fe049d3",
     "demo/video.json": "01569a560abbcb6fbc6d0fc82739d8bb51998745bd81b7c4d199a93924280576",
-    "frontend/scripts/record-demo.mjs": "d1654c62649a47ba55ff13be085bc0783a3301bfe98fc106c9e75a3c31c9aded"
+    "frontend/scripts/record-demo.mjs": "d1654c62649a47ba55ff13be085bc0783a3301bfe98fc106c9e75a3c31c9aded",
+    "demo/live/http-proof.json": "1eede39b5d7f1f9322d373db78986eff96a96125d0f4aa9c0b97b8ddcde5fdfb",
+    "demo/live/0bdffbe3ef444ee4bdc66e54bc9638fb.json": "03da82e7cf0651cc7759ee77b2579ee62011b5b10714d6748f22674b11e29e4c",
+    "demo/live/sequence/repeatability.json": "7dcf355b59a1bfb785432779dd062cb36a2b420af8ad48f57274ff261ab3a1bb",
+    "demo/live/sequence/replays/0091d790d71e40269b534463a162442d.json": "27912ecf66c80cc955da0537e2cfa54fb5fc7ddea7b05d34ccdc245af30155cc",
+    "demo/live/sequence/replays/38503689004b4d4ab6a0ffc7ad918919.json": "15901201ba790b1554db9536b8037d9a23583aa0a6804c2311d577ef0479eda9",
+    "demo/live/sequence/replays/4a5e8e28ae704314b702a51f8c3df7ba.json": "4113eafa9d9865cef38634efa346817475524f017d604d43639338d98cb36f67"
   },
-  "text_hash_normalization": "CRLF to LF for JSON, XML, TXT and MJS; binary media SHA-256 is byte-exact."
+  "text_hash_normalization": "CRLF to LF for JSON, XML, TXT and MJS; binary media SHA-256 is byte-exact.",
+  "live_http_report": "demo/live/http-proof.json",
+  "live_http_replay": "demo/live/0bdffbe3ef444ee4bdc66e54bc9638fb.json",
+  "native_sequence_report": "demo/live/sequence/repeatability.json",
+  "native_sequence_replays": [
+    "demo/live/sequence/replays/0091d790d71e40269b534463a162442d.json",
+    "demo/live/sequence/replays/38503689004b4d4ab6a0ffc7ad918919.json",
+    "demo/live/sequence/replays/4a5e8e28ae704314b702a51f8c3df7ba.json"
+  ]
 }

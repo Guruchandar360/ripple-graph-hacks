@@ -509,7 +509,9 @@ class RippleService:
             self.archive_graph(workspace, state, run)
             return result
 
-    def record_progress(self, workspace, run_id, *, calls=None, elapsed_ms=None, error=None, response_metadata=None):
+    def record_progress(
+        self, workspace, run_id, *, calls=None, elapsed_ms=None, error=None, response_metadata=None
+    ):
         with self.lock(workspace):
             state = self.repo.read(workspace)
             run = self._run(state, run_id)

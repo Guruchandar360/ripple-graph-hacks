@@ -19,7 +19,8 @@
       "median_seconds": 94.038
     }
   },
-  "supporting_paths_cross_checked": 442,
+  "supporting_paths_cross_checked": 476,
+  "recordings_cross_checked": 37,
   "path_count_scope": "Returned path instances including repeated retrievals across calls/runs; not unique paths or proof of causation.",
   "sequences": [
     {
@@ -48,7 +49,7 @@
     }
   ],
   "video_sha256_matches": true,
-  "checksummed_files": 45,
+  "checksummed_files": 51,
   "online_workflows": [
     {
       "conclusion": "success",
@@ -81,9 +82,45 @@
       "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898"
     }
   ],
+  "live_http": {
+    "passed": true,
+    "model": "gemini-3.8-flash",
+    "source_commit": "c02004d7b219c3441f8e0638e201ba932ad56cca",
+    "application_url": "https://ripple-graph-hacks.onrender.com",
+    "model_calls": 1,
+    "elapsed_seconds": 7.014,
+    "supporting_paths_cross_checked": 6,
+    "scope": "One actual hosted HTTP recovery; retained driver assertions and graph/probe records, not three-sequence reliability or a fresh audit-time request."
+  },
+  "native_sample": {
+    "sample_passed": true,
+    "sample_size": 1,
+    "three_consecutive_gate_met": false,
+    "source_commit": "e06d39f65f5a30062f8571cea1f3c143ff8f67b1",
+    "sequences": [
+      {
+        "repetition": 1,
+        "prior_action_ids_retrieved_and_cited": [
+          "9985b9a5005741a4b0d38a59eae5a0fc"
+        ],
+        "supporting_paths_cross_checked": 28,
+        "passed": true
+      }
+    ],
+    "conclusion_metrics": {
+      "phases": 3,
+      "valid_citations": 3,
+      "complete_impact": 3
+    },
+    "phase_seconds": {
+      "recovery": 63.672,
+      "memory": 63.297,
+      "insufficient": 90.344
+    },
+    "scope": "Separate native sample, not the CPU comparison; recovery recording combines the initial and revised conversations."
+  },
   "pending": [
-    "Integrated Gemini + Cloud/Render investigation",
-    "Production 120-second reliability",
+    "Three-consecutive Gemini sequences within the production 120-second window",
     "Participant registration, contribution/review and final submission"
   ],
   "limitations": [

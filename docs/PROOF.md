@@ -48,14 +48,14 @@ python -m ripple.proof
 python -m pytest tests/test_proof.py -q
 ```
 
-The auditor reads 24 benchmark records and nine sequence recordings. It
-cross-checks **442 recorded path instances** (including repeated retrievals across
+The auditor reads 24 CPU benchmark records, nine CPU sequence recordings and
+four separate native recordings. It cross-checks **476 recorded path instances** (including repeated retrievals across
 calls and runs) against their exported graph
 nodes/edges, recomputes reported impact accuracy from actual preflight probe
 receipts, checks conclusion citations against retrieved evidence, checks recovery
 probes, and traces each cited memory back to its earlier execution result.
 
-[The index](../demo/proof-index.json) fingerprints 45 artifacts, including the
+[The index](../demo/proof-index.json) fingerprints the retained artifacts, including the
 video, raw reports, selected replays and historical CI receipts. Binary media
 checksums are byte-exact; text hashes normalize CRLF to LF for portable Git
 checkouts. [The saved audit](../demo/proof-audit.json) records the result.
@@ -77,20 +77,41 @@ are separate commands documented in [the evaluation guide](EVALUATION.md).
 Earlier failures remain available in [the provenance index](../demo/PROVENANCE.md)
 and `demo/development/`; they are not added to the new sample's success count.
 
-## Remaining verification
+## Native Cloud verification
 
-- **Integrated Gemini + Cloud/Render execution:** the direct Google SDK native
-  function-call probe passed ([receipt](../demo/provider-checks/gemini-3.8.json)).
-  The selected Free database exposes plaintext Redis. The participant approved
-  this exception for the synthetic demo only. Database credentials and synthetic
-  records travel without TLS; browser and Gemini traffic use HTTPS. Two actual
-  integration tests passed against that Cloud instance; hosted recovery is still
-  being verified.
-- **Normal application time limit:** CPU proof uses 300 seconds per conversation.
-  Reliability within the default 120-second application window is unmeasured.
-  An [initial native Cloud trial](../demo/development/gemini-pre-tuning/trial.json)
-  took 128.375 seconds for its first proposal and timed out on the second run;
-  it did not pass. Subsequent native configuration changes are separate trials.
+The [hosted HTTP receipt](../demo/live/http-proof.json) and
+[persisted native run](../demo/live/0bdffbe3ef444ee4bdc66e54bc9638fb.json)
+record an actual Render → Gemini / FalkorDB Cloud recovery at `c02004d`:
+one model call, 7.014 seconds of persisted investigation time, all three affected
+services changing from 503 to 200, identical duplicate result, scenario-reload
+memory and foreign-visitor HTTP 404. Action approval/execution time is excluded.
+Cloud database restart was not tested.
+
+The separate [native sequence](../demo/live/sequence/repeatability.json) at
+`e06d39f` passed one complete three-scenario sample: actual stale approval
+rejection, recovery, fresh memory retrieval **and citation**, and no unsupported
+action. Its combined initial/revised recovery took 63.672 seconds, memory
+63.297 seconds and insufficient-evidence diagnosis 90.344 seconds. Each
+conversation had eight turns / 120 seconds configured. This is one requested
+sequence, not three consecutive passes; the JSON keeps the release-gate
+`passed` field false while `sample_passed` is true. All records are fingerprinted
+and checked separately from the CPU comparison. See [native evidence](../demo/live/README.md).
+
+The [initial slow native trial](../demo/development/gemini-pre-tuning/trial.json)
+is retained: first proposal 128.375 seconds; second investigation timed out.
+Subsequent native configuration changes are a separate sample.
+
+## Remaining verification and limits
+
+- **Native repetition:** three consecutive Gemini sequences remain unverified.
+  The existing three-pass result uses the documented CPU configuration.
+- **Free model quota:** on October 18 Google AI Studio displayed a reached rate
+  limit, with peak 21/20 daily requests. Further live calls may be blocked until
+  reset. No billing upgrade or alternate key was used.
+- **Database transport:** the participant explicitly approved plaintext Redis
+  for this synthetic demo only. Its password and synthetic records travel
+  without TLS between app and FalkorDB; browser and Gemini traffic use HTTPS.
+  The deployment template retains TLS by default.
 - **Participant requirements:** registration, eligibility, meaningful contribution,
   technical understanding and final submission require the participant. See the
-  [technical review guide](CONTRIBUTOR_GUIDE.md). AI assistance is disclosed in the README.
+  [technical review guide](CONTRIBUTOR_GUIDE.md). AI assistance is disclosed.

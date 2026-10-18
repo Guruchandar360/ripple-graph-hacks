@@ -21,15 +21,15 @@ def render(root=ROOT):
         return f'<a href="{escape(url, quote=True)}">{escape(label)}</a>'
 
     def raw(phase):
-        return link(f'../showcase/proof-records/{phases[phase]["id"]}.json', "Read actual record ↗")
+        return link(f"../showcase/proof-records/{phases[phase]['id']}.json", "Read actual record ↗")
 
     rows = ""
     for mode, title in (("graph", "Graph-backed"), ("baseline", "Full documents")):
         values = result["benchmark"][mode]
         rows += (
             f'<tr><th scope="row">{title}</th><td>{values["expected_met"]}/12</td>'
-            f'<td>{values["correct_impact"]}/12</td><td>{values["valid_citations"]}/12</td>'
-            f'<td>{values["median_seconds"]:.1f}s</td></tr>'
+            f"<td>{values['correct_impact']}/12</td><td>{values['valid_citations']}/12</td>"
+            f"<td>{values['median_seconds']:.1f}s</td></tr>"
         )
     cards = ""
     for item in result["sequences"]:
@@ -37,14 +37,32 @@ def render(root=ROOT):
         cards += (
             f'<article><span class="eyebrow">SEQUENCE {item["repetition"]}</span>'
             '<h3><span class="positive">✓</span> All declared checks passed</h3>'
-            '<p>Recovery, a fresh conversation citing the actual prior outcome, '
-            'stale approval rejection and no insufficient-evidence execution.</p>'
-            f'<code>memory-{escape(action_id)}</code></article>'
+            "<p>Recovery, a fresh conversation citing the actual prior outcome, "
+            "stale approval rejection and no insufficient-evidence execution.</p>"
+            f"<code>memory-{escape(action_id)}</code></article>"
         )
     source = workflows["benchmark"]["source_commit"][:7]
     model = escape(benchmark["model"])
     memory_reference = escape(result["sequences"][0]["prior_action_ids_retrieved_and_cited"][0])
-    return """<!doctype html>
+    live = result.get("live_http")
+    native_section = ""
+    if live:
+        native_section = f"""<section><span class="eyebrow">ACTUAL CLOUD EXECUTION</span>
+<h2>A hosted recovery, verified.</h2><div class="panel">
+<h3>{escape(live["model"])} · {live["model_calls"]} model call · {live["elapsed_seconds"]:.3f}s investigation</h3>
+<p>Actual HTTP requests to the free Render service using FalkorDB Cloud. Checkout, payments and storefront changed from HTTP 503 to 200. Duplicate approval returned the identical result, memory survived scenario reload, and a different visitor received HTTP 404.</p>
+<p class="note">One hosted recovery at source <code>{live["source_commit"][:7]}</code>, with eight turns / 120 seconds configured. The timing is the persisted investigation duration, excluding approval and action execution. This sample does not establish repeated reliability; Cloud database restart was not tested.</p>
+<div class="actions">{link(live["application_url"], "Open the live workspace ↗")}{link("../showcase/native-http-proof.json", "Read the HTTP receipt ↗")}{link("../showcase/native-http-replay.json", "Read the persisted run ↗")}</div>
+</div></section>"""
+    native_sample = result.get("native_sample")
+    if native_sample:
+        native_section += f"""<section><span class="eyebrow">SEPARATE NATIVE SAMPLE</span>
+<h2>One complete Gemini sequence passed.</h2><p>Actual Google native function calling against FalkorDB Cloud from the local Python agent. The prior rollback approval was rejected after migration evidence changed; the replacement recovered. A fresh conversation retrieved and cited that actual recovery, and the insufficient-evidence case executed nothing.</p>
+<div class="panel"><p>Recovery, including its initial and revised conversations: <strong>{native_sample["phase_seconds"]["recovery"]:.3f}s</strong>. Fresh memory: <strong>{native_sample["phase_seconds"]["memory"]:.3f}s</strong>. Missing evidence: <strong>{native_sample["phase_seconds"]["insufficient"]:.3f}s</strong>. Each conversation had eight turns / 120 seconds configured.</p>
+<p class="note">One of one requested sequences passed. This is a smaller quota-conscious sample; the native three-consecutive gate remains unmet. Its JSON deliberately retains <code>passed: false</code> for that gate and <code>sample_passed: true</code> for the completed sample. CPU results below remain separate.</p>
+<div class="actions">{link("../showcase/native-sequence.json", "Inspect native sequence acceptance ↗")}{link("../", "Explore actual native replays ↗")}</div></div></section>"""
+    return (
+        """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Ripple's recorded incident recovery proof, raw evidence, source versions and explicit limits.">
 <title>Ripple — Proof for judges</title><style>
@@ -70,32 +88,35 @@ code,pre{font-family:ui-monospace,monospace;font-size:13px}code{overflow-wrap:an
 <header><span class="eyebrow">PROOF FOR JUDGES</span><h1>Every claim has an evidence trail.</h1>
 <p class="lead">A changing migration record invalidates yesterday's fix. Ripple proposes a safer simulator action, verifies recovery and remembers the measured outcome in a fresh conversation.</p>
 <div class="actions"><a class="button primary" href="../showcase/ripple-demo.mp4">Watch the recorded demo ↗</a><a class="button" href="../showcase/proof-audit.json">Inspect the audit JSON ↗</a><a class="button" href="../">Open the console ↗</a></div></header>
-""" + f"""
-<div class="metrics"><article class="metric"><strong>3/3</strong><span>Consecutive complete sequences</span></article><article class="metric"><strong>24</strong><span>Paired benchmark runs retained</span></article><article class="metric"><strong>{result['checksummed_files']}</strong><span>Fingerprinted evidence artifacts</span></article></div>
+"""
+        + f"""
+<div class="metrics"><article class="metric"><strong>3/3</strong><span>Consecutive CPU sequences · 300s windows</span></article><article class="metric"><strong>24</strong><span>Paired CPU benchmark runs retained</span></article><article class="metric"><strong>{result["checksummed_files"]}</strong><span>Fingerprinted evidence artifacts</span></article></div>
+{native_section}
 <section><span class="eyebrow">MEASURED OUTCOMES</span><h2>A comparison you can inspect.</h2>
 <p><code>{model}</code> via Ollama. Both modes receive the same documents, request probes and eight-turn / 300-second budget. Graph mode additionally receives native paths and incident memory.</p>
 <div class="panel table-wrap"><table><thead><tr><th scope="col">Workflow</th><th scope="col">Expected state</th><th scope="col">Complete impact</th><th scope="col">Valid citations</th><th scope="col">Median time</th></tr></thead><tbody>{rows}</tbody></table>
 <p class="note">Graph mode verified eight recoveries, the baseline seven. Four cases require missing-evidence diagnoses. Graph mode was slower and missed complete impact in two cases. Known synthetic development cases do not establish general superiority.</p>
-<div class="actions">{link('../showcase/evaluations.json', 'All rows, including failures ↗')}{link(workflows['benchmark']['url'], 'Actual workflow ↗')}</div><p class="note">Measured source: <code>{source}</code>. Normal application limit: 120 seconds; reliability within that limit is unmeasured.</p></div></section>
+<div class="actions">{link("../showcase/evaluations.json", "All rows, including failures ↗")}{link(workflows["benchmark"]["url"], "Actual workflow ↗")}</div><p class="note">Measured source: <code>{source}</code>. Normal application limit: 120 seconds; reliability within that limit is unmeasured.</p></div></section>
 <section><span class="eyebrow">EVIDENCE-FIRST-V2</span><h2>Three complete sequences. Actual prior memory.</h2>
-<p>Five turns / {repeated['timeout_seconds']} seconds per conversation. This stricter gate requires prior-outcome retrieval <strong>and citation</strong>; it does not assert perfect impact reporting.</p><div class="sequence-grid">{cards}</div>
-<div class="actions">{link('../showcase/repeatability.json', 'Read every acceptance result ↗')}{link(workflows['sequences']['url'], 'Actual sequence workflow ↗')}</div></section>
+<p>Five turns / {repeated["timeout_seconds"]} seconds per conversation. This stricter gate requires prior-outcome retrieval <strong>and citation</strong>; it does not assert perfect impact reporting.</p><div class="sequence-grid">{cards}</div>
+<div class="actions">{link("../showcase/repeatability.json", "Read every acceptance result ↗")}{link(workflows["sequences"]["url"], "Actual sequence workflow ↗")}</div></section>
 <section><span class="eyebrow">FOLLOW REPETITION 1</span><h2>From a stale fix to a measured outcome.</h2>
-<div class="trace"><span class="step">1</span><div><h3>New evidence invalidates the old approval.</h3><p>The record retains the revision-1 rollback proposal, migration event and stale status. The driver reports rejection of the stale action. The offline audit checks those retained facts; it does not repeat the request.</p>{raw('recovery')}</div></div>
-<div class="trace"><span class="step">2</span><div><h3>Recovery needs passing probes.</h3><p>Checkout, payments and storefront change from failing HTTP 503 to healthy HTTP 200. The auditor checks identical before/after service coverage, status codes and executed action IDs.</p>{raw('recovery')}</div></div>
-<div class="trace"><span class="step">3</span><div><h3>A fresh run cites the actual prior action.</h3><p>The next run retrieves and cites <code>memory-{memory_reference}</code>. Its archived <code>LEARNED_FROM</code> edge and stored probe result match the earlier recovery. Citation is observed reference, not proof of causal dependence.</p>{raw('memory')}</div></div>
-<div class="trace"><span class="step">4</span><div><h3>Missing diagnostics means no executed action.</h3><p>The third scenario ends in <code>needs_evidence</code>, lists missing diagnostics and contains no executed proposal.</p>{raw('insufficient')}</div></div></section>
+<div class="trace"><span class="step">1</span><div><h3>New evidence invalidates the old approval.</h3><p>The record retains the revision-1 rollback proposal, migration event and stale status. The driver reports rejection of the stale action. The offline audit checks those retained facts; it does not repeat the request.</p>{raw("recovery")}</div></div>
+<div class="trace"><span class="step">2</span><div><h3>Recovery needs passing probes.</h3><p>Checkout, payments and storefront change from failing HTTP 503 to healthy HTTP 200. The auditor checks identical before/after service coverage, status codes and executed action IDs.</p>{raw("recovery")}</div></div>
+<div class="trace"><span class="step">3</span><div><h3>A fresh run cites the actual prior action.</h3><p>The next run retrieves and cites <code>memory-{memory_reference}</code>. Its archived <code>LEARNED_FROM</code> edge and stored probe result match the earlier recovery. Citation is observed reference, not proof of causal dependence.</p>{raw("memory")}</div></div>
+<div class="trace"><span class="step">4</span><div><h3>Missing diagnostics means no executed action.</h3><p>The third scenario ends in <code>needs_evidence</code>, lists missing diagnostics and contains no executed proposal.</p>{raw("insufficient")}</div></div></section>
 <section><span class="eyebrow">REPRODUCIBLE AUDIT</span><h2>Verify the package without model credentials.</h2>
-<p>The auditor checks 33 selected recordings and {result['supporting_paths_cross_checked']} returned path instances, including repeated retrievals across calls and runs. It recomputes impact accuracy from archived probe observations, validates citations and memory links, and checks the video fingerprint.</p>
+<p>The auditor checks {result["recordings_cross_checked"]} selected CPU and native recordings and {result["supporting_paths_cross_checked"]} returned path instances, including repeated retrievals across calls and runs. It recomputes impact accuracy from archived probe observations, validates citations and memory links, and checks the video fingerprint.</p>
 <pre>python -m ripple.proof\npython -m pytest tests/test_proof.py -q\npython -m ripple.proof --online</pre>
 <p>The optional online check verifies five cited GitHub workflow results and their source commits. These checks establish artifact consistency; they are not independent certification, a fresh model run or live deployment verification. Text fingerprints normalize CRLF to LF; binary media hashes are byte-exact.</p>
-<div class="actions">{link('../showcase/proof-index.json', 'Fingerprint index ↗')}{link('../showcase/ci-results.txt', 'Historical CI receipts ↗')}{link('https://github.com/Guruchandar360/ripple-graph-hacks', 'Source and setup ↗')}</div>
+<div class="actions">{link("../showcase/proof-index.json", "Fingerprint index ↗")}{link("../showcase/ci-results.txt", "Historical CI receipts ↗")}{link("https://github.com/Guruchandar360/ripple-graph-hacks", "Source and setup ↗")}</div>
 <p class="note">Historical application CI at <code>43e8d93</code>: 46 backend tests including two actual FalkorDB container tests, eight application browser tests and one separate static-site test. The earlier HTTP proof at <code>2c8aaaa</code> records duplicate execution, database-restart persistence and foreign-visitor HTTP 404; it is separate from current Gemini verification.</p>
-<p class="note">Video: {video['duration_seconds']} seconds at 1440×1000. Earlier failures remain in the public repository's provenance and development records.</p></section>
-<section class="panel pending"><span class="eyebrow">REMAINING VERIFICATION</span><h2>The boundaries stay visible.</h2><ul><li>Integrated Gemini + Cloud/Render recovery remains unverified. The direct Google SDK native function-call probe passed; the participant approved the Free database's plaintext connection for synthetic data only. Database credentials and synthetic records travel without TLS; browser and Gemini traffic use HTTPS. Two actual Cloud integration tests passed.</li><li>The recorded CPU windows are 300 seconds. Production-default 120-second reliability remains unmeasured.</li><li>Registration, eligibility, meaningful participant contribution, technical understanding and final submission require the participant. AI assistance is disclosed.</li></ul></section>
-<footer>Ripple · Fictional company and executable simulator · Recorded output, not production infrastructure. {link('https://github.com/Guruchandar360/ripple-graph-hacks/blob/main/docs/PROOF.md', 'Repository evidence guide ↗')}</footer>
+<p class="note">Video: {video["duration_seconds"]} seconds at 1440×1000. Earlier failures remain in the public repository's provenance and development records.</p></section>
+<section class="panel pending"><span class="eyebrow">REMAINING VERIFICATION</span><h2>The boundaries stay visible.</h2><ul><li>The participant approved the Free database's plaintext connection for synthetic data only. Database credentials and synthetic records travel without TLS; browser and Gemini traffic use HTTPS. Two actual Cloud integration tests passed.</li><li>The recorded CPU sequences use 300-second windows. One passing native sequence does not establish three-consecutive reliability within the production 120-second window. The earlier slow native trial remains in the repository.</li><li>On October 18, Google AI Studio reported a reached free rate limit and 21/20 daily requests. Further live investigations may be blocked until reset; recorded evidence remains inspectable. No billing upgrade or alternate key was used.</li><li>Registration, eligibility, meaningful participant contribution, technical understanding and final submission require the participant. AI assistance is disclosed.</li></ul></section>
+<footer>Ripple · Fictional company and executable simulator · Recorded output, not production infrastructure. {link("https://github.com/Guruchandar360/ripple-graph-hacks/blob/main/docs/PROOF.md", "Repository evidence guide ↗")}</footer>
 </main></body></html>
 """
+    )
 
 
 def main():

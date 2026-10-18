@@ -64,9 +64,9 @@ def checklist(root: Path, *, graph_connected: bool, model_configured: bool) -> d
             "model",
             "Live model access",
             False,
-            "A provider is configured; actual authorization still needs a live run."
+            "A provider is configured; current availability depends on its quota. Historical native proof is separate from present access."
             if model_configured
-            else "This server has no live provider configured. Recorded Ollama runs are in Results; configure Gemini or Ollama for a new investigation.",
+            else "This server has no live provider configured. Recorded model runs are in Results; configure Gemini or Ollama for a new investigation.",
             None,
         ),
         (

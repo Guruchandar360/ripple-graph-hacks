@@ -13,6 +13,8 @@ from ripple.proof import (
     read,
     verify_benchmark,
     verify_hashes,
+    verify_live_http,
+    verify_native_sample,
     verify_record,
     verify_recovery,
     verify_sequence,
@@ -32,7 +34,31 @@ def test_committed_proof_is_consistent_without_credentials_or_network():
     assert result["benchmark"]["graph"]["expected_met"] == 12
     assert result["benchmark"]["baseline"]["expected_met"] == 11
     assert result["online_workflows"] == []
-    assert "Integrated Gemini + Cloud/Render investigation" in result["pending"]
+    assert result["live_http"]["passed"] and result["live_http"]["model_calls"] == 1
+    assert any("Three-consecutive Gemini" in item for item in result["pending"])
+    assert result["native_sample"]["sample_size"] == 1
+    assert not result["native_sample"]["three_consecutive_gate_met"]
+
+
+def test_one_native_sequence_cannot_claim_three_consecutive_passes():
+    index = read(ROOT, "demo/proof-index.json")
+    report = read(ROOT, index["native_sequence_report"])
+    report["passed"] = True
+    records = [read(ROOT, name) for name in index["native_sequence_replays"]]
+    with pytest.raises(ProofError, match="inflated"):
+        verify_native_sample(report, records)
+
+
+@pytest.mark.parametrize("corruption", ["wrong_time", "wrong_execution"])
+def test_live_http_claim_matches_persisted_timing_and_execution(corruption):
+    index = read(ROOT, "demo/proof-index.json")
+    report, record = (read(ROOT, index[key]) for key in ("live_http_report", "live_http_replay"))
+    if corruption == "wrong_time":
+        report["elapsed_ms"] = 0
+    else:
+        report["verified_result"]["action_id"] = "another-action"
+    with pytest.raises(ProofError, match="timing|execution"):
+        verify_live_http(report, record)
 
 
 @pytest.mark.parametrize("corruption", ["unhealthy", "bad_status", "missing_service"])

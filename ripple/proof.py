@@ -282,6 +282,118 @@ def verify_sequence(row, phases):
     }
 
 
+def verify_live_http(report, record):
+    checked = verify_record(record)
+    require(
+        report["passed"] is True and report["health"]["model_provider"] == "gemini",
+        "Live provider proof is absent",
+    )
+    require(
+        record["model_provider"] == "gemini" and record["model"] == report["health"]["model"],
+        "Live model identity differs",
+    )
+    require(report["source_commit"] == record["source_commit"], "Live source differs")
+    require(report["run_id"] == record["id"] and len(checked["verified"]) == 1, "Live executed run differs")
+    require(
+        report["verified_result"] == checked["verified"][0]["result"],
+        "Live HTTP result differs from persisted execution",
+    )
+    require(
+        report["model_calls"] == record["model_calls"] and report["elapsed_ms"] == record["elapsed_ms"],
+        "Live call count or timing differs",
+    )
+    require(
+        0 < record["elapsed_ms"] <= report["configuration"]["timeout_seconds"] * 1000,
+        "Live elapsed time is outside the declared window",
+    )
+    citations = conclusion_citations(record)
+    require(
+        citations and set(citations) <= set(record["seen_evidence"]), "Live citations lack retrieval receipts"
+    )
+    require(
+        report["duplicate_result_identical"] is True
+        and report["memory_survived_scenario_reload"] is True
+        and report["foreign_visitor_status"] == 404,
+        "Live HTTP boundary assertions failed",
+    )
+    require(
+        record.get("provider_receipts")
+        and all(r["finish_reason"] == "STOP" for r in record["provider_receipts"]),
+        "Live native response was not complete",
+    )
+    return {
+        "passed": True,
+        "model": record["model"],
+        "source_commit": report["source_commit"],
+        "application_url": report["application_url"],
+        "model_calls": record["model_calls"],
+        "elapsed_seconds": record["elapsed_ms"] / 1000,
+        "supporting_paths_cross_checked": checked["paths"],
+        "scope": "One actual hosted HTTP recovery; retained driver assertions and graph/probe records, not three-sequence reliability or a fresh audit-time request.",
+    }
+
+
+def verify_native_sample(report, records):
+    require(
+        report["provider"] == "gemini" and report["tool_protocol"] == "native",
+        "Native sample provider differs",
+    )
+    require(
+        report["timeout_seconds"] == 120 and report["max_model_turns"] == 8, "Native sample budget differs"
+    )
+    count = report["requested_repetitions"]
+    require(
+        count in {1, 2, 3} and report["expected_repetitions"] == 3, "Native sample changed the release gate"
+    )
+    require(
+        report["complete"] and report["sample_passed"] and len(report["cases"]) == count,
+        "Native sample is incomplete",
+    )
+    require(report["passed"] == (count == 3), "Native sample inflated the three-sequence gate")
+    require(
+        len(records) == count * 3
+        and len({(r["repetition"], r["demonstration_phase"]) for r in records}) == count * 3,
+        "Native replay coverage differs",
+    )
+    require(
+        all(r["model_provider"] == "gemini" and r["model"] == report["model"] for r in records),
+        "Native replay model differs",
+    )
+    checks = [
+        verify_sequence(
+            row, {r["demonstration_phase"]: r for r in records if r["repetition"] == row["repetition"]}
+        )
+        for row in report["cases"]
+    ]
+    require(
+        all(0 < r["elapsed_ms"] <= 120000 for r in records), "Native recorded window exceeded 120 seconds"
+    )
+    valid_citations = sum(
+        bool(conclusion_citations(r)) and set(conclusion_citations(r)) <= set(r["seen_evidence"])
+        for r in records
+    )
+    require(valid_citations == len(records), "Native conclusion citations lack retrieval receipts")
+    complete_impact = 0
+    for record in records:
+        proposals = current_proposals(record)
+        conclusion = proposals[-1] if proposals else record["diagnosis"]
+        complete_impact += set(conclusion["affected_services"]) == observed_impact(record)
+    return {
+        "sample_passed": True,
+        "sample_size": count,
+        "three_consecutive_gate_met": count == 3,
+        "source_commit": report["source_commit"],
+        "sequences": checks,
+        "conclusion_metrics": {
+            "phases": len(records),
+            "valid_citations": valid_citations,
+            "complete_impact": complete_impact,
+        },
+        "phase_seconds": {r["demonstration_phase"]: r["elapsed_ms"] / 1000 for r in records},
+        "scope": "Separate native sample, not the CPU comparison; recovery recording combines the initial and revised conversations.",
+    }
+
+
 def audit(root=ROOT, online=False):
     index = read(root, "demo/proof-index.json")
     verify_hashes(root, index["sha256"])
@@ -402,20 +514,44 @@ def audit(root=ROOT, online=False):
                 "Cited workflow did not succeed at the stated source",
             )
             ci.append(actual)
+    live = None
+    if index.get("live_http_report"):
+        for name in (index["live_http_report"], index["live_http_replay"]):
+            require(name in index["sha256"], "Live proof is not fingerprinted")
+        live = verify_live_http(read(root, index["live_http_report"]), read(root, index["live_http_replay"]))
+    native_sample = None
+    if index.get("native_sequence_report"):
+        for name in [index["native_sequence_report"], *index["native_sequence_replays"]]:
+            require(name in index["sha256"], "Native sample is not fingerprinted")
+        native_sample = verify_native_sample(
+            read(root, index["native_sequence_report"]),
+            [read(root, name) for name in index["native_sequence_replays"]],
+        )
     return {
         "evidence_audit_passed": True,
         "scope": "Archived artifact consistency and optional GitHub execution metadata; not independent certification, a fresh model run, or live deployment readiness.",
         "benchmark": stats,
         "supporting_paths_cross_checked": path_count
-        + sum(s["supporting_paths_cross_checked"] for s in sequences),
+        + sum(s["supporting_paths_cross_checked"] for s in sequences)
+        + (live["supporting_paths_cross_checked"] if live else 0)
+        + (
+            sum(s["supporting_paths_cross_checked"] for s in native_sample["sequences"])
+            if native_sample
+            else 0
+        ),
+        "recordings_cross_checked": 33
+        + bool(live)
+        + (native_sample["sample_size"] * 3 if native_sample else 0),
         "path_count_scope": "Returned path instances including repeated retrievals across calls/runs; not unique paths or proof of causation.",
         "sequences": sequences,
         "video_sha256_matches": True,
         "checksummed_files": len(index["sha256"]),
         "online_workflows": ci,
-        "pending": [
-            "Integrated Gemini + Cloud/Render investigation",
-            "Production 120-second reliability",
+        "live_http": live,
+        "native_sample": native_sample,
+        "pending": ([] if live else ["Integrated Gemini + Cloud/Render investigation"])
+        + [
+            "Three-consecutive Gemini sequences within the production 120-second window",
             "Participant registration, contribution/review and final submission",
         ],
         "limitations": [

@@ -49,3 +49,22 @@ comparisons describe these configured workflows, not general graph superiority.
 Bootstrap simulator memories in the benchmark are labeled and do not count as
 earlier model decisions. Sequential demonstration records, when present, identify
 their repetition and phase and use actual prior model-selected recovery outcomes.
+
+
+## Separate October 18 native Cloud evidence
+
+- `live/http-proof.json` and its named persisted replay: source `c02004d`,
+  free Render deploy `dep-dbae76qjnfac73fchnf0`, actual Gemini native calling +
+  FalkorDB Cloud. One model call, 7.014s investigation, verified probes,
+  idempotency, scenario-reload memory and visitor isolation. No database restart test.
+- `live/sequence/repeatability.json` and its three replays: source `e06d39f`,
+  local Python + Cloud + actual Gemini. One complete sequence passed all three
+  scenarios, including actual prior-outcome citation and stale rejection.
+  `sample_passed=true`; the native three-consecutive `passed` gate remains false.
+- `development/gemini-pre-tuning/`: the initial incomplete native trial remains
+  inspectable; a 128.375s proposal and subsequent timeout are not counted as passes.
+
+These native samples do not enter the CPU 24-run comparison or its 3/3 gate.
+On October 18, Google AI Studio displayed the free rate limit reached at 21/20
+peak daily requests; no paid tier or alternate key was used. The participant
+approved plaintext Redis only for the synthetic demo. See `live/README.md`.

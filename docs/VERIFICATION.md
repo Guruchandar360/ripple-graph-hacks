@@ -2,11 +2,11 @@
 
 ## Automated implementation checks
 
-- **46 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39131703437), including **two real FalkorDB integration tests** against version 6.0.2.
+- **58 backend tests passed** in [clean Linux CI](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39139948540), including **two real FalkorDB integration tests** against version 6.0.2.
 - **Eight application browser tests passed**: fixture honesty, scenarios/navigation, responsive layout, keyboard-operated mobile drawer, command navigation, participant checklist and late startup responses preserving a selected replay.
-- **One static-showcase browser test passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
+- **Two static-site browser tests passed**, including its public subpath, replay labels, disabled live actions and absence of outgoing mutations.
 - Strict TypeScript compilation, production build and Ruff checks passed.
-- Locally: 44 backend tests passed; two real-server integration tests were skipped in that run. The browser preview suite uses its own disconnected server and empty credentials, independently of the developer's private `.env`.
+- Locally at `c02004d`: 56 backend tests passed; two real-server integration tests were skipped in that run. Separately, both integration tests passed against the actual FalkorDB Cloud 4.22.0 instance. The browser preview suite uses its own disconnected server and empty credentials, independently of the developer's private `.env`.
 
 Behavioral tests use an explicit test-only repository double. Agent-loop unit tests use a scripted function-call provider. These are distinct from the two native-database tests and the real-model measurements below.
 
@@ -47,7 +47,7 @@ while retrieving **and citing** their actual prior model-selected outcome,
 rejected an actual stale approval and executed no insufficient-evidence action.
 The `evidence-first-v2` criteria are stricter than the earlier 1/3 measurement.
 See `demo/repeatability.json` and workflow **39129743227**; all records are retained.
-This demonstrates the CPU configuration, not the pending Gemini integration.
+This demonstrates the CPU configuration; native Gemini verification is separate.
 
 Development smoke tests are preserved under `demo/development/`:
 
@@ -65,7 +65,7 @@ and separate development experiments are recorded in `demo/PROVENANCE.md`.
 
 [Public source](https://github.com/Guruchandar360/ripple-graph-hacks) and [read-only showcase](https://guruchandar360.github.io/ripple-graph-hacks/) are available. The showcase serves synthetic fixtures and actual recorded output when exported; it has no live backend, graph connection or model credentials.
 
-The full application is reproducible with the README's Docker/Cloud database and Gemini or explicitly selected Ollama configuration. CI performs clean package installation and uses real container services. Free Cloud and Render resources have been created; integrated cloud verification is pending. This workstation has no Docker/working WSL; a fresh local live setup is not claimed here.
+The full application is reproducible with the README's Docker/Cloud database and Gemini or explicitly selected Ollama configuration. CI performs clean package installation and uses real container services. The free Render service passed an actual native Gemini + FalkorDB Cloud recovery; its persisted investigation took 7.014 seconds and one model call. A separate local-agent/Cloud native sample passed one complete three-scenario sequence, not three consecutive native sequences. See `demo/live/`. The free daily model quota was reached during verification, so new requests may fail until reset. This workstation has no Docker/working WSL; a fresh local live setup is not claimed here.
 
 The actual Google GenAI SDK completed a native `report_status` function call on
 `gemini-3.8-flash` in 4.312 seconds. `gemini-2.5-flash` returned 404 for this
@@ -92,6 +92,6 @@ version. `python -m ripple.proof` checks artifact consistency without model acce
 or a database connection. It validates paired case coverage, actual probe/impact
 agreement, citation receipts, archived graph paths, prior-outcome memory links and
 media checksums. `--online` also checks five GitHub workflow source/status receipts.
-The saved audit explicitly retains live deployment and human requirements as pending.
+The saved audit checks the actual hosted native receipt and the separate 1/1 native sequence. It retains three-consecutive native repetition and participant requirements as pending.
 
 The first complete 24-run development evaluation is preserved in `demo/development/first-full-suite.json`. It met 14 expected terminal states and recorded 13 verified recoveries, with substantial impact-reporting failures. Those observations led to current-context preloading, valid-service enums and policy-derived terminal tools. Later measurements are reported separately.

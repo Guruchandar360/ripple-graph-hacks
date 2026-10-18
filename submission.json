@@ -6,7 +6,7 @@
     "Agent Memory and Coordination",
     "Company Brain"
   ],
-  "deployment_url": null,
+  "deployment_url": "https://ripple-graph-hacks.onrender.com",
   "showcase_url": "https://guruchandar360.github.io/ripple-graph-hacks/",
   "registration_verified": false,
   "participant_review_verified": false,
@@ -14,8 +14,8 @@
   "video_kind": "actual_agent_replay",
   "video_label": "Captioned actual passing evidence-first-v2 sequence; the complete sequential measurement passed 3/3. Replays, source versions and limits are disclosed in demo/video.json and demo/repeatability.json.",
   "verification": {
-    "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39131703437",
-    "label": "46 backend tests including real FalkorDB integration, and 8 application browser checks"
+    "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39139948540",
+    "label": "58 backend tests including actual FalkorDB integration; eight application browser checks. Separate static workflow checks the proof page and showcase."
   },
   "model_http_proof_url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898",
   "repeatability": {
@@ -24,5 +24,8 @@
     "release_gate_met": true,
     "acceptance_version": "evidence-first-v2",
     "report": "demo/repeatability.json"
-  }
+  },
+  "live_proof_report": "demo/live/http-proof.json",
+  "native_sequence_report": "demo/live/sequence/repeatability.json",
+  "live_limitations": "Free Gemini quota reached during Oct 18 verification; one native sequence passed, not three. Plaintext database exception approved only for synthetic data."
 }

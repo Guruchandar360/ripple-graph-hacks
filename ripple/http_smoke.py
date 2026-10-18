@@ -55,6 +55,29 @@ async def verify(restart_database=False, base_url="http://127.0.0.1:8000", outpu
         duplicate = await client.post(path)
         duplicate.raise_for_status()
         assert duplicate.json() == result
+        # Approval can become visible just before the agent's finally block saves
+        # its timing. Read the final persisted run instead of reporting that poll's 0ms.
+        for _ in range(10):
+            final = await client.get(f"/api/runs/{run_id}")
+            final.raise_for_status()
+            run = final.json()
+            if run.get("elapsed_ms", 0) > 0:
+                break
+            await asyncio.sleep(1)
+        graph = await client.get("/api/graph")
+        graph.raise_for_status()
+        (destination / f"{run_id}.json").write_text(
+            json.dumps(
+                {
+                    **run,
+                    "graph": graph.json(),
+                    "replay": True,
+                    "label": "Actual HTTP verification recording; model and database identified by the report",
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
         memory = (await client.get("/api/memory")).json()
         assert len(memory) == 1 and memory[0]["verified"]
         await client.post("/api/scenarios/memory/load")
@@ -96,7 +119,8 @@ async def verify(restart_database=False, base_url="http://127.0.0.1:8000", outpu
             "health": health,
             "run_id": run_id,
             "model_calls": run["model_calls"],
-            "elapsed_ms": run["elapsed_ms"],
+            "elapsed_ms": run.get("elapsed_ms") or None,
+            "timing_finalized": bool(run.get("elapsed_ms")),
             "verified_result": result,
             "duplicate_result_identical": True,
             "memory_survived_scenario_reload": True,

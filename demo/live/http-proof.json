@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "configuration": {
+    "max_model_turns": 8,
+    "timeout_seconds": 120
+  },
+  "health": {
+    "database": "connected",
+    "model": "gemini-3.8-flash",
+    "model_provider": "gemini",
+    "model_configured": true,
+    "synthetic": true,
+    "limits": {
+      "workspace_daily": 3,
+      "global_daily": 10
+    }
+  },
+  "run_id": "0bdffbe3ef444ee4bdc66e54bc9638fb",
+  "model_calls": 1,
+  "elapsed_ms": 7014,
+  "verified_result": {
+    "action_id": "2490cf87060c4051bb99b236d1ea64ae",
+    "verified": true,
+    "before": [
+      {
+        "service": "checkout",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Legacy currency rejected by strict validation",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": false,
+        "status_code": 503,
+        "detail": "Dependency checkout: Dependency payments: Legacy currency rejected by strict validation",
+        "synthetic": true
+      }
+    ],
+    "after": [
+      {
+        "service": "checkout",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "payments",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      },
+      {
+        "service": "storefront",
+        "healthy": true,
+        "status_code": 200,
+        "detail": "Synthetic request completed successfully",
+        "synthetic": true
+      }
+    ],
+    "executed_at": "2026-10-18T15:22:11.592123+00:00",
+    "synthetic": true
+  },
+  "duplicate_result_identical": true,
+  "memory_survived_scenario_reload": true,
+  "foreign_visitor_status": 404,
+  "scenario": "memory",
+  "transport": "actual HTTP requests to Uvicorn",
+  "application_url": "https://ripple-graph-hacks.onrender.com",
+  "database_restart_verified": false,
+  "source_commit": "c02004d7b219c3441f8e0638e201ba932ad56cca",
+  "render_deploy_id": "dep-dbae76qjnfac73fchnf0",
+  "initial_poll_elapsed_ms": 0,
+  "timing_origin": "Persisted final run after HTTP execution checks",
+  "replay_path": "demo/live/0bdffbe3ef444ee4bdc66e54bc9638fb.json",
+  "database_transport": "Plaintext Redis; participant-approved exception for synthetic demo only; website and model use HTTPS"
+}

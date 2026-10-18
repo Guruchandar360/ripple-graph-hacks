@@ -43,7 +43,6 @@ def export(destination: Path):
         {**json.loads(p.read_text(encoding="utf-8")), "replay": True}
         for p in sorted((records / "replays").glob("*.json"))
     ]
-    write("replays", replays)
     proof_index = ROOT / "demo/proof-index.json"
     if proof_index.exists():
         for filename in ("proof-index.json", "proof-audit.json", "repeatability.json"):
@@ -56,6 +55,26 @@ def export(destination: Path):
             if not re.fullmatch(r"demo/replays/[a-f0-9]{32}\.json", name):
                 raise ValueError("Unexpected proof recording path")
             shutil.copyfile(ROOT / name, proof_records / Path(name).name)
+        if indexed.get("live_http_report"):
+            if indexed["live_http_report"] != "demo/live/http-proof.json" or not re.fullmatch(
+                r"demo/live/[a-f0-9]{32}\.json", indexed["live_http_replay"]
+            ):
+                raise ValueError("Unexpected native HTTP proof path")
+            shutil.copyfile(ROOT / indexed["live_http_report"], destination / "native-http-proof.json")
+            shutil.copyfile(ROOT / indexed["live_http_replay"], destination / "native-http-replay.json")
+        if indexed.get("native_sequence_report"):
+            if indexed["native_sequence_report"] != "demo/live/sequence/repeatability.json":
+                raise ValueError("Unexpected native sequence report path")
+            shutil.copyfile(ROOT / indexed["native_sequence_report"], destination / "native-sequence.json")
+            native_records = []
+            for name in indexed["native_sequence_replays"]:
+                if not re.fullmatch(r"demo/live/sequence/replays/[a-f0-9]{32}\.json", name):
+                    raise ValueError("Unexpected native sequence recording path")
+                shutil.copyfile(ROOT / name, proof_records / Path(name).name)
+                native_records.append({**json.loads((ROOT / name).read_text(encoding="utf-8")), "replay": True})
+            native_records.sort(key=lambda r: {"recovery": 0, "memory": 1, "insufficient": 2}[r["demonstration_phase"]])
+            replays = native_records + replays
+    write("replays", replays)
     memories = {
         n["id"]: n["data"]
         for r in replays

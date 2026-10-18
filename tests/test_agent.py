@@ -117,10 +117,16 @@ def test_truncated_native_response_stops_without_accepting_an_action(service, se
     run = service.start(workspace)
 
     async def generate(**kwargs):
-        return types.GenerateContentResponse(candidates=[types.Candidate(
-            finish_reason="MAX_TOKENS",
-            content=types.Content(role="model", parts=[types.Part.from_text(text="Incomplete response")]),
-        )])
+        return types.GenerateContentResponse(
+            candidates=[
+                types.Candidate(
+                    finish_reason="MAX_TOKENS",
+                    content=types.Content(
+                        role="model", parts=[types.Part.from_text(text="Incomplete response")]
+                    ),
+                )
+            ]
+        )
 
     agent = Agent(service, settings)
     agent.client = SimpleNamespace(aio=SimpleNamespace(models=SimpleNamespace(generate_content=generate)))

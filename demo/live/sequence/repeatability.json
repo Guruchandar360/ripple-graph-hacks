@@ -1,0 +1,35 @@
+{
+  "created_at": "2026-10-18T15:29:27.735260+00:00",
+  "model": "gemini-3.8-flash",
+  "provider": "gemini",
+  "tool_protocol": "native",
+  "timeout_seconds": 120,
+  "max_model_turns": 8,
+  "acceptance_version": "evidence-first-v2",
+  "acceptance_criteria": "All three scenarios pass; actual prior model outcome is retrieved AND cited; an actual stale approval is rejected.",
+  "evidence_collection": "All mapped-service probes in application preflight; native paths for unhealthy services in graph mode.",
+  "sequential": true,
+  "expected_repetitions": 3,
+  "requested_repetitions": 1,
+  "complete": true,
+  "sample_passed": true,
+  "cases": [
+    {
+      "repetition": 1,
+      "initial_investigation_completed": true,
+      "recovery": "recovered",
+      "memory": "recovered",
+      "actual_previous_model_outcome_retrieved": true,
+      "actual_previous_model_outcome_cited": true,
+      "memory_loading": "application_preflight",
+      "insufficient_evidence": "needs_evidence",
+      "no_unjustified_execution": true,
+      "stale_approval_rejected": true,
+      "passed": true
+    }
+  ],
+  "passed": false,
+  "source_commit": "e06d39f65f5a30062f8571cea1f3c143ff8f67b1",
+  "execution": "Local Python agent against actual FalkorDB Cloud using official Google native function calling",
+  "scope": "One passing complete native sequence; this is not the three-consecutive native release gate or the CPU paired benchmark."
+}

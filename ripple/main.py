@@ -197,14 +197,13 @@ def create_app(repository=None, settings=None, agent_override=None) -> FastAPI:
         directory = ROOT / "artifacts" / "replays"
         if not directory.exists():
             directory = ROOT / "demo" / "replays"
-        return (
-            [
-                {**json.loads(p.read_text(encoding="utf-8")), "id": p.stem, "replay": True}
-                for p in sorted(directory.glob("*.json"))
-            ]
-            if directory.exists()
-            else []
-        )
+        # Only committed synthetic recordings are added; visitor workspaces
+        # remain private and live failures never switch to a replay implicitly.
+        native = ROOT / "demo" / "live" / "sequence" / "replays"
+        return [
+            {**json.loads(p.read_text(encoding="utf-8")), "id": p.stem, "replay": True}
+            for p in [*sorted(native.glob("*.json")), *sorted(directory.glob("*.json"))]
+        ]
 
     dist = ROOT / "frontend" / "dist"
     if (dist / "assets").exists():

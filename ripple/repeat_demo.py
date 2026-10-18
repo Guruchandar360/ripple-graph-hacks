@@ -142,7 +142,12 @@ async def demonstrate(output="artifacts/repeatability", repetitions=3):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default="artifacts/repeatability")
-    parser.add_argument("--repetitions", type=int, choices=(1, 2, 3), default=3,
-                        help="A smaller quota-conscious sample does not satisfy the three-sequence release gate.")
+    parser.add_argument(
+        "--repetitions",
+        type=int,
+        choices=(1, 2, 3),
+        default=3,
+        help="A smaller quota-conscious sample does not satisfy the three-sequence release gate.",
+    )
     args = parser.parse_args()
     asyncio.run(demonstrate(args.output, args.repetitions))
