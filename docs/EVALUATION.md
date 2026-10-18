@@ -53,6 +53,15 @@ Ollama CPU evaluation explicitly uses a 300-second window; the application's
 normal window is 120 seconds. Provider/model identity and these limits must
 accompany the results. No Gemini performance is inferred from Ollama output.
 
+The current native Gemini profile uses low thinking effort and a 4096-token
+output allowance. Ollama retains the measured 1600-token profile. Google counts
+thinking against the output allowance; its [thinking documentation](https://ai.google.dev/gemini-api/docs/thinking)
+recommends reducing thinking effort rather than truncating the allowance to
+reduce latency. Provider receipts retain finish reason, token counts and tool
+names, never hidden reasoning. A `MAX_TOKENS` response stops the investigation
+without accepting a truncated action. The earlier incomplete Cloud trial is
+retained in `demo/development/gemini-pre-tuning/`; it is not counted as a pass.
+
 The full GitHub Actions evaluation splits the 12 cases across four independent
 Linux runners, each with its own real FalkorDB and Ollama containers. Each runner
 executes graph and baseline modes sequentially with the same configuration.

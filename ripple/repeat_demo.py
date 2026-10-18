@@ -13,7 +13,9 @@ from ripple.repository import GraphRepository
 from ripple.service import RippleService
 
 
-async def demonstrate(output="artifacts/repeatability"):
+async def demonstrate(output="artifacts/repeatability", repetitions=3):
+    if repetitions not in {1, 2, 3}:
+        raise ValueError("Choose one to three sequential samples; the release gate always requires three.")
     settings = Settings()
     repo = GraphRepository(settings)
     repo.health()
@@ -59,7 +61,7 @@ async def demonstrate(output="artifacts/repeatability"):
             json.dumps(record, indent=2), encoding="utf-8"
         )
 
-    for repetition in range(1, 4):
+    for repetition in range(1, repetitions + 1):
         workspace = uuid.uuid4().hex
         service.load(workspace, "outdated-fix")
         initial = await investigate(workspace, execute=False)
@@ -124,18 +126,23 @@ async def demonstrate(output="artifacts/repeatability"):
             "evidence_collection": "All mapped-service probes in application preflight; native paths for unhealthy services in graph mode.",
             "sequential": True,
             "expected_repetitions": 3,
-            "complete": len(rows) == 3,
+            "requested_repetitions": repetitions,
+            "complete": len(rows) == repetitions,
+            "sample_passed": len(rows) == repetitions and all(r["passed"] for r in rows),
             "cases": rows,
             "passed": len(rows) == 3 and all(r["passed"] for r in rows),
         }
         (destination / "repeatability.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(json.dumps(row), flush=True)
 
-    if not report["passed"]:
-        raise SystemExit("Three-consecutive-demonstration gate failed; actual results were preserved.")
+    if not report["sample_passed"]:
+        raise SystemExit("Requested demonstration sample failed; actual results were preserved.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default="artifacts/repeatability")
-    asyncio.run(demonstrate(parser.parse_args().output))
+    parser.add_argument("--repetitions", type=int, choices=(1, 2, 3), default=3,
+                        help="A smaller quota-conscious sample does not satisfy the three-sequence release gate.")
+    args = parser.parse_args()
+    asyncio.run(demonstrate(args.output, args.repetitions))

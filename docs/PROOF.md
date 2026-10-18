@@ -88,6 +88,9 @@ and `demo/development/`; they are not added to the new sample's success count.
   being verified.
 - **Normal application time limit:** CPU proof uses 300 seconds per conversation.
   Reliability within the default 120-second application window is unmeasured.
+  An [initial native Cloud trial](../demo/development/gemini-pre-tuning/trial.json)
+  took 128.375 seconds for its first proposal and timed out on the second run;
+  it did not pass. Subsequent native configuration changes are separate trials.
 - **Participant requirements:** registration, eligibility, meaningful contribution,
   technical understanding and final submission require the participant. See the
   [technical review guide](CONTRIBUTOR_GUIDE.md). AI assistance is disclosed in the README.
