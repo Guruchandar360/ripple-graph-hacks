@@ -51,14 +51,22 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   await expect(page.getByRole("heading", {name:"Show the evidence."})).toBeVisible();
   const replay = page.locator('[data-replay-id]').first();
   if (await replay.count()) {
+    const replayId = await replay.getAttribute("data-replay-id");
     await replay.click();
     await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
     await expect(page.getByText("RECORDED GRAPH", {exact:true})).toBeVisible();
     await expect(page.getByRole("button", {name:"Investigate again"})).toBeDisabled();
-    const supporting = page.getByRole("button", {name:"Show supporting paths",exact:true}).first();
-    if (await supporting.count()) {
-      await supporting.click();
+    const selectedRecord = records.find((r:{id:string}) => r.id === replayId);
+    const pathEvents = selectedRecord?.events.filter((e:{paths?:{edges:string[]}[]}) => e.paths?.length) ?? [];
+    if (pathEvents.length) {
+      await page.locator(`[data-event-id="${pathEvents[0].id}"]`).getByRole("button", {name:"Show supporting paths",exact:true}).click();
       await expect(page.locator(".event-selected")).toHaveCount(1);
+      if (pathEvents[0].paths.every((p:{edges:string[]}) => p.edges.length === 0)) {
+        await expect(page.locator(".react-flow__edge-text")).toHaveCount(0);
+      }
+      const connectedPath = pathEvents.find((e:{paths:{edges:string[]}[]}) => e.paths.some(p => p.edges.length > 0));
+      expect(connectedPath).toBeTruthy();
+      await page.locator(`[data-event-id="${connectedPath.id}"]`).getByRole("button", {name:"Show supporting paths",exact:true}).click();
       await expect(page.locator(".react-flow__edge-text").first()).toHaveText("depends on");
     }
   }
