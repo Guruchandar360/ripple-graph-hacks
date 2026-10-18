@@ -23,11 +23,14 @@ jobs:
       - run: pip install -r requirements.txt
       - run: ruff check ripple tests
       - run: python -m pytest -q --junitxml=artifacts/backend-tests.xml
+      - run: python -m ripple.proof --output artifacts/evidence-audit.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: backend-verification
-          path: artifacts/backend-tests.xml
+          path: |
+            artifacts/backend-tests.xml
+            artifacts/evidence-audit.json
   console:
     runs-on: ubuntu-latest
     steps:

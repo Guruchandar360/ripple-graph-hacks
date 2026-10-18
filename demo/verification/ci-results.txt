@@ -1,0 +1,7 @@
+Historical CI receipts at 43e8d93853ca993efd234e4ea8c53ed40c916cd9
+Application workflow: https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39133494191
+Showcase workflow: https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39133494128
+
+console	Run npm run test:e2e	2026-10-18T13:54:08.6143691Z   8 passed (26.0s)
+backend	Run python -m pytest -q --junitxml=artifacts/backend-tests.xml	2026-10-18T13:53:27.4963612Z 46 passed, 1 warning in 1.79s
+publish	Run npx playwright test --config playwright.showcase.config.ts	2026-10-18T13:53:58.2257210Z   1 passed (3.7s)

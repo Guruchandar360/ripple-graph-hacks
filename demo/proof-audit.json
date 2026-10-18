@@ -1,0 +1,94 @@
+{
+  "evidence_audit_passed": true,
+  "scope": "Archived artifact consistency and optional GitHub execution metadata; not independent certification, a fresh model run, or live deployment readiness.",
+  "benchmark": {
+    "graph": {
+      "expected_met": 12,
+      "verified": 8,
+      "correct_impact": 10,
+      "valid_citations": 12,
+      "runs": 12,
+      "median_seconds": 206.0235
+    },
+    "baseline": {
+      "expected_met": 11,
+      "verified": 7,
+      "correct_impact": 11,
+      "valid_citations": 12,
+      "runs": 12,
+      "median_seconds": 94.038
+    }
+  },
+  "supporting_paths_cross_checked": 442,
+  "path_count_scope": "Returned path instances including repeated retrievals across calls/runs; not unique paths or proof of causation.",
+  "sequences": [
+    {
+      "repetition": 1,
+      "prior_action_ids_retrieved_and_cited": [
+        "1ac3b169cda848dbb7243abe16cdc20e"
+      ],
+      "supporting_paths_cross_checked": 69,
+      "passed": true
+    },
+    {
+      "repetition": 2,
+      "prior_action_ids_retrieved_and_cited": [
+        "1199069b878345a19d7f6adc694bef24"
+      ],
+      "supporting_paths_cross_checked": 69,
+      "passed": true
+    },
+    {
+      "repetition": 3,
+      "prior_action_ids_retrieved_and_cited": [
+        "98cfa613dec64d8480a2852bb5e4d612"
+      ],
+      "supporting_paths_cross_checked": 69,
+      "passed": true
+    }
+  ],
+  "video_sha256_matches": true,
+  "checksummed_files": 45,
+  "online_workflows": [
+    {
+      "conclusion": "success",
+      "headSha": "66eeedc9689dc936b5cc1154610d477de2b771bc",
+      "status": "completed",
+      "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39130562373"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "66eeedc9689dc936b5cc1154610d477de2b771bc",
+      "status": "completed",
+      "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "43e8d93853ca993efd234e4ea8c53ed40c916cd9",
+      "status": "completed",
+      "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39133494191"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "43e8d93853ca993efd234e4ea8c53ed40c916cd9",
+      "status": "completed",
+      "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39133494128"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
+      "status": "completed",
+      "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898"
+    }
+  ],
+  "pending": [
+    "Integrated Gemini + Cloud/Render investigation",
+    "Production 120-second reliability",
+    "Participant registration, contribution/review and final submission"
+  ],
+  "limitations": [
+    "Synthetic known development fixtures; no general superiority established.",
+    "Historical HTTP idempotency/isolation/restart and stale-request rejection are recorded driver assertions; the offline audit does not repeat those requests.",
+    "Three passing sequences do not assert perfect impact reporting or production reliability."
+  ]
+}

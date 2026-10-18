@@ -12,6 +12,7 @@ against an executable Python simulator. Nothing touches production infrastructur
 [Captioned demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
 [CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
 [Actual measurements](docs/MEASUREMENTS.md) ·
+[Proof for judges](docs/PROOF.md) ·
 [Submission packet](docs/SUBMISSION.md)
 
 ## Current state
@@ -224,6 +225,11 @@ It starts its own disconnected server on port 8100 with empty credentials,
 independently of `.env`, and does not reuse your live application process.
 
 ## Evaluate actual model behavior
+
+To inspect the committed proof without model credentials or a running database,
+run `python -m ripple.proof`. Add `--online` to check the cited GitHub workflow
+metadata through GitHub CLI. [The judge guide](docs/PROOF.md) links each claim to
+its raw record, source version, budget and limitations.
 
 ```powershell
 .\.venv\Scripts\python -m ripple.evaluate --cases 1 --mode both

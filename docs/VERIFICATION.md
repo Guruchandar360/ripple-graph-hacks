@@ -83,6 +83,15 @@ The README's Docker Compose setup completed a model-backed recovery through real
 
 A captioned replay video is committed as `demo/ripple-demo.mp4`, with its original WebM retained. The fully decoded recording is **79.48 seconds at 1440×1000**. It shows repetition 1 of the three passing evidence-first-v2 sequences in the current spacious UI: stale approval rejected, recovery verified, the actual outcome retrieved and cited in a fresh conversation, and insufficient evidence causing no execution. Source IDs, configuration and the MP4 hash are in `demo/video.json`. The prior video's metadata remains in `demo/development/pre-evidence-first-video.json`; its binary is recoverable from Git history before this replacement.
 
-The previously retained combined configuration reached **22/24 expected terminal states** and **14 verified recoveries**, with zero executed policy violations. The graph workflow reached 10/12 expected states and the full-document baseline 12/12; this is not evidence of general graph superiority. Its three-sequence check passed **1/3**, so that measurement did not meet the three-consecutive-run gate. All three fresh conversations retrieved the actual earlier model outcome, but none explicitly cited it. Those reports measure `2c8aaaa`. The current evidence-first revision is being rerun separately, with stricter acceptance requiring both memory retrieval and citation. Failed and alternative measurements remain published.
+The previously retained combined configuration reached **22/24 expected terminal states** and **14 verified recoveries**, with zero executed policy violations. The graph workflow reached 10/12 expected states and the full-document baseline 12/12; this is not evidence of general graph superiority. Its three-sequence check passed **1/3**, so that measurement did not meet the three-consecutive-run gate. All three fresh conversations retrieved the actual earlier model outcome, but none explicitly cited it. Those reports measure `2c8aaaa`. The completed evidence-first rerun is reported above, with stricter acceptance requiring both memory retrieval and citation. Failed and alternative measurements remain published.
+
+## Inspectable proof bundle
+
+[The judge guide](PROOF.md) links each claim to its raw record, workflow and source
+version. `python -m ripple.proof` checks artifact consistency without model access
+or a database connection. It validates paired case coverage, actual probe/impact
+agreement, citation receipts, archived graph paths, prior-outcome memory links and
+media checksums. `--online` also checks five GitHub workflow source/status receipts.
+The saved audit explicitly retains live deployment and human requirements as pending.
 
 The first complete 24-run development evaluation is preserved in `demo/development/first-full-suite.json`. It met 14 expected terminal states and recorded 13 verified recoveries, with substantial impact-reporting failures. Those observations led to current-context preloading, valid-service enums and policy-derived terminal tools. Later measurements are reported separately.
