@@ -106,6 +106,18 @@ while passing current authorization constraints separately; subsequent measured
 results are reported in [MEASUREMENTS.md](MEASUREMENTS.md), without deleting the
 earlier failures.
 
+The later evidence-first revision constrains citation choices to retrieved IDs
+and collects actual request probes for every service before the first model
+call in both workflows. Graph mode also collects incoming paths for failing
+services. These are application operations, visibly attributed as such.
+Its complete 24-run sample reached 12/12 expected states in graph mode and
+11/12 in the document baseline. Graph mode verified eight recoveries and the
+baseline seven. The graph workflow was slower (206.0s median versus 94.0s) and
+still omitted part of the impact set in two cases. This supports a narrower
+claim of improved observed reliability on these fixtures; it does not show
+universal superiority. Budgets remained equal at eight turns / 300 seconds
+per conversation, above the application's normal 120-second window.
+
 ## Reproduce and inspect
 
 [Source and local setup](https://github.com/Guruchandar360/ripple-graph-hacks) ·

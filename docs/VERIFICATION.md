@@ -29,6 +29,17 @@ drawer and operate graph controls. Browser checks exercise these interactions.
 
 ## Real model measurements
 
+The complete evidence-first CPU rerun at `66eeedc` reached **23/24 expected
+terminal states**: graph **12/12**, full-document baseline **11/12**. Graph mode
+verified eight recoveries; baseline verified seven. Both reported valid citations
+in all 12 cases and no executed policy violations. Graph impact was complete in
+10/12 cases, baseline 11/12. Graph median elapsed was 206.0 seconds versus 94.0
+seconds for baseline. These budgets are 300 seconds per conversation; they do
+not establish behavior within the normal 120-second application limit. The raw
+workflow and every replay are linked from [MEASUREMENTS.md](MEASUREMENTS.md).
+This is a small development sample with known fixtures, not general superiority.
+The earlier 22/24 report remains archived.
+
 Development smoke tests are preserved under `demo/development/`:
 
 - Qwen3 1.7B: both graph and baseline exhausted eight turns; 0/2 verified recoveries. The graph run's incompatible rollback proposal was blocked by the independent guard.

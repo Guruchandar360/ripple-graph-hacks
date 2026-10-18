@@ -22,9 +22,10 @@ being available does not prove that it caused the model's recommendation.
 Completed deterministic snapshot reads are removed from later tool choices;
 proposals are limited to targets probed in the current investigation. The server
 independently validates target probes. These guards do not choose a recovery
-action or disclose evaluator answers. The previous selected report measures the
-combined configuration at `2c8aaaa`; current evidence-first measurements identify
-their own source version. The unrestricted variant's complete 20/24 report is
+action or disclose evaluator answers. The current complete CPU report measures
+the evidence-first configuration at `66eeedc`; the previous selected `2c8aaaa`
+report is preserved in `demo/development/pre-evidence-first-suite.json`.
+The unrestricted variant's complete 20/24 report is
 retained separately in `demo/development/open-reads-suite.json`.
 
 Cases cover known/late migration, ingestion order, changed topology, unrelated

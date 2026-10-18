@@ -1,9 +1,10 @@
 {
-  "benchmark_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033505588",
-  "benchmark_source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
+  "benchmark_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39130562373",
+  "benchmark_source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc",
   "benchmark_configuration": {
     "max_model_turns": 8,
-    "timeout_seconds": 300
+    "timeout_seconds": 300,
+    "evidence_collection": "all_service_probes_preflight"
   },
   "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
   "repeatability_source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
@@ -12,5 +13,5 @@
     "timeout_seconds": 300
   },
   "targeted_replay_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638",
-  "note": "Recorded development measurements at the stated source versions. One of three sequential demonstrations passed; current cloud-model behavior remains unverified. Extra targeted/video replays do not contribute to the benchmark score."
+  "note": "Complete evidence-first CPU comparison; previous selected measurements are archived without removing failures. Sequential demonstration and HTTP reports retain their separately identified source versions. Native Gemini provider access passed a direct tool probe, not an integrated agent test."
 }

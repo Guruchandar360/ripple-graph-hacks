@@ -10,6 +10,8 @@ video/targeted replays are not added to the 24-run comparison's score.
 
 | Artifact | Actual workflow | Scope |
 |---|---|---|
+| `evaluations.json` | [39130562373](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39130562373) | Evidence-first source `66eeedc`, complete 24-run comparison: graph 12/12 expected outcomes, baseline 11/12; graph impact incomplete in two cases and slower median elapsed |
+| `development/pre-evidence-first-suite.json` | [39033505588](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033505588) | Previous selected 22/24 report, retained with all failures |
 | `development/initial-qwen3-1.7b.json` | [39021859634](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39021859634) | Initial two-run failure, Qwen3 1.7B native tools |
 | `development/initial-qwen3-4b.json` | [39022213775](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39022213775) | Two CPU timeouts, Qwen3 4B |
 | `development/instruct-native-smoke.json` | [39022708417](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39022708417) | Two instruct-model native-tool runs |
@@ -21,7 +23,7 @@ video/targeted replays are not added to the 24-run comparison's score.
 | `development/first-three-sequences.json` | [39025201898](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025201898) | All three sequential attempts; no sequence passed every acceptance check |
 | `development/cached-eight-turn-sequences.json` | [39031194829](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39031194829) | Three sequences with experimental read restrictions; all failed, motivating their removal |
 | `development/cached-five-turn-sequences.json` | [39032070983](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39032070983) | Three further failed sequences before the stable catalog |
-| `evaluations.json`, `development/stable-prefix-suite.json` | [39033505588](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033505588) | Complete 24-run sample: 22 expected states, 14 verified recoveries; every failure retained |
+| `development/stable-prefix-suite.json` | [39033505588](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033505588) | Complete 24-run sample: 22 expected states, 14 verified recoveries; every failure retained |
 | `repeatability.json`, `development/stable-prefix-sequences.json` | [39033508952](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952) | One of three complete sequences passed; all three retrieved the actual earlier model outcome, none explicitly cited it |
 | `development/open-reads-five-turn-http.json` | [39035065550](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39035065550) | Subsequent five-turn run exhausted its budget after proposals without a required target probe; no action executed |
 | `development/open-reads-suite.json`, `development/open-reads-replays/` | [39035069209](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39035069209) | Complete unrestricted-read variant: 20/24 expected outcomes; the measured 22/24 combined agent was retained |
