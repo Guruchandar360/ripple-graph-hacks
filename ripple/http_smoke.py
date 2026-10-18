@@ -10,10 +10,15 @@ from pathlib import Path
 import httpx
 
 
-async def verify(restart_database=False):
-    destination = Path("artifacts/http-proof")
+async def verify(restart_database=False, base_url="http://127.0.0.1:8000", output="artifacts/http-proof"):
+    url = httpx.URL(base_url)
+    if url.username or url.password:
+        raise ValueError("Use a public app URL without embedded credentials.")
+    if restart_database and url.host not in {"localhost", "127.0.0.1"}:
+        raise ValueError("Database restart verification is restricted to the local app.")
+    destination = Path(output)
     destination.mkdir(parents=True, exist_ok=True)
-    async with httpx.AsyncClient(base_url="http://127.0.0.1:8000", timeout=20) as client:
+    async with httpx.AsyncClient(base_url=base_url, timeout=20) as client:
         for _ in range(30):
             try:
                 health = (await client.get("/api/health")).json()
@@ -98,6 +103,7 @@ async def verify(restart_database=False):
             "foreign_visitor_status": isolated.status_code,
             "scenario": loaded["scenario"]["id"],
             "transport": "actual HTTP requests to Uvicorn",
+            "application_url": str(url),
             "database_restart_verified": database_restart_verified,
         }
         (destination / "http-proof.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -111,4 +117,7 @@ if __name__ == "__main__":
         action="store_true",
         help="Verify the documented local Docker Compose persistence",
     )
-    asyncio.run(verify(parser.parse_args().restart_database))
+    parser.add_argument("--base-url", default="http://127.0.0.1:8000")
+    parser.add_argument("--output", default="artifacts/http-proof")
+    args = parser.parse_args()
+    asyncio.run(verify(args.restart_database, args.base_url, args.output))

@@ -203,7 +203,7 @@ This test requires a real server, creates a unique workspace, performs actual
 Cypher traversals and recovery commits, and removes its own graph afterward.
 CI is configured to run this test with a FalkorDB service container.
 
-For browser tests, use the disconnected/default configuration and a built frontend:
+For browser tests, use a built frontend:
 
 ```powershell
 Set-Location frontend
@@ -213,6 +213,8 @@ npm run test:e2e
 
 The browser suite checks honest preview, evidence search, missing-key diagnostics,
 navigation, and responsive layout. It does not claim to test live Gemini access.
+It starts its own disconnected server on port 8100 with empty credentials,
+independently of `.env`, and does not reuse your live application process.
 
 ## Evaluate actual model behavior
 
@@ -225,6 +227,18 @@ and simulator actions. Full runs exceed the public demo's default ten-run daily
 limit. Explicitly raise local `GLOBAL_DAILY_RUNS`, `WORKSPACE_DAILY_RUNS` and
 `MAX_WORKSPACES` if account quotas permit; this does not increase Gemini's quota.
 The runner stops on setup/quota failures rather than inventing results.
+When evaluations share a Cloud instance with a public demo, set
+`FALKORDB_CONTROL_GRAPH=ripple_evaluation_control` only in the evaluation process.
+Keep the public service's control graph and normal visitor limits unchanged.
+
+Three sequential complete demonstrations can be recorded separately with
+`python -m ripple.repeat_demo --output artifacts/my-provider-sequences`.
+This gate requires actual prior model outcomes to be retrieved **and cited**,
+stale approval rejection, verified recovery and no insufficient-evidence execution.
+For a deployed app, run `python -m ripple.http_smoke --base-url https://YOUR-APP`
+to verify actual HTTP recovery, duplicate execution, persisted memory and visitor
+isolation. It consumes a live investigation; use `--output` to preserve a
+provider-specific report. Docker restart verification remains local-only.
 
 Results and actual replays go into `artifacts/`. The UI reads these files. These
 files are ignored by Git; reviewed public exports are committed under `demo/`,

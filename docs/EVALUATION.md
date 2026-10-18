@@ -12,17 +12,20 @@ documents, including the textual dependency catalog, without graph traversal or
 incident-memory retrieval. This comparison measures the configured workflows,
 not an isolated causal estimate of the database's contribution.
 
-Current source documents are loaded before the first model call in both modes.
-Graph mode also preloads persisted outcomes through the native memory query.
+Current source documents and actual request probes for all six mapped services
+are loaded before the first model call in both modes. Graph mode also preloads
+persisted outcomes through the native memory query, plus incoming native paths
+for currently failing services.
 Preloading is explicitly attributed to application code, never to a model tool
 decision. Memory retrieval and memory citation are reported separately: an outcome
 being available does not prove that it caused the model's recommendation.
 Completed deterministic snapshot reads are removed from later tool choices;
 proposals are limited to targets probed in the current investigation. The server
 independently validates target probes. These guards do not choose a recovery
-action or disclose evaluator answers. The release agent matches the measured
-combined configuration at `2c8aaaa`; the unrestricted variant's complete 20/24
-report is retained separately in `demo/development/open-reads-suite.json`.
+action or disclose evaluator answers. The previous selected report measures the
+combined configuration at `2c8aaaa`; current evidence-first measurements identify
+their own source version. The unrestricted variant's complete 20/24 report is
+retained separately in `demo/development/open-reads-suite.json`.
 
 Cases cover known/late migration, ingestion order, changed topology, unrelated
 telemetry, failed historical recovery, verified memory, fresh conversation,
