@@ -189,8 +189,12 @@ test("memory, measured results and checklist adapt to phone, tablet and laptop w
       await page.getByRole("button", {name:button,exact:true}).click();
       await expect(page.getByRole("heading", {name:heading,exact:true})).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${button} has no page overflow at ${width}`).toBeTruthy();
-      await page.evaluate(() => scrollTo(0,document.documentElement.scrollHeight));
-      expect(await page.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 2)).toBeTruthy();
+      // View changes reset scroll in an effect; fonts and result rows can settle
+      // after the heading paints. Verify actual reachability after those updates.
+      await expect.poll(async () => page.evaluate(() => {
+        scrollTo({top:document.documentElement.scrollHeight,behavior:"instant"});
+        return scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+      }), {message:`${button} bottom is reachable at ${width}`}).toBeTruthy();
     }
   }
 });
