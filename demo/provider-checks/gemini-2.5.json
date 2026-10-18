@@ -1,0 +1,9 @@
+{
+  "model": "gemini-2.5-flash",
+  "provider": "gemini",
+  "key_configured": true,
+  "native_function_calling": false,
+  "http_status": 404,
+  "error_class": "ClientError",
+  "elapsed_seconds": 1.562
+}

@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from dotenv import load_dotenv
 
@@ -15,10 +15,10 @@ class Settings:
     graph_host: str = os.getenv("FALKORDB_HOST", "localhost")
     graph_port: int = int(os.getenv("FALKORDB_PORT", "6379"))
     graph_username: str = os.getenv("FALKORDB_USERNAME", "")
-    graph_password: str = os.getenv("FALKORDB_PASSWORD", "")
+    graph_password: str = field(default=os.getenv("FALKORDB_PASSWORD", ""), repr=False)
     graph_ssl: bool = os.getenv("FALKORDB_SSL", "false").lower() == "true"
-    api_key: str = os.getenv("GEMINI_API_KEY", "")
-    model: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    api_key: str = field(default=os.getenv("GEMINI_API_KEY", ""), repr=False)
+    model: str = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
     cookie_secure: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
     workspace_daily_runs: int = int(os.getenv("WORKSPACE_DAILY_RUNS", "3"))
     global_daily_runs: int = int(os.getenv("GLOBAL_DAILY_RUNS", "10"))

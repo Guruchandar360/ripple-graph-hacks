@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.8-flash",
+  "provider": "gemini",
+  "native_function_calling": true,
+  "returned_tool": "report_status",
+  "elapsed_seconds": 4.312
+}

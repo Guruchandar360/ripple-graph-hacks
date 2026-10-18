@@ -17,11 +17,15 @@ services:
         value: "1"
       - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
       - key: FALKORDB_HOST
         sync: false
       - key: FALKORDB_PORT
         sync: false
       - key: FALKORDB_PASSWORD
+        sync: false
+      - key: FALKORDB_USERNAME
         sync: false
       - key: FALKORDB_SSL
         value: "true"

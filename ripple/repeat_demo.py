@@ -1,5 +1,6 @@
 """Three sequential real-model demonstrations, including memory from actual prior model actions."""
 
+import argparse
 import asyncio
 import json
 import uuid
@@ -12,13 +13,13 @@ from ripple.repository import GraphRepository
 from ripple.service import RippleService
 
 
-async def demonstrate():
+async def demonstrate(output="artifacts/repeatability"):
     settings = Settings()
     repo = GraphRepository(settings)
     repo.health()
     service, rows = RippleService(repo, settings), []
     agent = Agent(service, settings)
-    destination = Path("artifacts/repeatability")
+    destination = Path(output)
     (destination / "replays").mkdir(parents=True, exist_ok=True)
 
     async def investigate(workspace, execute=True):
@@ -135,4 +136,6 @@ async def demonstrate():
 
 
 if __name__ == "__main__":
-    asyncio.run(demonstrate())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", default="artifacts/repeatability")
+    asyncio.run(demonstrate(parser.parse_args().output))

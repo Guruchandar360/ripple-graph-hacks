@@ -28,13 +28,14 @@ Recorded graphs originate in FalkorDB; exported model output is visibly labeled
 Replay and cannot execute actions. See [verification](docs/VERIFICATION.md) for
 actual measurements and remaining account-dependent checks.
 
-The original `gemini-2.5-flash` default is retained. Google's current
-[access policy](https://ai.google.dev/gemini-api/docs/deprecations) limits 2.5
-models to previous active users. A new project can explicitly configure
-`GEMINI_MODEL=gemini-3.8-flash`, whose standard tier currently lists free input
-and output in the [official pricing](https://ai.google.dev/gemini-api/docs/pricing).
-Account access and quota still need verification; no automatic model switch or
-paid fallback occurs. Gemini has not been measured in this project.
+The server defaults to `gemini-3.8-flash`. A direct official-SDK native function
+call passed on October 18; the older `gemini-2.5-flash` returned 404 for this
+account. This provider probe alone does not establish integrated agent reliability.
+Google's [access policy](https://ai.google.dev/gemini-api/docs/deprecations)
+limits 2.5 models to previous active users. The chosen model's standard tier
+currently lists free input and output in the
+[official pricing](https://ai.google.dev/gemini-api/docs/pricing).
+Account quotas apply; no automatic model switch or paid fallback occurs.
 
 The investigation workspace uses natural page scrolling at 100% zoom. A large
 dependency graph leads into the timeline and recovery decision; explanations and
