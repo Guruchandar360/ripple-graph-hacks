@@ -1,42 +1,112 @@
 {
   "kind": "actual_agent_replay",
-  "selection": "Actual repetition 1 of three consecutive passing evidence-first-v2 demonstration sequences. Its recovery record includes the earlier investigation and evidence-change event. All model output is a labeled replay.",
+  "record_source": "native_cloud_sequence",
+  "selection": "Latest UI recorded at source 36fc05c. Actual three-scenario native Gemini/Cloud sample; one complete sequence passed, not the native three-consecutive gate. Includes separate hosted HTTP receipt and separate CPU benchmark views.",
   "synthetic": true,
   "resolution": [
-    1440,
-    1000
+    1920,
+    1080
   ],
   "captioned": true,
-  "audio": false,
+  "audio": true,
+  "narration": "Locally synthesized narration; no participant voice imitation.",
+  "voice": "Microsoft Zira Desktop",
   "records": [
     {
-      "phase": "insufficient",
-      "run_id": "4412620932e54c48aeadbaf399e705c6",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
-      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
-    },
-    {
       "phase": "recovery",
-      "run_id": "48089bad9b284c8b963bd6a6ec837d10",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
-      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
+      "run_id": "0091d790d71e40269b534463a162442d",
+      "source_commit": "e06d39f65f5a30062f8571cea1f3c143ff8f67b1",
+      "path": "demo/live/sequence/replays/0091d790d71e40269b534463a162442d.json"
     },
     {
       "phase": "memory",
-      "run_id": "d586d4e52a514b67b554d1a53c548133",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
-      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
+      "run_id": "38503689004b4d4ab6a0ffc7ad918919",
+      "source_commit": "e06d39f65f5a30062f8571cea1f3c143ff8f67b1",
+      "path": "demo/live/sequence/replays/38503689004b4d4ab6a0ffc7ad918919.json"
+    },
+    {
+      "phase": "insufficient",
+      "run_id": "4a5e8e28ae704314b702a51f8c3df7ba",
+      "source_commit": "e06d39f65f5a30062f8571cea1f3c143ff8f67b1",
+      "path": "demo/live/sequence/replays/4a5e8e28ae704314b702a51f8c3df7ba.json"
     }
   ],
-  "duration_seconds": 79.48,
-  "ui_base_commit": "83fd1f1",
+  "duration_seconds": 172.049,
+  "ui_base_commit": "36fc05cc92ba8df52ce77b94dea035074c276d4b",
   "configuration": {
-    "demo_max_model_turns": 5,
-    "benchmark_max_model_turns": 8,
-    "timeout_seconds": 300
+    "demo_max_model_turns": 8,
+    "timeout_seconds": 120,
+    "benchmark_provider": "Separate Qwen/Ollama CPU comparison; eight turns / 300s"
   },
-  "memory_origin": "Actual prior model-selected and probe-verified recovery from the same workspace, retrieved by application preflight and explicitly cited by the later model in a fresh conversation. Citation does not establish causal dependence.",
+  "memory_origin": "Actual prior model-selected, probe-verified recovery from the same Cloud workspace, retrieved AND explicitly cited in a fresh Gemini conversation. Citation alone does not establish causal dependence.",
   "full_decode_verified": true,
-  "sha256": "f9665c3b008008ec4ffc27df7580c5f4ecc1b4ded27d094306325274fb5b1aca",
-  "recorder_sha256": "d1654c62649a47ba55ff13be085bc0783a3301bfe98fc106c9e75a3c31c9aded"
+  "sha256": "15eb6630da224267b72f71b1c912bc72afb4ae6213149b9da893b7d71137ffa5",
+  "recorder_path": "frontend/scripts/record-submission.mjs",
+  "recorder_sha256": "b8adfff9e4ac7233626c14824d0f99382e6a4391dad7a42d0a9c6a2ad709ff88",
+  "silent_source_trim_start_seconds": 0.8683443999999997,
+  "chapters": [
+    {
+      "id": "opening",
+      "start_seconds": 0.0,
+      "title": "Yesterday’s fix. Today’s failure."
+    },
+    {
+      "id": "graph",
+      "start_seconds": 14.022,
+      "title": "The graph is the decision system."
+    },
+    {
+      "id": "old-fix",
+      "start_seconds": 28.591,
+      "title": "A plausible rollback. An expiring assumption."
+    },
+    {
+      "id": "changed",
+      "start_seconds": 40.575,
+      "title": "New evidence invalidates old approval."
+    },
+    {
+      "id": "constraints",
+      "start_seconds": 53.54,
+      "title": "Block the rollback. Permit a scoped change."
+    },
+    {
+      "id": "recovery",
+      "start_seconds": 64.726,
+      "title": "Three failing services. Three passing probes."
+    },
+    {
+      "id": "memory",
+      "start_seconds": 80.482,
+      "title": "A new conversation. A measured memory."
+    },
+    {
+      "id": "insufficient",
+      "start_seconds": 94.512,
+      "title": "Missing evidence means no execution."
+    },
+    {
+      "id": "hosted",
+      "start_seconds": 108.433,
+      "title": "Gemini + FalkorDB Cloud + Render."
+    },
+    {
+      "id": "benchmark",
+      "start_seconds": 125.738,
+      "title": "Publish the results. Keep the limits."
+    },
+    {
+      "id": "limits",
+      "start_seconds": 142.174,
+      "title": "Strong evidence. Honest boundaries."
+    },
+    {
+      "id": "closing",
+      "start_seconds": 158.908,
+      "title": "Follow the evidence. Prove the recovery."
+    }
+  ],
+  "subtitle_path": "demo/ripple-demo.srt",
+  "prior_video": "demo/development/cpu-video-v1/video.json",
+  "recording_scope": "Actual current application interactions; editorial captions/title cards added by recorder. Model output is replayed, never presented as a new live execution. Narration and caption track are editorial, not model output. No new model calls for filming."
 }

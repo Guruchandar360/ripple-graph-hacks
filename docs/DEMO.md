@@ -1,52 +1,52 @@
-# Demonstration
+# Submission demonstration
 
-The captioned recording uses the first complete passing development sequence:
-recovery, fresh-conversation memory and insufficient evidence in one workspace.
-It is a replay and does not represent the benchmark's success rate or a guarantee
-of repeatability. `demo/video.json` identifies each run, source commit and workflow.
-Memory is the actual earlier model-selected, probe-verified outcome. Retrieval
-and explicit citation are separate measures; the later model did not cite it. All failed
-measurements remain available separately. The outline below is also suitable for
-a three-minute live presentation once provider access is configured.
+The current film records the latest Ripple interface at 1920x1080, with captions,
+embedded English subtitles, chapters and locally synthesized narration. All model
+output is labeled REPLAY and all operational data is synthetic. Filming makes no
+new model calls.
 
-1. **0:00–0:20 — The problem.** Checkout is failing. Explain that everything on
-   screen is a synthetic environment and that the investigation is an actual model
-   run using FalkorDB. Never label fixture preview as a live agent.
-2. **0:20–0:55 — Follow the graph.** Start the investigation. Select the dependency
-   finding; show the returned paths, ownership, and cited release/runbook sources.
-3. **0:55–1:30 — Change the evidence.** Inject the migration after the run pauses.
-   Show the amber event and stale approval. Explain how schema 2 invalidates the
-   historical rollback. The model can choose the correct flag action initially;
-   do not edit or script its answer to manufacture a bad recommendation.
-4. **1:30–2:05 — Verify a recovery.** Investigate the new revision, approve a justified
-   action, and show before/after affected-service probes and the verified outcome.
-5. **2:05–2:35 — Remember, with checks.** Load the memory scenario. A new conversation
-   retrieves persisted outcome and current constraints. Show it is not old chat.
-6. **2:35–3:00 — Evidence and limits.** Show the actual evaluation artifact if run,
-   then the missing-evidence scenario. Explain rejection/verification boundaries.
+It follows the actual native Gemini/FalkorDB Cloud sequence from source e06d39f:
+initial rollback, migration evidence, stale approval rejection, verified flag
+recovery, fresh-conversation retrieval AND citation of that actual recovery,
+then insufficient evidence with no execution. That is one complete native
+sequence, not three consecutive native passes.
 
-Record a working run only after configuring real services. Keep an unedited local
-recording as a fallback for free-host cold starts. No recording is included merely
-because this script exists. Finish with public repo/setup links and AI disclosure.
+The film then shows the separate actual Render HTTP receipt: one Gemini call,
+7.014-second persisted investigation, 503-to-200 probes, duplicate execution
+idempotency, scenario-reload memory and visitor isolation. It does not claim a
+Cloud database restart test. The separate CPU benchmark is explicitly identified:
+graph expected outcomes 12/12 versus baseline 11/12; graph impact 10/12 versus
+baseline 11/12; graph was slower. Known synthetic cases establish no general
+superiority. Three consecutive CPU sequences are separate from the native sample.
 
-## Reproduce the captioned recording
+The film states the exhausted free quota and unmet native three-consecutive gate.
+The approved plaintext database exception is limited to synthetic demo data.
+AI assistance and synthesized narration are disclosed. No voice is imitated.
 
-Run the built local application with exported actual replays available. From
-`frontend`, run `node scripts/record-demo.mjs`; it refuses missing or unsuccessful
-required scenarios and refuses a memory claim without recorded retrieval IDs.
-Set `DEMO_REPETITION` to a recorded sequential demonstration number to select the
-same repetition's recovery, memory and insufficient-evidence phases. Without it,
-the script selects graph-mode benchmark replays.
+## Reproduce the film
 
-The recorder adds explanatory captions over actual application state. It does
-not manufacture events, actions or probe outcomes. The original WebM is retained;
-`scripts/transcode_demo.py` packages an H.264 MP4 with fast start after installing
-the optional `imageio-ffmpeg==0.6.0` dependency. Inspect decoded frames as well as
-duration and dimensions before publishing. The public URL and repository both
-identify recordings as replays of a synthetic simulator.
+1. Export committed actual recordings: python -m ripple.export_showcase.
+2. Generate the audited proof page: python -m ripple.proof_page.
+3. Build frontend with VITE_STATIC_SHOWCASE=true and VITE_BASE_PATH=/.
+4. Serve frontend/dist on 127.0.0.1:8104.
+5. On Windows, run powershell -NoProfile -File scripts/narrate-demo.ps1 from the
+   root. This uses the installed Microsoft Zira Desktop voice locally.
+6. From frontend, run node scripts/record-submission.mjs. It selects exact actual
+   native IDs, validates outcomes, selects a real supporting path, and records
+   application interactions. Captions are editorial overlays; underlying findings,
+   graphs, actions and probes are never changed.
+7. From the root, run python scripts/compose-demo.py with optional
+   imageio-ffmpeg==0.6.0 installed. It adds narration, subtitles and chapters,
+   normalizes audio to -16 LUFS, packages H.264/AAC with fast start, and fully
+   decodes the result with -xerror. It refuses an edit over 180 seconds.
+8. Inspect decoded frames and check audio, dimensions and duration before
+   publishing. Update artifact fingerprints and run python -m ripple.proof.
 
-The current recording is 79.48 seconds at 1440×1000, fully decoded after packaging.
-It selects actual evidence-first-v2 repetition 1 using `DEMO_RECOVERY_ID`,
-`DEMO_MEMORY_ID` and `DEMO_INSUFFICIENT_ID`; exact IDs are in `demo/video.json`.
-The recorder scrolls the full-width graph and comparison table into view so they
-remain visible in the naturally scrolling layout. No model output is fabricated.
+Narration text: demo/film-script.json. Accessible subtitles: demo/ripple-demo.srt.
+Exact duration, source IDs, UI source, recording scope, hash and recorder
+fingerprint: demo/video.json. The WebM is the silent source with pre-roll; its trim
+offset is documented.
+
+The earlier 79.48-second CPU-only film, metadata and silent WebM remain under
+demo/development/cpu-video-v1/. Its recorder remains unchanged at
+frontend/scripts/record-demo.mjs. Historical footage is not new execution proof.

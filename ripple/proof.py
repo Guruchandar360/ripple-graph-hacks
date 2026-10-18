@@ -41,7 +41,7 @@ def read(root, name):
 def fingerprint(path):
     data = path.read_bytes()
     # Git may check text out with CRLF on Windows. Binary media stays byte-exact.
-    if path.suffix in {".json", ".xml", ".txt", ".mjs"}:
+    if path.suffix in {".json", ".xml", ".txt", ".mjs", ".srt", ".ps1", ".py"}:
         data = data.replace(b"\r\n", b"\n")
     return hashlib.sha256(data).hexdigest()
 
@@ -433,27 +433,52 @@ def audit(root=ROOT, online=False):
         for row in repeated["cases"]
     ]
     video = read(root, "demo/video.json")
-    require(
-        all(
-            item["workflow"] == receipts["sequences"]["url"]
-            and item["source_commit"] == receipts["sequences"]["source_commit"]
-            for item in video["records"]
-        ),
-        "Video provenance differs from the measured sequence",
-    )
+    if video.get("record_source") == "native_cloud_sequence":
+        native_report = read(root, index["native_sequence_report"])
+        video_phases = [read(root, p) for p in index["native_sequence_replays"]]
+        verify_native_sample(native_report, video_phases)
+        require(
+            all(
+                item["source_commit"] == native_report["source_commit"]
+                and item["path"] in index["native_sequence_replays"]
+                and read(root, item["path"])["id"] == item["run_id"]
+                for item in video["records"]
+            ),
+            "Video provenance differs from the native sample",
+        )
+        require(
+            video.get("recorder_path") == "frontend/scripts/record-submission.mjs"
+            and video.get("audio") is True
+            and video.get("subtitle_path") == "demo/ripple-demo.srt"
+            and video["subtitle_path"] in index["sha256"]
+            and video.get("resolution") == [1920, 1080],
+            "Native video narration/subtitle verification is incomplete",
+        )
+        recorder_path = video["recorder_path"]
+    else:
+        video_phases = phases
+        recorder_path = "frontend/scripts/record-demo.mjs"
+        require(
+            all(
+                item["workflow"] == receipts["sequences"]["url"]
+                and item["source_commit"] == receipts["sequences"]["source_commit"]
+                for item in video["records"]
+            ),
+            "Video provenance differs from the measured sequence",
+        )
     require(
         hashlib.sha256(artifact(root, "demo/ripple-demo.mp4").read_bytes()).hexdigest() == video["sha256"],
         "Video checksum differs from decoded artifact",
     )
     require(
-        fingerprint(artifact(root, "frontend/scripts/record-demo.mjs")) == video["recorder_sha256"],
+        fingerprint(artifact(root, recorder_path)) == video["recorder_sha256"],
         "Video recorder changed after verification",
     )
     require(
-        {r["run_id"] for r in video["records"]} <= {r["id"] for r in phases},
+        {r["run_id"] for r in video["records"]} <= {r["id"] for r in video_phases},
         "Video refers to an absent sequence",
     )
-    selected = [next(r for r in phases if r["id"] == item["run_id"]) for item in video["records"]]
+    selected = [next(r for r in video_phases if r["id"] == item["run_id"]) for item in video["records"]]
     require(
         {r["demonstration_phase"] for r in selected} == {"recovery", "memory", "insufficient"}
         and len({r["repetition"] for r in selected}) == 1,

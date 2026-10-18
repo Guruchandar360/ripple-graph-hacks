@@ -112,6 +112,9 @@ def export(destination: Path):
         video = ROOT / "demo" / f"ripple-demo.{extension}"
         if video.exists():
             shutil.copyfile(video, destination / video.name)
+    for filename in ("ripple-demo.srt", "video.json", "film-script.json"):
+        if (ROOT / "demo" / filename).exists():
+            shutil.copyfile(ROOT / "demo" / filename, destination / filename)
     print(f"Exported read-only showcase to {destination}")
 
 

@@ -49,7 +49,7 @@
     }
   ],
   "video_sha256_matches": true,
-  "checksummed_files": 51,
+  "checksummed_files": 60,
   "online_workflows": [
     {
       "conclusion": "success",

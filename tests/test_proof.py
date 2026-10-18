@@ -4,6 +4,7 @@ import hashlib
 
 import pytest
 
+import ripple.proof as proof_module
 from ripple.proof import (
     ROOT,
     ProofError,
@@ -47,6 +48,24 @@ def test_one_native_sequence_cannot_claim_three_consecutive_passes():
     records = [read(ROOT, name) for name in index["native_sequence_replays"]]
     with pytest.raises(ProofError, match="inflated"):
         verify_native_sample(report, records)
+
+
+@pytest.mark.parametrize("corruption", ["foreign_record", "silent_capture"])
+def test_submission_video_cannot_misidentify_its_actual_native_recordings(monkeypatch, corruption):
+    original_read = proof_module.read
+
+    def altered_read(root, name):
+        value = original_read(root, name)
+        if name == "demo/video.json":
+            if corruption == "foreign_record":
+                value["records"][0]["run_id"] = "48089bad9b284c8b963bd6a6ec837d10"
+            else:
+                value["audio"] = False
+        return value
+
+    monkeypatch.setattr(proof_module, "read", altered_read)
+    with pytest.raises(ProofError, match="Video provenance|narration/subtitle"):
+        audit()
 
 
 @pytest.mark.parametrize("corruption", ["wrong_time", "wrong_execution"])

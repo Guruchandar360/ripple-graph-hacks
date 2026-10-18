@@ -8,10 +8,12 @@
 
 **Hosted workspace:** https://ripple-graph-hacks.onrender.com (free-model quota applies)
 
-**Captioned working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
+**Narrated 1080p working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
 
-The video is an explicitly labeled selection of actual development model output;
-`demo/video.json` identifies the passing sequence and its measured memory origin. The
+The video records the latest interface with explicitly labeled actual native
+Gemini/FalkorDB Cloud replays, captions, chapters and locally synthesized narration.
+`demo/video.json` identifies the single passing native sequence and its measured
+memory origin. Separate hosted HTTP proof and CPU comparison are identified as such. The
 GitHub Pages site is read-only; the separate Render backend has an actual
 native recovery receipt. The README also provides local setup.
 
@@ -53,8 +55,12 @@ All operational data is synthetic. No production systems are connected.
   Additional targeted replays are separate samples and do not enter the score.
   Earlier development failures remain inspectable under `demo/development/`.
 - Working video: `demo/ripple-demo.mp4`, identifying the provider, replay status,
-  synthetic data and actual measured behavior. It shows one of three consecutive
-  passing evidence-first-v2 sequences; source records and limits are disclosed.
+  synthetic data and actual measured behavior. It shows the complete single
+  passing native sequence, not three consecutive native passes. The current
+  interface, hosted receipt and separate CPU comparison are included. Narration
+  is locally synthesized; `demo/film-script.json` and `demo/ripple-demo.srt` provide
+  accessible text. Earlier CPU-only footage is preserved under
+  `demo/development/cpu-video-v1/`; source records and limits are disclosed.
   The complete comparison still contains two incomplete graph impact reports.
 - Technical blog: `docs/BLOG.md` (public repository article; no external post claimed).
 - Hosted backend: free Render + FalkorDB Cloud, verified with actual Gemini.
