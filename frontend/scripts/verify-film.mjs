@@ -20,9 +20,10 @@ const dimensions=await video.evaluate(el=>({width:el.videoWidth,height:el.videoH
 assert.equal(dimensions.width,1920);assert.equal(dimensions.height,1080);
 assert(Math.abs(dimensions.duration-expected.duration_seconds)<.2);
 await video.evaluate(el=>{el.muted=false;return el.play();});
-await page.waitForFunction(()=>{const el=document.querySelector('video');return el&&el.currentTime>1&&el.webkitVideoDecodedByteCount>0&&el.webkitAudioDecodedByteCount>0;},null,{timeout:60000});
+await page.waitForFunction(()=>{const el=document.querySelector('video');return el&&el.currentTime>1&&el.webkitVideoDecodedByteCount>0;},null,{timeout:60000});
 const playback=await video.evaluate(el=>({time:el.currentTime,videoBytes:el.webkitVideoDecodedByteCount,audioBytes:el.webkitAudioDecodedByteCount,error:el.error?.message??null}));
-assert(playback.time>1 && playback.videoBytes>0 && playback.audioBytes>0);
+assert(playback.time>1 && playback.videoBytes>0);
+assert.equal(playback.audioBytes,0,'The submission video must contain no decoded audio');
 assert.equal(playback.error,null);
 await video.evaluate(el=>{el.pause();el.currentTime=20;});
 try {
@@ -36,6 +37,6 @@ try {
 await page.waitForTimeout(350); // Allow the decoded seek frame to paint.
 await page.screenshot({path:path.join(root,'artifacts/submission-film/browser-playback.png')});
 assert.deepEqual(errors,[]);
-await writeFile(path.join(root,'artifacts/submission-film/browser-check.json'),JSON.stringify({passed:true,media,...dimensions,playback,sha256:expected.sha256,scope:'Actual Chromium playback and audio/video decoding; selected frame visually inspected.'},null,2));
+await writeFile(path.join(root,'artifacts/submission-film/browser-check.json'),JSON.stringify({passed:true,media,...dimensions,playback,sha256:expected.sha256,scope:'Actual Chromium video playback, no decoded audio; selected captioned frame visually inspected.'},null,2));
 await browser.close();
-console.log(`Chromium played ${dimensions.width}x${dimensions.height} MP4 with decoded narration; duration ${dimensions.duration}s.`);
+console.log(`Chromium played silent captioned ${dimensions.width}x${dimensions.height} MP4; duration ${dimensions.duration}s.`);

@@ -50,7 +50,7 @@ def test_one_native_sequence_cannot_claim_three_consecutive_passes():
         verify_native_sample(report, records)
 
 
-@pytest.mark.parametrize("corruption", ["foreign_record", "silent_capture"])
+@pytest.mark.parametrize("corruption", ["foreign_record", "unexpected_audio"])
 def test_submission_video_cannot_misidentify_its_actual_native_recordings(monkeypatch, corruption):
     original_read = proof_module.read
 
@@ -60,11 +60,11 @@ def test_submission_video_cannot_misidentify_its_actual_native_recordings(monkey
             if corruption == "foreign_record":
                 value["records"][0]["run_id"] = "48089bad9b284c8b963bd6a6ec837d10"
             else:
-                value["audio"] = False
+                value["audio"] = True
         return value
 
     monkeypatch.setattr(proof_module, "read", altered_read)
-    with pytest.raises(ProofError, match="Video provenance|narration/subtitle"):
+    with pytest.raises(ProofError, match="Video provenance|silent caption/subtitle"):
         audit()
 
 

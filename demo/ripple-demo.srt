@@ -1,155 +1,155 @@
 1
-00:00:00,000 --> 00:00:02,132
+00:00:00,000 --> 00:00:02,432
 Yesterday's fix can break today's system.
 
 2
-00:00:02,132 --> 00:00:09,237
+00:00:02,432 --> 00:00:10,537
 Ripple is an evidence-driven incident recovery agent: it follows connected evidence, challenges an outdated recommendation, and verifies what actually works.
 
 3
-00:00:14,022 --> 00:00:18,815
+00:00:13,581 --> 00:00:18,901
 This is the latest Ripple interface, replaying actual Gemini output against FalkorDB Cloud.
 
 4
-00:00:18,815 --> 00:00:23,238
+00:00:18,901 --> 00:00:23,812
 Six synthetic services connect dependencies, owners, deployments, source records, and action constraints.
 
 5
-00:00:23,238 --> 00:00:25,819
+00:00:23,812 --> 00:00:26,677
 The paths shown here came from FalkorDB.
 
 6
-00:00:28,591 --> 00:00:30,515
+00:00:28,192 --> 00:00:30,376
 Checkout failures follow a payments release.
 
 7
-00:00:30,515 --> 00:00:34,364
+00:00:30,376 --> 00:00:34,744
 An earlier compatibility record permits rollback, and the agent initially proposes it.
 
 8
-00:00:34,364 --> 00:00:38,213
+00:00:34,744 --> 00:00:39,113
 The timeline preserves that recommendation and the evidence available at the time.
 
 9
-00:00:40,575 --> 00:00:42,691
+00:00:40,209 --> 00:00:42,601
 Then a ledger migration changes the facts.
 
 10
-00:00:42,691 --> 00:00:45,412
+00:00:42,601 --> 00:00:45,676
 The old deployment is incompatible with the current schema.
 
 11
-00:00:45,412 --> 00:00:50,551
+00:00:45,676 --> 00:00:51,485
 Ripple marks the earlier proposal stale, and the actual sequence driver confirms that its approval cannot execute.
 
 12
-00:00:53,540 --> 00:00:57,808
+00:00:53,433 --> 00:00:58,325
 The original migration source blocks rollback while permitting a feature flag change.
 
 13
-00:00:57,808 --> 00:00:59,942
+00:00:58,325 --> 00:01:00,771
 Source provenance makes this constraint inspectable.
 
 14
-00:00:59,942 --> 00:01:02,432
+00:01:00,771 --> 00:01:03,625
 The replacement recommendation must cite retrieved evidence.
 
 15
-00:01:04,726 --> 00:01:07,404
+00:01:04,749 --> 00:01:07,694
 The agent recommends disabling strict currency validation.
 
 16
-00:01:07,404 --> 00:01:11,612
+00:01:07,694 --> 00:01:12,322
 Deterministic code rechecks the revision and executes the approved simulator action.
 
 17
-00:01:11,612 --> 00:01:15,819
+00:01:12,322 --> 00:01:16,950
 Checkout, payments, and storefront each change from HTTP 503 to 200.
 
 18
-00:01:15,819 --> 00:01:17,732
+00:01:16,950 --> 00:01:19,054
 Only then is recovery verified.
 
 19
-00:01:20,482 --> 00:01:25,142
+00:01:20,935 --> 00:01:26,130
 A fresh investigation retrieves and explicitly cites the previous model-selected, probe-verified recovery from FalkorDB.
 
 20
-00:01:25,142 --> 00:01:27,472
+00:01:26,130 --> 00:01:28,727
 Earlier chat messages are not carried over.
 
 21
-00:01:27,472 --> 00:01:31,798
+00:01:28,727 --> 00:01:33,551
 Current constraints still have to match before that memory can justify another action.
 
 22
-00:01:34,512 --> 00:01:38,774
+00:01:35,099 --> 00:01:39,858
 In the third scenario, the available records do not justify a supported remediation.
 
 23
-00:01:38,774 --> 00:01:41,396
+00:01:39,858 --> 00:01:42,786
 Ripple identifies the missing diagnostics and executes nothing.
 
 24
-00:01:41,396 --> 00:01:45,658
+00:01:42,786 --> 00:01:47,545
 Failed and uncertain outcomes remain visible; they are never stored as successful procedures.
 
 25
-00:01:48,433 --> 00:01:53,858
+00:01:48,792 --> 00:01:54,758
 A separate hosted HTTP test verified recovery with one Gemini call and a 7.014-second investigation.
 
 26
-00:01:53,858 --> 00:01:59,645
+00:01:54,758 --> 00:02:01,123
 Duplicate approval returned the same result, memory survived scenario reload, and another visitor received a 404.
 
 27
-00:01:59,645 --> 00:02:01,454
+00:02:01,123 --> 00:02:03,112
 The raw receipt is public.
 
 28
-00:02:05,738 --> 00:02:11,729
+00:02:05,146 --> 00:02:11,704
 In a separate CPU-model benchmark, graph mode met twelve of twelve expected outcomes; full-document context met eleven.
 
 29
-00:02:11,729 --> 00:02:14,901
+00:02:11,704 --> 00:02:15,176
 Graph mode was slower and missed complete impact twice.
 
 30
-00:02:14,901 --> 00:02:17,368
+00:02:15,176 --> 00:02:17,877
 All twenty-four records, including failures, are published.
 
 31
-00:02:17,368 --> 00:02:19,483
+00:02:17,877 --> 00:02:20,191
 This is not a Gemini comparison.
 
 32
-00:02:22,174 --> 00:02:24,034
+00:02:21,356 --> 00:02:23,383
 Three consecutive CPU sequences passed.
 
 33
-00:02:24,034 --> 00:02:30,729
+00:02:23,383 --> 00:02:30,677
 One complete native Gemini sequence passed; three consecutive native sequences remain unverified, and the free quota is exhausted.
 
 34
-00:02:30,729 --> 00:02:32,216
+00:02:30,677 --> 00:02:32,298
 These are synthetic incidents.
 
 35
-00:02:32,216 --> 00:02:34,820
+00:02:32,298 --> 00:02:35,135
 The approved demo database connection is plaintext.
 
 36
-00:02:34,820 --> 00:02:36,680
+00:02:35,135 --> 00:02:37,161
 No production systems are connected.
 
 37
-00:02:38,908 --> 00:02:42,967
+00:02:37,735 --> 00:02:42,822
 Ripple makes the decision inspectable, the action guarded, and the outcome measurable.
 
 38
-00:02:42,967 --> 00:02:48,042
+00:02:42,822 --> 00:02:49,180
 Explore the latest console, inspect the public proof, and reproduce the project from its source.
 
 39
-00:02:48,042 --> 00:02:50,749
-Built with AI assistance, with locally synthesized narration.
+00:02:49,180 --> 00:02:50,876
+Built with AI assistance.

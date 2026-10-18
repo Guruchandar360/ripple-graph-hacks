@@ -8,10 +8,10 @@
 
 **Hosted workspace:** https://ripple-graph-hacks.onrender.com (free-model quota applies)
 
-**Narrated 1080p working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
+**Silent captioned 1080p working demo:** https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4
 
 The video records the latest interface with explicitly labeled actual native
-Gemini/FalkorDB Cloud replays, captions, chapters and locally synthesized narration.
+Gemini/FalkorDB Cloud replays, full explanatory captions, English subtitles and chapters, without audio.
 `demo/video.json` identifies the single passing native sequence and its measured
 memory origin. Separate hosted HTTP proof and CPU comparison are identified as such. The
 GitHub Pages site is read-only; the separate Render backend has an actual
@@ -57,8 +57,7 @@ All operational data is synthetic. No production systems are connected.
 - Working video: `demo/ripple-demo.mp4`, identifying the provider, replay status,
   synthetic data and actual measured behavior. It shows the complete single
   passing native sequence, not three consecutive native passes. The current
-  interface, hosted receipt and separate CPU comparison are included. Narration
-  is locally synthesized; `demo/film-script.json` and `demo/ripple-demo.srt` provide
+  interface, hosted receipt and separate CPU comparison are included. The video is silent; `demo/film-script.json` and `demo/ripple-demo.srt` provide
   accessible text. Earlier CPU-only footage is preserved under
   `demo/development/cpu-video-v1/`; source records and limits are disclosed.
   The complete comparison still contains two incomplete graph impact reports.

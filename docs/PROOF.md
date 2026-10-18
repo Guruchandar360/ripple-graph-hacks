@@ -8,7 +8,7 @@ Ripple's claim is specific: connected evidence changes which recovery action is
 allowed, measured outcomes persist into a fresh conversation, and recovery must
 be supported by executable simulator probes. All incidents are synthetic.
 
-Start with the [latest narrated 1080p demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4),
+Start with the [latest silent captioned 1080p demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4),
 then inspect the records below. The public website is a labeled, read-only replay.
 
 | Claim | Recorded evidence | Scope and source |

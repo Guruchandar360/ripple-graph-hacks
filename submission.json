@@ -12,7 +12,7 @@
   "participant_review_verified": false,
   "video_path": "demo/ripple-demo.mp4",
   "video_kind": "actual_agent_replay",
-  "video_label": "Latest UI in 1080p, captioned with locally synthesized narration. Actual single native Gemini/Cloud sequence, separate hosted HTTP proof and separate CPU comparison. Replay and limitations disclosed; no native three-consecutive claim.",
+  "video_label": "Silent 1080p video with full explanatory captions, English subtitles and chapters. Actual single native Gemini/Cloud sequence, separate hosted receipt and CPU comparison; replay and limitations disclosed.",
   "verification": {
     "url": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39139948540",
     "label": "58 backend tests including actual FalkorDB integration; eight application browser checks. Separate static workflow checks the proof page and showcase."

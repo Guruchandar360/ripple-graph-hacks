@@ -448,11 +448,12 @@ def audit(root=ROOT, online=False):
         )
         require(
             video.get("recorder_path") == "frontend/scripts/record-submission.mjs"
-            and video.get("audio") is True
+            and video.get("audio") is False
+            and video.get("burned_in_captions") is True
             and video.get("subtitle_path") == "demo/ripple-demo.srt"
             and video["subtitle_path"] in index["sha256"]
             and video.get("resolution") == [1920, 1080],
-            "Native video narration/subtitle verification is incomplete",
+            "Native video silent caption/subtitle verification is incomplete",
         )
         recorder_path = video["recorder_path"]
     else:

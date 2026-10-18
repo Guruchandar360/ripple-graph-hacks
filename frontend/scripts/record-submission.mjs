@@ -96,17 +96,13 @@ for(const [i,chapter] of script.chapters.entries()) {
   if(chapter.id==='benchmark'){await page.goto(base);await page.getByText('REPLAY',{exact:true}).waitFor();await results();await frame(page.locator('.comparison-panel'));}
   if(chapter.id==='limits') await proofHeading('One complete Gemini sequence passed.');
   await overlay(chapter,i,['opening','closing'].includes(chapter.id),['hosted','benchmark','limits','closing'].includes(chapter.id));
-  const wav=await readFile(path.join(root,`artifacts/film-audio/${chapter.id}.wav`));
-  // Standard PCM WAV byteRate and data chunk, emitted by Windows System.Speech.
-  const byteRate=wav.readUInt32LE(28);let cursor=12,dataBytes=0;
-  while(cursor+8<=wav.length){const size=wav.readUInt32LE(cursor+4);if(wav.toString('ascii',cursor,cursor+4)==='data'){dataBytes=size;break;}cursor+=8+size+(size%2);}
-  assert(dataBytes>0&&byteRate>0);
-  const speechSeconds=dataBytes/byteRate;
+  const displaySeconds=chapter.display_seconds;
+  assert(displaySeconds>=chapter.text.split(/\s+/).length/3,'Captions need sufficient reading time');
   const start=(performance.now()-started)/1000;
-  timing.push({id:chapter.id,start,speech_seconds:speechSeconds,text:chapter.text});
+  timing.push({id:chapter.id,start,display_seconds:displaySeconds,text:chapter.text});
   await page.screenshot({path:path.join(output,`${String(i).padStart(2,'0')}-${chapter.id}.png`)});
-  await page.waitForTimeout((speechSeconds+1.5)*1000);
-  console.log(`Captured ${chapter.id}: ${speechSeconds.toFixed(1)}s narration`);
+  await page.waitForTimeout(displaySeconds*1000);
+  console.log(`Captured ${chapter.id}: ${displaySeconds.toFixed(1)}s explanatory captions`);
 }
 const video=page.video();await context.close();await video.saveAs(path.join(output,'latest-ui.webm'));await browser.close();
 assert.deepEqual(errors,[]);

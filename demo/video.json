@@ -8,9 +8,7 @@
     1080
   ],
   "captioned": true,
-  "audio": true,
-  "narration": "Locally synthesized narration; no participant voice imitation.",
-  "voice": "Microsoft Zira Desktop",
+  "audio": false,
   "records": [
     {
       "phase": "recovery",
@@ -31,7 +29,7 @@
       "path": "demo/live/sequence/replays/4a5e8e28ae704314b702a51f8c3df7ba.json"
     }
   ],
-  "duration_seconds": 172.049,
+  "duration_seconds": 170.876,
   "ui_base_commit": "36fc05cc92ba8df52ce77b94dea035074c276d4b",
   "configuration": {
     "demo_max_model_turns": 8,
@@ -40,10 +38,10 @@
   },
   "memory_origin": "Actual prior model-selected, probe-verified recovery from the same Cloud workspace, retrieved AND explicitly cited in a fresh Gemini conversation. Citation alone does not establish causal dependence.",
   "full_decode_verified": true,
-  "sha256": "15eb6630da224267b72f71b1c912bc72afb4ae6213149b9da893b7d71137ffa5",
+  "sha256": "d4795d66679748df2afe6d709411aee01b54bae1eab7f91984ba6091644efeef",
   "recorder_path": "frontend/scripts/record-submission.mjs",
-  "recorder_sha256": "b8adfff9e4ac7233626c14824d0f99382e6a4391dad7a42d0a9c6a2ad709ff88",
-  "silent_source_trim_start_seconds": 0.8683443999999997,
+  "recorder_sha256": "1475e46f2784876883877595a99c9bb6b5c72fcadcbc669d7770e70198c8eaba",
+  "silent_source_trim_start_seconds": 0.9530554,
   "chapters": [
     {
       "id": "opening",
@@ -52,61 +50,64 @@
     },
     {
       "id": "graph",
-      "start_seconds": 14.022,
+      "start_seconds": 13.581,
       "title": "The graph is the decision system."
     },
     {
       "id": "old-fix",
-      "start_seconds": 28.591,
+      "start_seconds": 28.192,
       "title": "A plausible rollback. An expiring assumption."
     },
     {
       "id": "changed",
-      "start_seconds": 40.575,
+      "start_seconds": 40.209,
       "title": "New evidence invalidates old approval."
     },
     {
       "id": "constraints",
-      "start_seconds": 53.54,
+      "start_seconds": 53.433,
       "title": "Block the rollback. Permit a scoped change."
     },
     {
       "id": "recovery",
-      "start_seconds": 64.726,
+      "start_seconds": 64.749,
       "title": "Three failing services. Three passing probes."
     },
     {
       "id": "memory",
-      "start_seconds": 80.482,
+      "start_seconds": 80.935,
       "title": "A new conversation. A measured memory."
     },
     {
       "id": "insufficient",
-      "start_seconds": 94.512,
+      "start_seconds": 95.099,
       "title": "Missing evidence means no execution."
     },
     {
       "id": "hosted",
-      "start_seconds": 108.433,
+      "start_seconds": 108.792,
       "title": "Gemini + FalkorDB Cloud + Render."
     },
     {
       "id": "benchmark",
-      "start_seconds": 125.738,
+      "start_seconds": 125.146,
       "title": "Publish the results. Keep the limits."
     },
     {
       "id": "limits",
-      "start_seconds": 142.174,
+      "start_seconds": 141.356,
       "title": "Strong evidence. Honest boundaries."
     },
     {
       "id": "closing",
-      "start_seconds": 158.908,
+      "start_seconds": 157.735,
       "title": "Follow the evidence. Prove the recovery."
     }
   ],
   "subtitle_path": "demo/ripple-demo.srt",
   "prior_video": "demo/development/cpu-video-v1/video.json",
-  "recording_scope": "Actual current application interactions; editorial captions/title cards added by recorder. Model output is replayed, never presented as a new live execution. Narration and caption track are editorial, not model output. No new model calls for filming."
+  "recording_scope": "Actual application interactions with full explanatory captions/title cards. No audio track. Model output is explicitly replayed; no new model calls for filming.",
+  "burned_in_captions": true,
+  "caption_mode": "Silent; full explanatory text visible in each scene, with embedded English subtitles.",
+  "previous_video_commit": "f44e5cfd192bbef8642955efb4f34f23f3d2d421"
 }

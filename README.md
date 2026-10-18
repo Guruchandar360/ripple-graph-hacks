@@ -10,7 +10,7 @@ against an executable Python simulator. Nothing touches production infrastructur
 [Public source](https://github.com/Guruchandar360/ripple-graph-hacks) ·
 [Recorded showcase](https://guruchandar360.github.io/ripple-graph-hacks/) ·
 [Hosted workspace](https://ripple-graph-hacks.onrender.com) ·
-[Narrated 1080p demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
+[Silent captioned 1080p demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
 [CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
 [Actual measurements](docs/MEASUREMENTS.md) ·
 [Proof for judges](https://guruchandar360.github.io/ripple-graph-hacks/proof/) ·
@@ -42,9 +42,9 @@ requests on October 18); further live calls may be blocked until reset. The
 showcase now opens an actual Gemini replay and remains usable without model quota.
 
 The latest demo records this interface with actual native Gemini/Cloud replays,
-clear captions, English subtitles, chapters and locally synthesized narration.
+full explanatory captions, English subtitles and chapters; no audio track.
 It includes the separate hosted receipt and CPU comparison, with their limits.
-[Video provenance](demo/video.json) · [Narration and recording guide](docs/DEMO.md).
+[Video provenance](demo/video.json) · [Caption and recording guide](docs/DEMO.md).
 
 **Live investigation requires real FalkorDB and a configured model provider.**
 Gemini is the default; Ollama is an explicit free local alternative. Without these,
