@@ -13,6 +13,7 @@ class Settings:
     ollama_model: str = os.getenv("OLLAMA_MODEL", "qwen3:1.7b")
     ollama_tool_mode: str = os.getenv("OLLAMA_TOOL_MODE", "native")
     graph_host: str = os.getenv("FALKORDB_HOST", "localhost")
+    control_graph: str = os.getenv("FALKORDB_CONTROL_GRAPH", "ripple_control")
     graph_port: int = int(os.getenv("FALKORDB_PORT", "6379"))
     graph_username: str = os.getenv("FALKORDB_USERNAME", "")
     graph_password: str = field(default=os.getenv("FALKORDB_PASSWORD", ""), repr=False)

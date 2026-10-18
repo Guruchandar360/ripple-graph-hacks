@@ -128,6 +128,8 @@ def projection(state: dict) -> tuple[list[dict], list[dict]]:
 
 class GraphRepository:
     def __init__(self, settings: Settings):
+        if not re.fullmatch(r"ripple_[a-z0-9_]{1,48}", settings.control_graph):
+            raise ValueError("Invalid server control graph name.")
         self.settings = settings
         self.client = None
 
@@ -161,12 +163,12 @@ class GraphRepository:
         return f"ripple_{workspace}"
 
     def health(self) -> bool:
-        return bool(self._query("ripple_control", "RETURN 1"))
+        return bool(self._query(self.settings.control_graph, "RETURN 1"))
 
     def register(self, workspace: str):
         self.graph_name(workspace)
         rows = self._query(
-            "ripple_control",
+            self.settings.control_graph,
             """
         MERGE (c:Capacity {id:'visitors'}) ON CREATE SET c.count=0
         WITH c OPTIONAL MATCH (existing:Visitor {id:$workspace})
@@ -322,7 +324,7 @@ class GraphRepository:
     def reserve_run(self, workspace: str):
         day = datetime.now(UTC).date().isoformat()
         rows = self._query(
-            "ripple_control",
+            self.settings.control_graph,
             """
         MERGE (g:Usage {id:$global}) ON CREATE SET g.count=0
         MERGE (w:Usage {id:$local}) ON CREATE SET w.count=0
@@ -342,7 +344,7 @@ class GraphRepository:
             )
 
     def interrupt_previous(self):
-        rows = self._query("ripple_control", "MATCH (v:Visitor) RETURN v.id")
+        rows = self._query(self.settings.control_graph, "MATCH (v:Visitor) RETURN v.id")
         for row in rows:
             state = self.read(row[0])
             changed = False

@@ -37,3 +37,10 @@ deadline. This limits bursts, not daily quota exhaustion. Provider failures stil
 preserve evidence and cannot execute an action. The explicit Ollama provider
 does not inherit Gemini pacing. `GEMINI_MIN_REQUEST_INTERVAL_SECONDS` is
 configurable; production uses one worker as required by the coordinator.
+
+`FALKORDB_CONTROL_GRAPH` selects a server-configured quota/capacity namespace.
+Cloud evaluation jobs use `ripple_evaluation_control`; the public service keeps
+`ripple_control`. This prevents local evaluation reservations and restart scans
+from consuming public demo quotas or interrupting public visitor runs. Workspace
+graphs remain independently randomized and isolated. The value is validated and
+cannot be selected by a visitor or model.

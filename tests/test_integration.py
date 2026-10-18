@@ -52,9 +52,9 @@ def test_real_graph_round_trip_traversal_and_recovery():
         if repository.client:
             try:
                 repository.client.select_graph(repository.graph_name(workspace)).delete()
-                repository._query("ripple_control", "MATCH (v:Visitor {id:$id}) DELETE v", {"id": workspace})
+                repository._query(repository.settings.control_graph, "MATCH (v:Visitor {id:$id}) DELETE v", {"id": workspace})
                 repository._query(
-                    "ripple_control", "MATCH (c:Capacity {id:'visitors'}) SET c.count=c.count-1"
+                    repository.settings.control_graph, "MATCH (c:Capacity {id:'visitors'}) SET c.count=c.count-1"
                 )
             except Exception as exc:  # noqa: BLE001 -- preserve the original integration failure
                 warnings.warn(f"Integration cleanup failed: {type(exc).__name__}", stacklevel=1)
@@ -90,5 +90,5 @@ def test_real_graph_policy_revision_changes_allowed_action():
         assert next(s for s in repository.sources(workspace) if s["id"] == "compatibility")["active"] is False
     finally:
         repository.client.select_graph(repository.graph_name(workspace)).delete()
-        repository._query("ripple_control", "MATCH (v:Visitor {id:$id}) DELETE v", {"id": workspace})
-        repository._query("ripple_control", "MATCH (c:Capacity {id:'visitors'}) SET c.count=c.count-1")
+        repository._query(repository.settings.control_graph, "MATCH (v:Visitor {id:$id}) DELETE v", {"id": workspace})
+        repository._query(repository.settings.control_graph, "MATCH (c:Capacity {id:'visitors'}) SET c.count=c.count-1")
