@@ -17,7 +17,9 @@ def export(destination: Path):
     destination.mkdir(parents=True, exist_ok=True)
 
     def write(name, data):
-        (destination / f"{name}.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
+        (destination / f"{name}.json").write_text(
+            json.dumps(data, separators=(",", ":"), ensure_ascii=False), encoding="utf-8"
+        )
 
     records = ROOT / "artifacts"
     if not (records / "evaluations.json").exists():

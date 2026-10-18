@@ -20,8 +20,12 @@ test("proof guide keeps measurements and raw evidence accessible at desktop and 
 });
 test("showcase loads under its public subpath and cannot send live mutations", async ({ page }) => {
   const mutations: string[] = [];
+  const archiveReads: string[] = [];
   const errors: string[] = [];
-  page.on("request", r => { if (r.method() !== "GET") mutations.push(r.url()); });
+  page.on("request", r => {
+    if (r.method() !== "GET") mutations.push(r.url());
+    if (r.url().endsWith("/showcase/replays.json")) archiveReads.push(r.url());
+  });
   page.on("pageerror", e => errors.push(e.message));
   const recordingResponse=page.waitForResponse(r => r.url().endsWith("/showcase/replays.json"));
   await page.goto("./");
@@ -86,5 +90,6 @@ test("showcase loads under its public subpath and cannot send live mutations", a
     }
   }
   expect(mutations).toEqual([]);
+  expect(archiveReads).toHaveLength(1);
   expect(errors).toEqual([]);
 });

@@ -9,7 +9,7 @@ page.on("pageerror", error => errors.push(error.message));
 const response = await page.goto("https://guruchandar360.github.io/ripple-graph-hacks/");
 assert.equal(response.status(), 200);
 await page.getByText("Recorded showcase", {exact:true}).waitFor();
-await page.getByText("REPLAY", {exact:true}).waitFor();
+await page.getByText("REPLAY", {exact:true}).waitFor({timeout:60000});
 for (const [width,height] of [[1280,720],[1366,768],[1536,864],[1920,1080],[390,844]]) {
   await page.setViewportSize({width,height});
   await page.waitForFunction(() => document.documentElement.scrollWidth <= innerWidth);
