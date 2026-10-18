@@ -4,7 +4,8 @@ from types import SimpleNamespace
 
 from google.genai import types
 
-from ripple.agent import Agent, bounded_declarations, declarations
+from ripple.agent import Agent, bounded_declarations, declarations, pending_declarations
+from ripple.models import DomainError
 
 
 def test_native_function_loop_produces_a_cited_action_without_executing_it(service, settings):
@@ -15,24 +16,22 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
 
     async def generate(**kwargs):
         calls.append(kwargs)
-        step = len(calls)
-        if step == 1:
-            fc = types.FunctionCall(name="get_context", args={})
-        elif step == 2:
-            fc = types.FunctionCall(name="probe_service", args={"service": "payments"})
-        else:
-            record = service.get_run(workspace, run["id"])
-            probe_id = next(sid for sid in record["seen_evidence"] if sid.startswith("probe-"))
-            fc = types.FunctionCall(
-                name="propose_action",
-                args={
-                    "action": "disable_feature_flag",
-                    "target": "payments",
-                    "summary": "The current flag rejects legacy currency.",
-                    "evidence_ids": ["flag-config", probe_id],
-                    "affected_services": ["storefront", "checkout", "payments"],
-                },
-            )
+        record = service.get_run(workspace, run["id"])
+        probe_id = next(
+            source["id"]
+            for source in service.repo.sources(workspace)
+            if source.get("service") == "payments" and source["id"] in record["seen_evidence"]
+        )
+        fc = types.FunctionCall(
+            name="propose_action",
+            args={
+                "action": "disable_feature_flag",
+                "target": "payments",
+                "summary": "The current flag rejects legacy currency.",
+                "evidence_ids": ["flag-config", probe_id],
+                "affected_services": ["storefront", "checkout", "payments"],
+            },
+        )
         return types.GenerateContentResponse(
             candidates=[
                 types.Candidate(content=types.Content(role="model", parts=[types.Part(function_call=fc)]))
@@ -44,8 +43,18 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
     asyncio.run(agent.run(workspace, run["id"]))
     final = service.get_run(workspace, run["id"])
     assert final["status"] == "awaiting_approval"
-    assert final["model_calls"] == 3
-    assert sum(e.get("origin") == "application_preflight" for e in final["events"]) == 2
+    assert final["model_calls"] == 1
+    receipts = final["completed_tools"]
+    assert {r["arguments"]["service"] for r in receipts if r["name"] == "probe_service"} == {
+        "storefront",
+        "checkout",
+        "payments",
+        "inventory",
+        "ledger",
+        "notifications",
+    }
+    assert all(r["origin"] == "application_preflight" for r in receipts)
+    assert any(r["name"] == "get_impact" and r["arguments"]["service"] == "payments" for r in receipts)
     assert "automatic preload is not a previous model decision" in calls[0]["contents"][0].parts[-1].text
     assert service.repo.read(workspace)["simulator"]["executions"] == 0
     assert calls[-1]["config"].automatic_function_calling.disable
@@ -67,7 +76,9 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
     asyncio.run(agent.run(workspace, run["id"]))
     baseline = service.get_run(workspace, run["id"])
     assert not baseline["memory_ids"]
-    assert "incident_memory" not in calls[0]["contents"][0].parts[-1].text
+    packet = calls[0]["contents"][0].parts[-1].text
+    assert "incident_memory" not in packet and "dependency_impacts" not in packet
+    assert len([r for r in baseline["completed_tools"] if r["name"] == "probe_service"]) == 6
 
 
 def test_no_terminal_tool_result_hits_turn_limit_and_keeps_evidence(service, settings):
@@ -154,8 +165,8 @@ def test_rejected_model_proposal_preserves_evidence_and_can_finish_honestly(serv
                 args={
                     "action": "disable_feature_flag",
                     "target": "payments",
-                    "summary": "The flag configuration suggests a mitigation, but no target probe was run.",
-                    "evidence_ids": ["flag-config"],
+                    "summary": "This scripted provider deliberately submits an invented citation to test the independent guard.",
+                    "evidence_ids": ["invented-source"],
                     "affected_services": ["payments"],
                 },
             )
@@ -163,10 +174,10 @@ def test_rejected_model_proposal_preserves_evidence_and_can_finish_honestly(serv
             call = types.FunctionCall(
                 name="submit_diagnosis",
                 args={
-                    "summary": "The current evidence needs a target probe before an action can be justified.",
+                    "summary": "The invented citation was rejected; preserve observations and request diagnostic traces.",
                     "affected_services": ["checkout"],
                     "evidence_ids": ["flag-config"],
-                    "missing_evidence": ["Current payments request probe"],
+                    "missing_evidence": ["Correlated diagnostic traces"],
                 },
             )
         return types.GenerateContentResponse(
@@ -185,3 +196,39 @@ def test_rejected_model_proposal_preserves_evidence_and_can_finish_honestly(serv
     assert not final["proposals"]
     assert service.repo.read(workspace)["simulator"]["executions"] == 0
 
+
+def test_conclusion_schemas_allow_only_retrieved_citations_in_both_modes():
+    seen = ["alert", "flag-config", "memory-actual-outcome", "probe-current-target"]
+    receipts = [{"name": "probe_service", "arguments": {"service": "payments"}}]
+    for mode in ("graph", "baseline"):
+        functions = pending_declarations(declarations(mode), receipts, seen)
+        for function in functions:
+            if function.name in {"propose_action", "submit_diagnosis"}:
+                assert set(function.parameters.properties["evidence_ids"].items.enum) == set(seen)
+                assert "invented-source" not in function.parameters.properties["evidence_ids"].items.enum
+
+
+def test_partial_preflight_graph_failure_preserves_probes_without_calling_model(
+    service, settings, monkeypatch
+):
+    workspace = "f" * 32
+    service.load(workspace, "memory")
+    run = service.start(workspace)
+    called = []
+
+    def unavailable(*args):
+        raise DomainError("Native traversal unavailable", 503, "graph_unavailable")
+
+    async def forbidden(**kwargs):
+        called.append(kwargs)
+        raise AssertionError("Model must not run after graph preflight fails")
+
+    monkeypatch.setattr(service.repo, "impact", unavailable)
+    agent = Agent(service, settings)
+    agent.client = SimpleNamespace(aio=SimpleNamespace(models=SimpleNamespace(generate_content=forbidden)))
+    asyncio.run(agent.run(workspace, run["id"]))
+    result = service.get_run(workspace, run["id"])
+    assert not called and result["status"] == "interrupted"
+    assert result["model_calls"] == 0 and not result["proposals"]
+    assert len([sid for sid in result["seen_evidence"] if sid.startswith("probe-")]) == 6
+    assert service.repo.read(workspace)["simulator"]["executions"] == 0

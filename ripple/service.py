@@ -219,6 +219,7 @@ class RippleService:
                     f"Followed incoming dependency paths for {target}.",
                     ["topology"],
                     paths=result["paths"],
+                    origin=origin,
                 )
             elif name == "get_context":
                 if run["mode"] == "baseline":
@@ -277,7 +278,13 @@ class RippleService:
                 state["sources"].append(record)
                 result = {"probe": observation, "evidence_ids": [sid]}
                 self.event(
-                    run, "observation", f"{target.title()} probe completed", observation["detail"], [sid]
+                    run,
+                    "observation",
+                    f"{target.title()} probe completed",
+                    ("Application preflight: " if origin == "application_preflight" else "")
+                    + observation["detail"],
+                    [sid],
+                    origin=origin,
                 )
             elif name == "submit_diagnosis":
                 diagnosis = Diagnosis.model_validate(args)
@@ -328,7 +335,9 @@ class RippleService:
                 raise DomainError("Tool is not allowlisted.", 400, "invalid_tool")
             run["seen_evidence"] = sorted(set(run["seen_evidence"]) | set(result.get("evidence_ids", [])))
             if name in {"get_context", "retrieve_memory", "inspect_source", "get_impact", "probe_service"}:
-                run.setdefault("completed_tools", []).append({"name": name, "arguments": args, "origin": origin})
+                run.setdefault("completed_tools", []).append(
+                    {"name": name, "arguments": args, "origin": origin}
+                )
             self.repo.save(workspace, state)
             self.archive_graph(workspace, state, run)
             return result

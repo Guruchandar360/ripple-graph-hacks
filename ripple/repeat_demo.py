@@ -105,9 +105,10 @@ async def demonstrate():
             and recovery["status"] == "recovered"
             and memory["status"] == "recovered"
             and memory_used
+            and bool(learned & cited)
             and insufficient["status"] == "needs_evidence"
             and no_execution
-            and stale_rejected is not False,
+            and stale_rejected is True,
         }
         rows.append(row)
         report = {
@@ -117,6 +118,9 @@ async def demonstrate():
             "tool_protocol": settings.ollama_tool_mode,
             "timeout_seconds": settings.timeout,
             "max_model_turns": settings.max_turns,
+            "acceptance_version": "evidence-first-v2",
+            "acceptance_criteria": "All three scenarios pass; actual prior model outcome is retrieved AND cited; an actual stale approval is rejected.",
+            "evidence_collection": "All mapped-service probes in application preflight; native paths for unhealthy services in graph mode.",
             "sequential": True,
             "expected_repetitions": 3,
             "complete": len(rows) == 3,

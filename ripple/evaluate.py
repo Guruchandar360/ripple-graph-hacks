@@ -256,6 +256,7 @@ def report(settings, rows):
             "max_model_turns": settings.max_turns,
             "timeout_seconds": settings.timeout,
             "temperature": 0.1,
+            "evidence_collection": "all_service_probes_preflight",
         },
         "cases": rows,
         "summary": {
@@ -264,7 +265,9 @@ def report(settings, rows):
             "verified_recoveries": sum(r["verified"] for r in rows),
         },
         "limitations": "Synthetic fixtures; small sample; bootstrap memory is a measured simulator outcome, "
-        "not model-generated history. Baseline has documents but no incident-memory retrieval. "
+        "not model-generated history. Both workflows receive all mapped-service request probes in preflight. "
+        "Graph mode additionally receives native paths for unhealthy services and incident memory. "
+        "Baseline has full documents but no incident-memory retrieval. "
         "Development fixtures are not a held-out test set. CPU evaluation uses a 300-second "
         "window when configured by CI, versus the application's default 120 seconds.",
     }
