@@ -29,3 +29,11 @@ only required memory retrieval remain unchanged and use the older acceptance
 criteria. Budgets are unchanged: five turns / 300 seconds for the explicit CPU
 demo, eight turns / 300 seconds for the CPU benchmark; production defaults remain
 eight turns / 120 seconds.
+
+The configured Gemini account was checked in AI Studio: 5 requests per minute,
+20 per day. A process-wide agent instance spaces Gemini requests by at least
+13 seconds, including retries; that waiting time counts toward the same run
+deadline. This limits bursts, not daily quota exhaustion. Provider failures still
+preserve evidence and cannot execute an action. The explicit Ollama provider
+does not inherit Gemini pacing. `GEMINI_MIN_REQUEST_INTERVAL_SECONDS` is
+configurable; production uses one worker as required by the coordinator.

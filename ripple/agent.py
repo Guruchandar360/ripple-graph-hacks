@@ -167,6 +167,7 @@ class Agent:
     def __init__(self, service: RippleService, settings: Settings):
         self.service, self.settings = service, settings
         self.semaphore = asyncio.Semaphore(1)
+        self.next_request_at = 0.0
         self.client = (
             OllamaAdapter(settings.ollama_host, tool_mode=settings.ollama_tool_mode)
             if settings.provider == "ollama"
@@ -295,6 +296,13 @@ class Agent:
                     for retry in range(3):
                         try:
                             async with self.semaphore:
+                                if self.settings.provider == "gemini":
+                                    delay = self.next_request_at - time.monotonic()
+                                    if delay > 0:
+                                        await asyncio.sleep(delay)
+                                    self.next_request_at = time.monotonic() + max(
+                                        0, self.settings.gemini_request_interval
+                                    )
                                 calls += 1
                                 response = await self.client.aio.models.generate_content(
                                     model=self.settings.active_model,

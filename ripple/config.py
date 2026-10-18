@@ -19,6 +19,7 @@ class Settings:
     graph_ssl: bool = os.getenv("FALKORDB_SSL", "false").lower() == "true"
     api_key: str = field(default=os.getenv("GEMINI_API_KEY", ""), repr=False)
     model: str = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+    gemini_request_interval: float = float(os.getenv("GEMINI_MIN_REQUEST_INTERVAL_SECONDS", "13"))
     cookie_secure: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
     workspace_daily_runs: int = int(os.getenv("WORKSPACE_DAILY_RUNS", "3"))
     global_daily_runs: int = int(os.getenv("GLOBAL_DAILY_RUNS", "10"))

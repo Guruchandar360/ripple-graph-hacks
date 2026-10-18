@@ -113,7 +113,7 @@ def repo():
 
 @pytest.fixture
 def settings():
-    return Settings(api_key="test-key-not-a-real-key")
+    return Settings(api_key="test-key-not-a-real-key", gemini_request_interval=0)
 
 
 @pytest.fixture
