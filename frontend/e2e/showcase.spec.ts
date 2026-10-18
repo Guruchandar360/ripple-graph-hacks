@@ -28,9 +28,10 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   });
   page.on("pageerror", e => errors.push(e.message));
   const recordingResponse=page.waitForResponse(r => r.url().endsWith("/showcase/replays.json"));
+  const featuredResponse=page.waitForResponse(r => r.url().endsWith("/showcase/featured.json"));
   await page.goto("./");
-  const records=await (await recordingResponse).json();
-  if (records.some((r:{mode:string;status:string}) => r.mode==="graph" && r.status==="recovered")) {
+  const featured=await (await featuredResponse).json();
+  if (featured?.mode === "graph" && featured.status === "recovered") {
     await expect(page.getByText("REPLAY", {exact:true})).toBeVisible();
   }
   await expect(page.getByText("Recorded showcase", {exact:true})).toBeVisible();
@@ -51,7 +52,9 @@ test("showcase loads under its public subpath and cannot send live mutations", a
   } else {
     await expect(page.getByRole("button", {name:"Investigate again",exact:true})).toBeDisabled();
   }
+  expect(archiveReads).toHaveLength(0);
   await page.getByRole("button", {name:"Evaluation results"}).click();
+  const records=await (await recordingResponse).json();
   await expect(page.getByRole("heading", {name:"Show the evidence."})).toBeVisible();
   const replay = page.locator('[data-replay-id]').first();
   if (await replay.count()) {

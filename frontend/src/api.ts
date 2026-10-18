@@ -21,7 +21,7 @@ export async function api<T>(path: string, options?: RequestInit): Promise<T> {
     if (existing) return existing as Promise<T>;
     // These are immutable, public recordings for this loaded release. Both
     // startup effects can request the archive; share its parsed response.
-    const request = requestJson<T>(url, options, 45000).catch(error => {
+    const request = requestJson<T>(url, options, path === "/replays" ? 120000 : 45000).catch(error => {
       showcaseReads.delete(url);
       throw error;
     });

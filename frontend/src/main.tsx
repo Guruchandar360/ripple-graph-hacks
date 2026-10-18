@@ -200,6 +200,7 @@ function App() {
   const [memory, setMemory] = useState<Memory[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluations | null>(null);
   const [replays, setReplays] = useState<Replay[]>([]);
+  const [recordingsLoading, setRecordingsLoading] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [showCommands, setShowCommands] = useState(false);
   const closeCommands = useCallback(() => setShowCommands(false), []);
@@ -367,11 +368,10 @@ function App() {
           setPreview(true);
         }
         if (isShowcase) {
-          const records = await api<Replay[]>("/replays");
+          const featured = await api<Replay | null>("/featured");
           if (cancelled || request !== generation.current) return;
-          const featured = records.find(r => r.mode === "graph" && r.status === "recovered" && r.evaluation_case === "C02")
-            ?? records.find(r => r.mode === "graph" && r.status === "recovered");
           if (featured) {
+            setReplays(current => current.length ? current : [featured]);
             setRun({...featured,replay:true});
             setGraph(featured.graph);
             setScenario(featured.scenario);
@@ -403,11 +403,15 @@ function App() {
           if (!cancelled) setEvaluations(v);
         })
         .catch((e) => setError(e.message));
-    api<Replay[]>("/replays")
-      .then((v) => {
-        if (!cancelled) setReplays(v);
-      })
-      .catch(() => {});
+    if (view === "results") {
+      setRecordingsLoading(true);
+      api<Replay[]>("/replays")
+        .then((v) => {
+          if (!cancelled) setReplays(v);
+        })
+        .catch((e) => { if (!cancelled) setError(e.message); })
+        .finally(() => { if (!cancelled) setRecordingsLoading(false); });
+    }
     return () => {
       cancelled = true;
     };
@@ -1684,6 +1688,7 @@ function App() {
                   </div>
                   <span className="count-tag">{replays.length}</span>
                 </div>
+                {recordingsLoading && <p role="status" className="empty-recordings">Loading recorded investigations…</p>}
                 {replays.length ? (
                   replays.map((r) => (
                     <button
@@ -1717,12 +1722,12 @@ function App() {
                       <ArrowRight size={14} />
                     </button>
                   ))
-                ) : (
+                ) : !recordingsLoading ? (
                   <p className="empty-recordings">
                     No live runs have been exported yet. Fixture previews are
                     never presented as recordings.
                   </p>
-                )}
+                ) : null}
               </section>
             </>
           )}

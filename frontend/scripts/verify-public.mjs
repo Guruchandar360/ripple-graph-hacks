@@ -36,7 +36,9 @@ for (const [index,mode] of ["graph","baseline"].entries()) {
 }
 await page.locator(".comparison-panel").scrollIntoViewIfNeeded();
 await page.screenshot({path:fileURLToPath(new URL("../../artifacts/published-evidence-first-results.png", import.meta.url))});
-const video = await page.request.get("https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4");
+// Check delivery headers without downloading the whole recording again.
+// Full decode and the byte-exact media fingerprint are audited separately.
+const video = await page.request.head("https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4");
 assert.equal(video.status(), 200);
 assert(video.headers()["content-type"].includes("video/mp4"));
 assert.deepEqual(errors, []);

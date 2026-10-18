@@ -73,10 +73,25 @@ def export(destination: Path):
                 if not re.fullmatch(r"demo/live/sequence/replays/[a-f0-9]{32}\.json", name):
                     raise ValueError("Unexpected native sequence recording path")
                 shutil.copyfile(ROOT / name, proof_records / Path(name).name)
-                native_records.append({**json.loads((ROOT / name).read_text(encoding="utf-8")), "replay": True})
-            native_records.sort(key=lambda r: {"recovery": 0, "memory": 1, "insufficient": 2}[r["demonstration_phase"]])
+                native_records.append(
+                    {**json.loads((ROOT / name).read_text(encoding="utf-8")), "replay": True}
+                )
+            native_records.sort(
+                key=lambda r: {"recovery": 0, "memory": 1, "insufficient": 2}[r["demonstration_phase"]]
+            )
             replays = native_records + replays
     write("replays", replays)
+    featured = next(
+        (
+            r
+            for r in replays
+            if r.get("mode") == "graph"
+            and r.get("status") == "recovered"
+            and r.get("evaluation_case") == "C02"
+        ),
+        next((r for r in replays if r.get("mode") == "graph" and r.get("status") == "recovered"), None),
+    )
+    write("featured", featured)
     memories = {
         n["id"]: n["data"]
         for r in replays
