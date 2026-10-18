@@ -1,6 +1,6 @@
 {
   "kind": "actual_agent_replay",
-  "selection": "One complete successful actual model demonstration (repetition 1). It is a replay of four investigations in one workspace; it is not a claim that all three repetitions passed.",
+  "selection": "Actual repetition 1 of three consecutive passing evidence-first-v2 demonstration sequences. Its recovery record includes the earlier investigation and evidence-change event. All model output is a labeled replay.",
   "synthetic": true,
   "resolution": [
     1440,
@@ -10,30 +10,33 @@
   "audio": false,
   "records": [
     {
-      "phase": "memory",
-      "run_id": "4d446ae3610942fc9b61d5f85a879a4e",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
-      "source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc"
-    },
-    {
       "phase": "insufficient",
-      "run_id": "58b19c36c92e42daa0e563f707f44a44",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
-      "source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc"
+      "run_id": "4412620932e54c48aeadbaf399e705c6",
+      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
+      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
     },
     {
       "phase": "recovery",
-      "run_id": "fc5d2e1ad2a343d6904afa7e2443dd56",
-      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
-      "source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc"
+      "run_id": "48089bad9b284c8b963bd6a6ec837d10",
+      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
+      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
+    },
+    {
+      "phase": "memory",
+      "run_id": "d586d4e52a514b67b554d1a53c548133",
+      "workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
+      "source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc"
     }
   ],
-  "duration_seconds": 81.68,
-  "ui_base_commit": "3c0edac6a00fb608b91e1d4fb4e3fe7d91f6a238",
+  "duration_seconds": 79.48,
+  "ui_base_commit": "83fd1f1",
   "configuration": {
     "demo_max_model_turns": 5,
     "benchmark_max_model_turns": 8,
     "timeout_seconds": 300
   },
-  "memory_origin": "Actual prior model-selected and probe-verified recovery from the same workspace, loaded into a fresh conversation by application preflight. The later model did not explicitly cite this memory; retrieval is not proof of causal use."
+  "memory_origin": "Actual prior model-selected and probe-verified recovery from the same workspace, retrieved by application preflight and explicitly cited by the later model in a fresh conversation. Citation does not establish causal dependence.",
+  "full_decode_verified": true,
+  "sha256": "f9665c3b008008ec4ffc27df7580c5f4ecc1b4ded27d094306325274fb5b1aca",
+  "recorder_sha256": "d1654c62649a47ba55ff13be085bc0783a3301bfe98fc106c9e75a3c31c9aded"
 }

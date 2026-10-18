@@ -23,12 +23,16 @@ These are synthetic development fixtures, not held-out data. Graph mode has addi
 
 ## Three sequential demonstrations
 
-[Raw workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952) · [Raw report](../demo/repeatability.json). All acceptance checks passed in **1/3** sequences.
+[Raw workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227) · [Raw report](../demo/repeatability.json). All acceptance checks passed in **3/3** sequences.
+
+Configuration: `qwen3:4b-instruct-2507-q4_K_M` via `ollama`, 5 turns / 300 seconds per conversation. Acceptance version: `evidence-first-v2`.
+
+All three scenarios pass; actual prior model outcome is retrieved AND cited; an actual stale approval is rejected.
 
 | Repetition | Recovery | Fresh-session recovery | Prior model outcome retrieved | Prior model outcome cited | Insufficient evidence | Passed |
 |---|---|---|---|---|---|---|
-| 1 | recovered | recovered | True | False | needs_evidence | True |
-| 2 | recovered | interrupted | True | False | needs_evidence | False |
-| 3 | recovered | interrupted | True | False | needs_evidence | False |
+| 1 | recovered | recovered | True | True | needs_evidence | True |
+| 2 | recovered | recovered | True | True | needs_evidence | True |
+| 3 | recovered | recovered | True | True | needs_evidence | True |
 
 Graph-mode application preflight retrieves persisted outcomes before the model call; the timeline identifies this as application work. Retrieval proves availability, while citation is a separate observed measure. Neither establishes that memory caused the choice. Earlier failed sequences remain in `demo/development/first-three-sequences.json`.

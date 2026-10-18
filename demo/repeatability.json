@@ -1,10 +1,13 @@
 {
-  "created_at": "2026-10-17T13:19:53.239116+00:00",
+  "created_at": "2026-10-18T13:43:20.062039+00:00",
   "model": "qwen3:4b-instruct-2507-q4_K_M",
   "provider": "ollama",
   "tool_protocol": "json",
   "timeout_seconds": 300,
   "max_model_turns": 5,
+  "acceptance_version": "evidence-first-v2",
+  "acceptance_criteria": "All three scenarios pass; actual prior model outcome is retrieved AND cited; an actual stale approval is rejected.",
+  "evidence_collection": "All mapped-service probes in application preflight; native paths for unhealthy services in graph mode.",
   "sequential": true,
   "expected_repetitions": 3,
   "complete": true,
@@ -15,7 +18,7 @@
       "recovery": "recovered",
       "memory": "recovered",
       "actual_previous_model_outcome_retrieved": true,
-      "actual_previous_model_outcome_cited": false,
+      "actual_previous_model_outcome_cited": true,
       "memory_loading": "application_preflight",
       "insufficient_evidence": "needs_evidence",
       "no_unjustified_execution": true,
@@ -26,28 +29,28 @@
       "repetition": 2,
       "initial_investigation_completed": true,
       "recovery": "recovered",
-      "memory": "interrupted",
+      "memory": "recovered",
       "actual_previous_model_outcome_retrieved": true,
-      "actual_previous_model_outcome_cited": false,
+      "actual_previous_model_outcome_cited": true,
       "memory_loading": "application_preflight",
       "insufficient_evidence": "needs_evidence",
       "no_unjustified_execution": true,
       "stale_approval_rejected": true,
-      "passed": false
+      "passed": true
     },
     {
       "repetition": 3,
       "initial_investigation_completed": true,
       "recovery": "recovered",
-      "memory": "interrupted",
+      "memory": "recovered",
       "actual_previous_model_outcome_retrieved": true,
-      "actual_previous_model_outcome_cited": false,
+      "actual_previous_model_outcome_cited": true,
       "memory_loading": "application_preflight",
       "insufficient_evidence": "needs_evidence",
       "no_unjustified_execution": true,
       "stale_approval_rejected": true,
-      "passed": false
+      "passed": true
     }
   ],
-  "passed": false
+  "passed": true
 }

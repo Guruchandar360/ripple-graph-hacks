@@ -12,6 +12,7 @@ subprocess.run(
         "-hide_banner",
         "-loglevel",
         "error",
+        "-xerror",
         "-y",
         "-i",
         str(root / "demo/ripple-demo.webm"),

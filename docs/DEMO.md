@@ -44,3 +44,9 @@ not manufacture events, actions or probe outcomes. The original WebM is retained
 the optional `imageio-ffmpeg==0.6.0` dependency. Inspect decoded frames as well as
 duration and dimensions before publishing. The public URL and repository both
 identify recordings as replays of a synthetic simulator.
+
+The current recording is 79.48 seconds at 1440×1000, fully decoded after packaging.
+It selects actual evidence-first-v2 repetition 1 using `DEMO_RECOVERY_ID`,
+`DEMO_MEMORY_ID` and `DEMO_INSUFFICIENT_ID`; exact IDs are in `demo/video.json`.
+The recorder scrolls the full-width graph and comparison table into view so they
+remain visible in the naturally scrolling layout. No model output is fabricated.

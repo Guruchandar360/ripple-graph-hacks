@@ -1,8 +1,11 @@
 # Evidence-first agent revision
 
-This revision is being measured against the previous recorded development runs.
-Existing reports remain attributable to their original source commits; no new
-success rate is implied until actual reruns finish.
+This revision was measured against the previous recorded development runs.
+The complete CPU comparison reached 12/12 expected outcomes in graph mode versus
+11/12 in the document baseline; the stricter sequential demonstration gate passed
+3/3. Source `66eeedc`, raw reports and all limitations are recorded in
+`demo/release.json` and `docs/MEASUREMENTS.md`. These CPU measurements do not
+establish the pending integrated Gemini behavior or general superiority.
 
 The failed memory demonstrations included rejected citations followed by turn
 exhaustion. Proposal and diagnosis schemas now enumerate the exact evidence IDs

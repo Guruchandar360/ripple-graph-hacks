@@ -20,6 +20,13 @@ Implemented: React console, six-service graph fixture, three incident scenarios,
 bounded native function-calling loop, graph persistence, evidence revision checks,
 idempotent simulator execution, incident memory, evaluation runner, and automated tests.
 
+The latest complete CPU measurement reached **12/12 expected outcomes** in graph
+mode versus **11/12** for the full-document baseline. A separate, stricter
+demonstration gate passed **3/3 consecutive sequences**, including retrieval and
+citation of actual prior model outcomes. These use 300-second CPU windows,
+above the normal 120-second app limit. Graph mode was slower and missed complete
+impact in two cases. [Raw results and limitations](docs/MEASUREMENTS.md).
+
 **Live investigation requires real FalkorDB and a configured model provider.**
 Gemini is the default; Ollama is an explicit free local alternative. Without these,
 the application offers a read-only fixture preview and connection diagnostics.

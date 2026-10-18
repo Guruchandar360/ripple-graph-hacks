@@ -25,9 +25,20 @@ assert(await page.locator(".inspector").evaluate(el => document.activeElement ==
 await page.getByRole("button", {name:"Jump to recovery decision",exact:true}).click();
 await page.evaluate(() => scrollTo(0,0));
 await page.screenshot({path:fileURLToPath(new URL("../../artifacts/public-laptop-100-percent.png", import.meta.url))});
+await page.getByRole("button", {name:"Evaluation results",exact:true}).click();
+await page.locator(".comparison-panel").waitFor();
+const measurements = await (await page.request.get("https://guruchandar360.github.io/ripple-graph-hacks/showcase/evaluations.json")).json();
+for (const [index,mode] of ["graph","baseline"].entries()) {
+  const rows = measurements.cases.filter(row => row.mode === mode);
+  const cells = page.locator(".comparison-panel tbody tr").nth(index).locator("td");
+  assert.equal(await cells.nth(1).innerText(), `${rows.filter(row=>row.expected_met).length}/${rows.length}`);
+  assert.equal(await cells.nth(2).innerText(), `${rows.filter(row=>row.correct_impact).length}/${rows.length}`);
+}
+await page.locator(".comparison-panel").scrollIntoViewIfNeeded();
+await page.screenshot({path:fileURLToPath(new URL("../../artifacts/published-evidence-first-results.png", import.meta.url))});
 const video = await page.request.get("https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4");
 assert.equal(video.status(), 200);
 assert(video.headers()["content-type"].includes("video/mp4"));
 assert.deepEqual(errors, []);
 await browser.close();
-console.log("Published showcase: natural scrolling, readable graph and evidence navigation passed; MP4 served successfully; no browser errors.");
+console.log("Published showcase: natural scrolling, graph and evidence navigation passed; displayed results match the raw report; MP4 served successfully; no browser errors.");

@@ -40,6 +40,15 @@ workflow and every replay are linked from [MEASUREMENTS.md](MEASUREMENTS.md).
 This is a small development sample with known fixtures, not general superiority.
 The earlier 22/24 report remains archived.
 
+The separate sequential rerun at the same source passed **3/3 consecutive
+complete demonstration sequences** with five turns / 300 seconds per
+conversation. All three recovered, recovered again in a fresh conversation
+while retrieving **and citing** their actual prior model-selected outcome,
+rejected an actual stale approval and executed no insufficient-evidence action.
+The `evidence-first-v2` criteria are stricter than the earlier 1/3 measurement.
+See `demo/repeatability.json` and workflow **39129743227**; all records are retained.
+This demonstrates the CPU configuration, not the pending Gemini integration.
+
 Development smoke tests are preserved under `demo/development/`:
 
 - Qwen3 1.7B: both graph and baseline exhausted eight turns; 0/2 verified recoveries. The graph run's incompatible rollback proposal was blocked by the independent guard.
@@ -72,7 +81,7 @@ WeMakeDevs registration is not verified; the inspected browser session is signed
 
 The README's Docker Compose setup completed a model-backed recovery through real HTTP requests in 186.295 seconds with a five-turn CPU budget and a 300-second window. It verified all three affected request probes, returned the identical result for duplicate approval, preserved memory across both a scenario reload and a database container restart, and returned HTTP 404 to a different visitor. See [the actual workflow](https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033501898) and `demo/http-proof.json`. This used Ollama with the explicit JSON tool protocol, not Gemini. An earlier successful eight-turn proof and the later eight-turn timeout are both preserved under `demo/development/`.
 
-A captioned replay video is committed as `demo/ripple-demo.mp4`, with the original WebM retained. The decoded recording is 81.68 seconds at 1440×1000. It shows one complete passing sequence in one workspace: stale approval rejected, recovery verified, the actual outcome loaded into a fresh conversation, and insufficient evidence causing no execution. Source IDs and configuration are in `demo/video.json`.
+A captioned replay video is committed as `demo/ripple-demo.mp4`, with its original WebM retained. The fully decoded recording is **79.48 seconds at 1440×1000**. It shows repetition 1 of the three passing evidence-first-v2 sequences in the current spacious UI: stale approval rejected, recovery verified, the actual outcome retrieved and cited in a fresh conversation, and insufficient evidence causing no execution. Source IDs, configuration and the MP4 hash are in `demo/video.json`. The prior video's metadata remains in `demo/development/pre-evidence-first-video.json`; its binary is recoverable from Git history before this replacement.
 
 The previously retained combined configuration reached **22/24 expected terminal states** and **14 verified recoveries**, with zero executed policy violations. The graph workflow reached 10/12 expected states and the full-document baseline 12/12; this is not evidence of general graph superiority. Its three-sequence check passed **1/3**, so that measurement did not meet the three-consecutive-run gate. All three fresh conversations retrieved the actual earlier model outcome, but none explicitly cited it. Those reports measure `2c8aaaa`. The current evidence-first revision is being rerun separately, with stricter acceptance requiring both memory retrieval and citation. Failed and alternative measurements remain published.
 

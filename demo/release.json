@@ -6,12 +6,13 @@
     "timeout_seconds": 300,
     "evidence_collection": "all_service_probes_preflight"
   },
-  "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39033508952",
-  "repeatability_source_commit": "2c8aaaa744626f47b9a648c08d80607805e47fcc",
+  "repeatability_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39129743227",
+  "repeatability_source_commit": "66eeedc9689dc936b5cc1154610d477de2b771bc",
   "repeatability_configuration": {
     "max_model_turns": 5,
-    "timeout_seconds": 300
+    "timeout_seconds": 300,
+    "acceptance_version": "evidence-first-v2"
   },
   "targeted_replay_workflow": "https://github.com/Guruchandar360/ripple-graph-hacks/actions/runs/39025199638",
-  "note": "Complete evidence-first CPU comparison; previous selected measurements are archived without removing failures. Sequential demonstration and HTTP reports retain their separately identified source versions. Native Gemini provider access passed a direct tool probe, not an integrated agent test."
+  "note": "Complete evidence-first CPU comparison and three consecutive complete demonstrations. All prior measurements remain archived. The stricter sequence gate requires actual prior model recovery to be retrieved AND cited, and actual stale approval rejection. Native Gemini provider access passed a direct tool probe; integrated cloud verification is separate."
 }

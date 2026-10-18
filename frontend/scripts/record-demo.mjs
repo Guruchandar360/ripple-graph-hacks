@@ -22,9 +22,9 @@ async function caption(title, detail, seconds = 7) {
     card.id = "recording-caption";
     card.style.cssText = "position:fixed;bottom:24px;left:280px;right:360px;z-index:9999;background:rgba(9,20,28,.97);border:1px solid #3e8a72;border-radius:14px;padding:17px 22px;box-shadow:0 8px 50px #000b;pointer-events:none;font-family:system-ui;color:#e6f0f6;";
     const label = document.createElement("div"); label.textContent = "RECORDED DEMONSTRATION · SYNTHETIC DATA";
-    label.style.cssText = "font:9px monospace;letter-spacing:.13em;color:#65d8b0;margin-bottom:7px";
+    label.style.cssText = "font:12px monospace;letter-spacing:.08em;color:#65d8b0;margin-bottom:8px";
     const heading = document.createElement("strong"); heading.textContent = title; heading.style.cssText = "display:block;font-size:19px;margin-bottom:5px";
-    const text = document.createElement("div"); text.textContent = detail; text.style.cssText = "font-size:13px;color:#a9bdca;line-height:1.65";
+    const text = document.createElement("div"); text.textContent = detail; text.style.cssText = "font-size:15px;color:#b7c8d1;line-height:1.6";
     card.append(label, heading, text); document.body.append(card);
   }, { title, detail });
   await page.waitForTimeout(seconds * 1000);
@@ -32,6 +32,8 @@ async function caption(title, detail, seconds = 7) {
 async function results() {
   await page.getByRole("button", { name: "Evaluation results", exact: true }).click();
   await page.getByRole("heading", { name: "Show the evidence." }).waitFor();
+  await page.locator(".comparison-panel").waitFor();
+  await page.locator(".comparison-panel").evaluate(el => el.scrollIntoView({block:"center",behavior:"instant"}));
 }
 async function openCase(id, expected, phase) {
   await results();
@@ -50,6 +52,7 @@ await caption("Yesterday’s fix can break today’s system.", "Ripple follows c
 await results();
 await caption("Measured behavior, including limitations.", smoke ? "This is the development smoke test. Both modes recovered; their reported impact sets were incomplete. It is not the full 12-case benchmark." : "Both workflows use the same model, source documents, probe capabilities and eight-turn budget. This small synthetic evaluation does not establish general superiority.", 9);
 await openCase(smoke ? "C01" : "C02", "recovered", "recovery");
+await page.locator(".graph-panel").evaluate(el => el.scrollIntoView({block:"center",behavior:"instant"}));
 await caption("The graph changes what an action is allowed to do.", "A newer ledger advisory supersedes the old compatibility record. These service paths and action policies were retrieved from FalkorDB.", 8);
 const changed = page.locator(".timeline-event").filter({ hasText: "Evidence changed" }).first();
 if (!smoke) {
