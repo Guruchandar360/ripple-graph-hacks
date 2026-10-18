@@ -1,5 +1,23 @@
 import { test, expect } from "@playwright/test";
 test.skip(!process.env.STATIC_QA, "Requires the separately built read-only showcase");
+test("proof guide keeps measurements and raw evidence accessible at desktop and mobile sizes", async ({ page }) => {
+  await page.goto("./proof/");
+  await expect(page.getByRole("heading", {name:"Every claim has an evidence trail."})).toBeVisible();
+  for (const width of [390, 768, 1366]) {
+    await page.setViewportSize({width, height:900});
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  }
+  const report = await (await page.request.get("./showcase/evaluations.json")).json();
+  for (const [index, mode] of ["graph", "baseline"].entries()) {
+    const cases = report.cases.filter((row:{mode:string}) => row.mode === mode);
+    await expect(page.locator("tbody tr").nth(index).locator("td").first()).toHaveText(`${cases.filter((row:{expected_met:boolean}) => row.expected_met).length}/12`);
+  }
+  const urls = await page.locator('a[href^="../showcase/"]').evaluateAll(links => [...new Set(links.map(el => (el as HTMLAnchorElement).href))]);
+  for (const url of urls) {
+    // The video has its own byte-exact audit; avoid downloading it again here.
+    if (!url.endsWith(".mp4")) expect((await page.request.get(url)).status()).toBe(200);
+  }
+});
 test("showcase loads under its public subpath and cannot send live mutations", async ({ page }) => {
   const mutations: string[] = [];
   const errors: string[] = [];

@@ -1,0 +1,29 @@
+{
+  "complete": false,
+  "passed": false,
+  "budget_seconds": 120,
+  "reason": "Initial proposal took 128.375 seconds; trial stopped before three complete sequences to preserve free quota.",
+  "runs": [
+    {
+      "id": "4678ff7a6c14404aba8b96ccfd6e30a9",
+      "status": "evidence_changed",
+      "model_calls": 7,
+      "elapsed_ms": 128375,
+      "error": null
+    },
+    {
+      "id": "0e556d7f07a94cedac8fa7a72bcff4d1",
+      "status": "interrupted",
+      "model_calls": 7,
+      "elapsed_ms": 122281,
+      "error": "Investigation time limit reached. Evidence is saved; no action was executed."
+    },
+    {
+      "id": "d0d5ba73bc7644f0aa8b087427a5515d",
+      "status": "interrupted",
+      "model_calls": 0,
+      "elapsed_ms": 0,
+      "error": "Verification paused to preserve free model quota while diagnosing native tool-call latency."
+    }
+  ]
+}

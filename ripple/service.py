@@ -509,7 +509,7 @@ class RippleService:
             self.archive_graph(workspace, state, run)
             return result
 
-    def record_progress(self, workspace, run_id, *, calls=None, elapsed_ms=None, error=None):
+    def record_progress(self, workspace, run_id, *, calls=None, elapsed_ms=None, error=None, response_metadata=None):
         with self.lock(workspace):
             state = self.repo.read(workspace)
             run = self._run(state, run_id)
@@ -517,6 +517,8 @@ class RippleService:
                 run["model_calls"] = calls
             if elapsed_ms is not None:
                 run["elapsed_ms"] = elapsed_ms
+            if response_metadata is not None:
+                run.setdefault("provider_receipts", []).append(response_metadata)
             if error and run["status"] == "investigating":
                 run["status"], run["error"] = "interrupted", error
                 self.event(run, "warning", "Investigation paused", error)

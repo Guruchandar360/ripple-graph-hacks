@@ -12,7 +12,7 @@ against an executable Python simulator. Nothing touches production infrastructur
 [Captioned demo](https://guruchandar360.github.io/ripple-graph-hacks/showcase/ripple-demo.mp4) ·
 [CI verification](https://github.com/Guruchandar360/ripple-graph-hacks/actions) ·
 [Actual measurements](docs/MEASUREMENTS.md) ·
-[Proof for judges](docs/PROOF.md) ·
+[Proof for judges](https://guruchandar360.github.io/ripple-graph-hacks/proof/) ·
 [Submission packet](docs/SUBMISSION.md)
 
 ## Current state
@@ -265,6 +265,13 @@ case is saved immediately so later interruptions do not erase earlier results.
 frontend. Configure the required secrets in Render, plus a free FalkorDB instance
 if available. `COOKIE_SECURE=true` is required on the HTTPS deployment. The daily
 live-run and workspace limits bound the public demo; they are not billing controls.
+
+The selected Free database uses plaintext Redis, explicitly approved by the
+participant for this synthetic demo only. Its password and synthetic records
+travel without TLS between the app and FalkorDB. Browser and Gemini requests
+use HTTPS. The deployment template keeps TLS enabled by default; only the
+selected demo instance uses `FALKORDB_SSL=false`. Do not use this exception
+for real incidents or sensitive data.
 
 Render's free instance can sleep. A new visitor may see a cold start before the
 app loads. All live state is in FalkorDB, not Render's ephemeral filesystem.

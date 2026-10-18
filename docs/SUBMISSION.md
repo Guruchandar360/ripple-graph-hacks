@@ -14,7 +14,8 @@ public site is read-only; use the README to run the full backend locally.
 
 **Primary track:** Agents That Act on Connected Data
 
-**Evidence guide for judges:** [Proof, source versions and reproduction](PROOF.md).
+**Evidence guide for judges:** [Public proof page](https://guruchandar360.github.io/ripple-graph-hacks/proof/)
+and [repository guide](PROOF.md).
 The offline artifact audit and optional online workflow verification are separate
 from fresh model execution and live deployment readiness.
 

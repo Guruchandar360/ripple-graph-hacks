@@ -315,7 +315,14 @@ class Agent:
                                     config=types.GenerateContentConfig(
                                         system_instruction=SYSTEM,
                                         temperature=0.1,
-                                        max_output_tokens=1600,
+                                        # Gemini counts reasoning against its output allowance.
+                                        # Keep room for the structured call instead of repeatedly
+                                        # truncating it; do not change the measured Ollama profile.
+                                        max_output_tokens=4096 if self.settings.provider == "gemini" else 1600,
+                                        thinking_config=(
+                                            types.ThinkingConfig(thinking_level="low")
+                                            if self.settings.provider == "gemini" else None
+                                        ),
                                         tools=[types.Tool(function_declarations=functions)],
                                         tool_config=types.ToolConfig(
                                             function_calling_config=types.FunctionCallingConfig(mode="ANY")
@@ -330,7 +337,28 @@ class Agent:
                             if exc.code not in {429, 500, 502, 503, 504} or retry == 2:
                                 raise
                             await asyncio.sleep(2**retry)
-                    await asyncio.to_thread(self.service.record_progress, workspace, run_id, calls=calls)
+                    candidate = response.candidates[0] if response and response.candidates else None
+                    usage = response.usage_metadata if response else None
+                    finish = str(candidate.finish_reason.value) if candidate and candidate.finish_reason else None
+                    await asyncio.to_thread(
+                        self.service.record_progress, workspace, run_id, calls=calls,
+                        response_metadata={
+                            "call": calls,
+                            "finish_reason": finish,
+                            "output_tokens": usage.candidates_token_count if usage else None,
+                            "thinking_tokens": usage.thoughts_token_count if usage else None,
+                            "tool_names": [
+                                part.function_call.name
+                                for part in (candidate.content.parts or [])
+                                if part.function_call
+                            ] if candidate and candidate.content else [],
+                        },
+                    )
+                    if finish == "MAX_TOKENS":
+                        raise DomainError(
+                            "The model response reached its token limit. Evidence is saved; no truncated action was accepted.",
+                            503,
+                        )
                     if response is None or not response.candidates or not response.candidates[0].content:
                         raise DomainError(
                             "The model returned no usable content. Start a fresh investigation.", 503

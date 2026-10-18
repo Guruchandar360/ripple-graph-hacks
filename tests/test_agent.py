@@ -58,6 +58,9 @@ def test_native_function_loop_produces_a_cited_action_without_executing_it(servi
     assert "automatic preload is not a previous model decision" in calls[0]["contents"][0].parts[-1].text
     assert service.repo.read(workspace)["simulator"]["executions"] == 0
     assert calls[-1]["config"].automatic_function_calling.disable
+    assert calls[-1]["config"].max_output_tokens == 4096
+    assert calls[-1]["config"].thinking_config.thinking_level == "LOW"
+    assert final["provider_receipts"][0]["tool_names"] == ["propose_action"]
     # A fresh conversation receives persisted outcomes without replaying earlier chat.
     service.execute(workspace, run["id"], final["proposals"][-1]["id"])
     outcome_id = service.repo.read(workspace)["memory"][-1]["id"]
@@ -106,6 +109,27 @@ def test_no_terminal_tool_result_hits_turn_limit_and_keeps_evidence(service, set
     assert final["model_calls"] == 2
     assert "flag-config" in final["seen_evidence"]
     assert final["proposals"] == []
+
+
+def test_truncated_native_response_stops_without_accepting_an_action(service, settings):
+    workspace = "9" * 32
+    service.load(workspace, "memory")
+    run = service.start(workspace)
+
+    async def generate(**kwargs):
+        return types.GenerateContentResponse(candidates=[types.Candidate(
+            finish_reason="MAX_TOKENS",
+            content=types.Content(role="model", parts=[types.Part.from_text(text="Incomplete response")]),
+        )])
+
+    agent = Agent(service, settings)
+    agent.client = SimpleNamespace(aio=SimpleNamespace(models=SimpleNamespace(generate_content=generate)))
+    asyncio.run(agent.run(workspace, run["id"]))
+    final = service.get_run(workspace, run["id"])
+    assert final["status"] == "interrupted" and final["model_calls"] == 1
+    assert "token limit" in final["error"] and final["proposals"] == []
+    assert final["provider_receipts"][0]["finish_reason"] == "MAX_TOKENS"
+    assert service.repo.read(workspace)["simulator"]["executions"] == 0
 
 
 def test_baseline_provider_schema_does_not_expose_graph_or_memory():

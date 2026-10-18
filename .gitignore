@@ -9,6 +9,7 @@ playwright-report/
 .env
 artifacts/
 frontend/public/showcase/
+frontend/public/proof/
 demo/ripple-smoke-demo.webm
 *.egg-info/
 *.tsbuildinfo

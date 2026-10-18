@@ -1591,7 +1591,7 @@ function App() {
                   </p>
                 </div>
                 <div className="results-actions">
-                  <a className="secondary small" href="https://github.com/Guruchandar360/ripple-graph-hacks/blob/main/docs/PROOF.md" target="_blank" rel="noreferrer">Inspect proof<ArrowUpRight size={13}/></a>
+                  <a className="secondary small" href="https://guruchandar360.github.io/ripple-graph-hacks/proof/" target="_blank" rel="noreferrer">Inspect proof<ArrowUpRight size={13}/></a>
                   <a className="secondary small" href={isShowcase ? `${import.meta.env.BASE_URL}showcase/ripple-demo.mp4` : "/api/demo-video"} target="_blank" rel="noreferrer"><Play size={14}/>Watch recorded demo<ArrowUpRight size={13}/></a>
                   <Activity size={28} className="teal-text" />
                 </div>

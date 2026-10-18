@@ -28,6 +28,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: pip install -r requirements.txt
       - run: python -m ripple.export_showcase
+      - run: python -m ripple.proof_page
       - run: npm ci
         working-directory: frontend
       - run: npm run build

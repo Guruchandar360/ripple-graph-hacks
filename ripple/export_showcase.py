@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -43,6 +44,18 @@ def export(destination: Path):
         for p in sorted((records / "replays").glob("*.json"))
     ]
     write("replays", replays)
+    proof_index = ROOT / "demo/proof-index.json"
+    if proof_index.exists():
+        for filename in ("proof-index.json", "proof-audit.json", "repeatability.json"):
+            shutil.copyfile(ROOT / "demo" / filename, destination / filename)
+        shutil.copyfile(ROOT / "demo/verification/ci-results.txt", destination / "ci-results.txt")
+        indexed = json.loads(proof_index.read_text(encoding="utf-8"))
+        proof_records = destination / "proof-records"
+        proof_records.mkdir(exist_ok=True)
+        for name in indexed["benchmark_replays"] + indexed["sequence_replays"]:
+            if not re.fullmatch(r"demo/replays/[a-f0-9]{32}\.json", name):
+                raise ValueError("Unexpected proof recording path")
+            shutil.copyfile(ROOT / name, proof_records / Path(name).name)
     memories = {
         n["id"]: n["data"]
         for r in replays

@@ -1,5 +1,9 @@
 # Proof for judges
 
+[Read the standalone proof page](https://guruchandar360.github.io/ripple-graph-hacks/proof/).
+The public page and its raw records are hosted alongside Ripple so the evidence
+can be inspected without relying on GitHub's document viewer.
+
 Ripple's claim is specific: connected evidence changes which recovery action is
 allowed, measured outcomes persist into a fresh conversation, and recovery must
 be supported by executable simulator probes. All incidents are synthetic.
@@ -77,9 +81,11 @@ and `demo/development/`; they are not added to the new sample's success count.
 
 - **Integrated Gemini + Cloud/Render execution:** the direct Google SDK native
   function-call probe passed ([receipt](../demo/provider-checks/gemini-3.8.json)).
-  The selected Free database exposes plaintext Redis. The deployment's TLS
-  exception still awaits explicit approval; a hosted incident recovery has not
-  been verified.
+  The selected Free database exposes plaintext Redis. The participant approved
+  this exception for the synthetic demo only. Database credentials and synthetic
+  records travel without TLS; browser and Gemini traffic use HTTPS. Two actual
+  integration tests passed against that Cloud instance; hosted recovery is still
+  being verified.
 - **Normal application time limit:** CPU proof uses 300 seconds per conversation.
   Reliability within the default 120-second application window is unmeasured.
 - **Participant requirements:** registration, eligibility, meaningful contribution,
